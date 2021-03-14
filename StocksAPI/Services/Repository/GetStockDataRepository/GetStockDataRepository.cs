@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Services.Data;
 using Services.Interfaces.Repository;
 using Services.IRepository;
 using Services.Models;
@@ -18,6 +19,8 @@ namespace Services.Repository.GetStockDataRepository
         {
             _unitOfWork = unitOfWork;
         }
+
+        #region ApiCalls
 
         public async Task<PortfolioProfit> GetPortfolioProfitAsync()
         {
@@ -85,6 +88,33 @@ namespace Services.Repository.GetStockDataRepository
 
             var stockApiCalls = new List<Task<StockData>>();
 
+            results = EditData(results, exchangeRate);
+
+            stockApiCalls = AddTasksToList(stockApiCalls, results, exchangeRate);
+
+            var currentPrices = await Task.WhenAll(stockApiCalls);
+
+            var stockProfiles = CreateCurrentStockProfiles(results, currentPrices, exchangeRate);
+
+            return stockProfiles;
+        }
+
+        #endregion ApiCalls
+
+        #region Helper Functions
+
+        public List<Task<StockData>> AddTasksToList(List<Task<StockData>> taskList, IList<Stock> results, ExchangeRate exchangeRate)
+        {
+            foreach (var stock in results)
+            {
+                taskList.Add(GetStockDataAsync(stock.Name));
+            }
+
+            return taskList;
+        }
+
+        public IList<Stock> EditData(IList<Stock> results, ExchangeRate exchangeRate)
+        {
             foreach (var stock in results)
             {
                 if (stock.Country == "AU")
@@ -92,11 +122,13 @@ namespace Services.Repository.GetStockDataRepository
 
                 if (stock.Country == "US")
                     stock.TotalCost *= exchangeRate.Rates.AUD;
-
-                stockApiCalls.Add(GetStockDataAsync(stock.Name));
             }
 
-            var currentPrices = await Task.WhenAll(stockApiCalls);
+            return results;
+        }
+
+        public List<CurrentStockProfile> CreateCurrentStockProfiles(IList<Stock> results, StockData[] currentPrices, ExchangeRate exchangeRate)
+        {
             var count = 0;
 
             var stockProfiles = new List<CurrentStockProfile>();
@@ -126,5 +158,7 @@ namespace Services.Repository.GetStockDataRepository
 
             return stockProfiles;
         }
+
+        #endregion Helper Functions
     }
 }

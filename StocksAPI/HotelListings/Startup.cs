@@ -25,6 +25,8 @@ using Services.Interfaces.Repository;
 using Services.Repository.GetStockDataRepository;
 using Services.Interfaces.Services;
 using Services.Services.GetStockDataService;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using System.IO;
 
 namespace StockAPI
 {
@@ -90,7 +92,11 @@ namespace StockAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StocksAPI", Version = "v1" });
             });
-
+            services.AddMvc(option => option.EnableEndpointRouting = false);
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "stocksapi-fe/build";
+            });
             services.AddControllers(config =>
             {
                 config.CacheProfiles.Add("60SecondDuration", new CacheProfile
@@ -121,6 +127,18 @@ namespace StockAPI
             app.UseHttpsRedirection();
 
             app.UseCors("corsPolicy");
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseMvc();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = Path.Join(env.ContentRootPath, "stocksapi-fe");
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
 
             app.UseRouting();
 
