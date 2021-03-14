@@ -41,5 +41,14 @@ namespace StockAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("GetIndividualStockProfiles")]
+        public async Task<IActionResult> GetIndividualStockProfiles()
+        {
+            var result = await _mediator.Send(new GetIndividualStockProfilesQuery());
+
+            return Ok(result);
+        }
     }
 }

@@ -4,6 +4,7 @@ using Services.IRepository;
 using Services.Models;
 using Services.Models.Stocks;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -21,23 +22,24 @@ namespace Services.Repository.GetStockDataRepository
         public async Task<PortfolioProfit> GetPortfolioProfitAsync()
         {
             var exchangeRate = new ExchangeRate();
-
-            var client = new HttpClient();
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://api.exchangeratesapi.io/latest?base=USD")
-            };
-
-            using (var response = await client.SendAsync(request))
-            {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                exchangeRate = JsonConvert.DeserializeObject<ExchangeRate>(body);
-            }
+            var body = await HttpRequest.SendGetCall("https://api.exchangeratesapi.io/latest?base=USD");
+            exchangeRate = JsonConvert.DeserializeObject<ExchangeRate>(body);
 
             var results = await _unitOfWork.Stocks.GetAll();
+
             var portfolioProfit = new PortfolioProfit();
+
+            var stockApiCalls = new List<Task<StockData>>();
+
+            foreach (var stock in results)
+            {
+                if (stock.Country == "AU")
+                    stock.Name += ".AX";
+                stockApiCalls.Add(GetStockDataAsync(stock.Name));
+            }
+
+            var currentPrices = await Task.WhenAll(stockApiCalls);
+            var count = 0;
 
             foreach (var stock in results)
             {
@@ -46,17 +48,14 @@ namespace Services.Repository.GetStockDataRepository
 
                 portfolioProfit.PurchaseTotal += stock.TotalCost;
 
-                if (stock.Country == "AU")
-                    stock.Name += ".AX";
-
-                var currentStockPrice = await GetStockDataAsync(stock.Name);
-
                 if (stock.Country == "US")
                 {
-                    portfolioProfit.CurrentTotal += (currentStockPrice.price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount;
+                    portfolioProfit.CurrentTotal += (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount;
+                    count++;
                     continue;
                 }
-                portfolioProfit.CurrentTotal += currentStockPrice.price.regularMarketOpen.raw * stock.Amount;
+                portfolioProfit.CurrentTotal += currentPrices[count].price.regularMarketOpen.raw * stock.Amount;
+                count++;
             }
 
             return portfolioProfit;
@@ -64,24 +63,68 @@ namespace Services.Repository.GetStockDataRepository
 
         public async Task<StockData> GetStockDataAsync(string id)
         {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage
+            var headers = new Dictionary<string, string>
             {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol={id}&region=AU"),
-                Headers =
-                    {
-                        { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                        { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" },
-                    },
+                { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
+                { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
             };
-            using (var response = await client.SendAsync(request))
+
+            var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol={id}&region=AU", headers);
+
+            var result = JsonConvert.DeserializeObject<StockData>(response);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<CurrentStockProfile>> GetIndividualStockProfiles()
+        {
+            var body = await HttpRequest.SendGetCall("https://api.exchangeratesapi.io/latest?base=USD");
+            ExchangeRate exchangeRate = JsonConvert.DeserializeObject<ExchangeRate>(body);
+
+            var results = await _unitOfWork.Stocks.GetAll();
+
+            var stockApiCalls = new List<Task<StockData>>();
+
+            foreach (var stock in results)
             {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<StockData>(body);
-                return result;
+                if (stock.Country == "AU")
+                    stock.Name += ".AX";
+
+                if (stock.Country == "US")
+                    stock.TotalCost *= exchangeRate.Rates.AUD;
+
+                stockApiCalls.Add(GetStockDataAsync(stock.Name));
             }
+
+            var currentPrices = await Task.WhenAll(stockApiCalls);
+            var count = 0;
+
+            var stockProfiles = new List<CurrentStockProfile>();
+
+            foreach (var stock in results)
+            {
+                if (stock.Country == "AU")
+                {
+                    stockProfiles.Add(new CurrentStockProfile(stock)
+                    {
+                        currentPrice = currentPrices[count].price.regularMarketOpen.raw,
+                        currentValue = currentPrices[count].price.regularMarketOpen.raw * stock.Amount,
+                        profit = currentPrices[count].price.regularMarketOpen.raw * stock.Amount - stock.TotalCost
+                    });
+                    count++;
+                    continue;
+                }
+
+                stockProfiles.Add(new CurrentStockProfile(stock)
+                {
+                    currentPrice = currentPrices[count].price.regularMarketOpen.raw,
+                    currentValue = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount,
+                    profit = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount - stock.TotalCost
+                });
+                count++;
+            }
+
+            return stockProfiles;
         }
     }
 }

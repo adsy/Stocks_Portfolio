@@ -1,4 +1,5 @@
 ﻿using Services.Models.Stocks;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Services.Interfaces.Services
@@ -8,5 +9,7 @@ namespace Services.Interfaces.Services
         public Task<StockData> GetStockDataAsync(string id);
 
         public Task<PortfolioProfit> GetPortfolioProfitAsync();
+
+        public Task<IEnumerable<CurrentStockProfile>> GetCurrentStockProfileAsync();
     }
 }

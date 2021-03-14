@@ -12,5 +12,7 @@ namespace Services.Interfaces.Repository
         public Task<StockData> GetStockDataAsync(string id);
 
         public Task<PortfolioProfit> GetPortfolioProfitAsync();
+
+        public Task<IEnumerable<CurrentStockProfile>> GetIndividualStockProfiles();
     }
 }

@@ -31,5 +31,12 @@ namespace Services.Services.GetStockDataService
 
             return result;
         }
+
+        public async Task<IEnumerable<CurrentStockProfile>> GetCurrentStockProfileAsync()
+        {
+            var result = await _stocksRepository.GetIndividualStockProfiles();
+
+            return result;
+        }
     }
 }
