@@ -22,9 +22,10 @@ class Container extends Component {
 
     async componentDidMount() {
         try {
-            const stocks = await this.GetStocks();
-            this.setState({ stocks: stocks, loading: false });
-            console.log(stocks);
+            // const stocks = await this.GetStocks();
+            // this.setState({ stocks: stocks, loading: false });
+
+            this.setState({loading:false});
         } catch (error) {
         }
     }
