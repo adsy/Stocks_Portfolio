@@ -135,25 +135,34 @@ namespace Services.Repository.GetStockDataRepository
 
             foreach (var stock in results)
             {
-                if (stock.Country == "AU")
+                var stockExists = stockProfiles.Find(q => q.Id == stock.Id);
+
+                if (stockExists == null)
                 {
+                    if (stock.Country == "AU")
+                    {
+                        stockProfiles.Add(new CurrentStockProfile(stock)
+                        {
+                            currentPrice = currentPrices[count].price.regularMarketOpen.raw,
+                            currentValue = currentPrices[count].price.regularMarketOpen.raw * stock.Amount,
+                            profit = currentPrices[count].price.regularMarketOpen.raw * stock.Amount - stock.TotalCost
+                        });
+                        count++;
+                        continue;
+                    }
+
                     stockProfiles.Add(new CurrentStockProfile(stock)
                     {
                         currentPrice = currentPrices[count].price.regularMarketOpen.raw,
-                        currentValue = currentPrices[count].price.regularMarketOpen.raw * stock.Amount,
-                        profit = currentPrices[count].price.regularMarketOpen.raw * stock.Amount - stock.TotalCost
+                        currentValue = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount,
+                        profit = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount - stock.TotalCost,
+                        averagePrice = stock.PurchasePrice
                     });
                     count++;
                     continue;
                 }
 
-                stockProfiles.Add(new CurrentStockProfile(stock)
-                {
-                    currentPrice = currentPrices[count].price.regularMarketOpen.raw,
-                    currentValue = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount,
-                    profit = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount - stock.TotalCost
-                });
-                count++;
+                // implement functionality if multiple purchases exists for average price
             }
 
             return stockProfiles;

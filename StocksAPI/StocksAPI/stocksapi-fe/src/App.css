@@ -40,6 +40,18 @@
     margin-top: 20px;
 }
 
+.stock-container-css {
+    width: 80%;
+    background-color: gainsboro;
+    height: 10vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 5px solid beige;
+    color: slategrey;
+    margin-bottom:5px;
+}
+
 .App-link {
     color: #61dafb;
 }

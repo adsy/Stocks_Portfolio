@@ -16,5 +16,6 @@ namespace Services.Models.Stocks
         public double currentPrice { get; set; }
         public double currentValue { get; set; }
         public double profit { get; set; }
+        public double averagePrice { get; set; }
     }
 }
