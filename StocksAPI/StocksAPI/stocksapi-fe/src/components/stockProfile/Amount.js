@@ -2,10 +2,7 @@
 import Card from "react-bootstrap/esm/Card";
 
 const AmountComponent = ({ Amount }) => {
-    return (
-        <Card>
-            <Card.Body><span class="stockAmount-text">{Amount}</span></Card.Body>
-        </Card>)
+    return (<span class="stockAmount-text">{Amount}</span>)
 }
 
 export default AmountComponent;

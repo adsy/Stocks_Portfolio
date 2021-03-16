@@ -6,7 +6,7 @@ import StockProfile from "./stockProfile/StockProfile";
 import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/esm/Card';
 
-class AppContainer extends Component {
+class StocksContainer extends Component {
     state = { stocks: [], loading: true };
 
 
@@ -27,7 +27,11 @@ class AppContainer extends Component {
             // const stocks = await this.GetStocks();
             // this.setState({ stocks: stocks, loading: false });
 
-            const mockStocks = [{ name: 'BB', amount: '25', currentPrice: 10.05 }, { name: "SENS", amount: 25, currentPrice: 10.05 }, { name: "LOT.AX", amount: 25, currentPrice: 10.05 }]
+            const mockStocks = [
+                { name: 'BB', amount: '25', currentPrice: 10.05 },
+                { name: "SENS", amount: 25, currentPrice: 10.05 },
+                { name: "LOT.AX", amount: 25, currentPrice: 10.05 }
+            ];
 
 
             console.log(mockStocks)
@@ -55,10 +59,12 @@ class AppContainer extends Component {
             );
         }
 
-        return (<div className="container-css">
+        return (<div className="container-css" style={{ backgroundColor: "grey" }}>
             {this.state.stocks.map((stock, index) => (
-                <Container body className="stock-container-css">
-                    <h3 style={{ paddingTop: '10px' }}>{stock.name}</h3>
+                <Container body className="stock-container-css" style={{ width: "50%", marginTop:"10px", marginBottom:"10px", height:"7vh"}}>
+                    <div className="col-lg-4">
+                        <h3 style={{ paddingTop: '10px' }}>{stock.name}🚀</h3>
+                    </div>
                     <StockProfile stock={stock} />
                     <Card body>
                         <h6> @ ${stock.currentPrice}</h6>
@@ -69,4 +75,4 @@ class AppContainer extends Component {
     }
 }
 
-export default AppContainer;
+export default StocksContainer;

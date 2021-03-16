@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import Container from 'react-bootstrap/Container';
-import AppContainer from './Container';
+import StocksContainer from './StocksContainer';
+import DetailsContainer from './DetailsContainer';
 
 class Home extends Component {
     render() {
@@ -9,7 +10,14 @@ class Home extends Component {
                 <header className="App-header">
                     <h1 class="page-title">WHATCHU WORTH?</h1>
                 </header>
-                <AppContainer />
+                <div style={{display:'flex',justifyContent:'space-around'}}>
+                    <div className="col-lg-6" >
+                        <StocksContainer />
+                    </div>
+                    <div style={{ border:"5px solid black", marginTop:"20PX", backgroundColor:"grey"}} className="col-lg-4">
+                        <DetailsContainer />
+                    </div>
+                </div>
             </div>
         );
     }

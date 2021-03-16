@@ -26,6 +26,7 @@ namespace Services.Data
 
             // Example of exporting the HasData configuration files
             builder.ApplyConfiguration(new RoleConfiguration());
+            builder.ApplyConfiguration(new StockConfiguration());
         }
     }
 }
