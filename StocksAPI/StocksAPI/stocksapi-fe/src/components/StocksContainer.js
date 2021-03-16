@@ -2,13 +2,10 @@
 import '../App.css'
 import React, { Component } from "react";
 import { Constants } from "../constants/Constants";
-import StockProfile from "./stockProfile/StockProfile";
 import Container from 'react-bootstrap/Container'
-import Card from 'react-bootstrap/esm/Card';
 
 class StocksContainer extends Component {
     state = { stocks: [], loading: true };
-
 
     async GetStocks() {
         try {
@@ -24,22 +21,45 @@ class StocksContainer extends Component {
 
     async componentDidMount() {
         try {
-            // const stocks = await this.GetStocks();
-            // this.setState({ stocks: stocks, loading: false });
+
+            // api calls
+            //const stocks = await this.GetStocks();
+
+            //var cleanedStocks = [];
+
+            //stocks.forEach((stock) => {
+            //    var newItem = JSON.parse(JSON.stringify(stock), (key, value) =>
+            //        typeof value === "number" ? Math.round(value * 100) / 100 : value
+            //    );
+            //    cleanedStocks.push(newItem);
+            //})
+
+            //this.setState({ stocks: cleanedStocks, loading: false });
+
+
+
 
             const mockStocks = [
-                { name: 'BB', amount: '25', currentPrice: 10.05 },
-                { name: "SENS", amount: 25, currentPrice: 10.05 },
-                { name: "LOT.AX", amount: 25, currentPrice: 10.05 }
+                { name: 'BB', amount: '25', currentPrice: 10.05, currentValue: 800, profit: 200.35762345 },
+                { name: "SENS", amount: 200.1234, currentPrice: 10.05, currentValue: 200.35762345, profit: 200.35762345},
+                { name: "LOT.AX", amount: 25, currentPrice: 10.05, currentValue: 800, profit: 200.35762345}
             ];
 
+            var cleanedStocks = [];
 
-            console.log(mockStocks)
+            mockStocks.forEach((stock) => {
+                var newItem = JSON.parse(JSON.stringify(stock), (key, value) =>
+                    typeof value === "number" && key != 'amount' ? value.toFixed(2) : value
+                );
+                cleanedStocks.push(newItem);
+            })
+
+
 
             const timer = await setTimeout(() => {
                 console.log('timer done');
                 this.setState({
-                    stocks: mockStocks,
+                    stocks: cleanedStocks,
                     loading: false
                 });
             }, 2000);
@@ -59,19 +79,27 @@ class StocksContainer extends Component {
             );
         }
 
-        return (<div className="container-css" style={{ backgroundColor: "grey" }}>
+        return (<div className="container-css">
             {this.state.stocks.map((stock, index) => (
-                <Container body className="stock-container-css" style={{ width: "50%", marginTop:"10px", marginBottom:"10px", height:"7vh"}}>
-                    <div className="col-lg-4">
-                        <h3 style={{ paddingTop: '10px' }}>{stock.name}🚀</h3>
+                <Container body className="stock-container-css" style={{ width: "110%", marginTop: "10px", marginBottom: "10px", height: "7vh", paddingLeft:'-15px' }}>
+                    <div>
+                        <h3 style={{paddingTop:'5px'}}>{stock.name} 🚀</h3>
                     </div>
-                    <StockProfile stock={stock} />
-                    <Card body>
-                        <h6> @ ${stock.currentPrice}</h6>
-                    </Card>
+                    <div>
+                        <h6> {stock.amount}</h6>
+                    </div>
+                    <div>
+                        <h6> ${(stock.currentPrice)}</h6>
+                    </div>
+                    <div>
+                        <h6> ${stock.currentValue}</h6>
+                    </div>
+                    <div>
+                        <h6> ${stock.profit}</h6>
+                    </div>
                 </Container>
-                     ))}
-                </div>);
+            ))}
+        </div>);
     }
 }
 

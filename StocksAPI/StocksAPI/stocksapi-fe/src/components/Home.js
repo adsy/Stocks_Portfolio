@@ -14,7 +14,7 @@ class Home extends Component {
                     <div className="col-lg-6" >
                         <StocksContainer />
                     </div>
-                    <div style={{ border:"5px solid black", marginTop:"20PX", backgroundColor:"grey"}} className="col-lg-4">
+                    <div style={{ border:"5px solid black", marginTop:"20PX"}} className="col-lg-4">
                         <DetailsContainer />
                     </div>
                 </div>

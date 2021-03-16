@@ -1,3 +1,11 @@
+* {
+    font-family:'Fira Code';
+}
+
+body {
+    background-color: #972D07 !important;
+}
+
 .App {
     text-align: center;
 }
@@ -14,11 +22,9 @@
 }
 
 .App-header {
-    background-color: #282c37;
+    background-color: #272838;
     min-height: 10vh;
     display: flex;
-    font-size: calc(10px + 2vmin);
-    color: white;
 }
 
 .stockAmount-text {
@@ -26,9 +32,11 @@
 }
 
 .page-title {
-    font-size: 42px;
+    font-size: 50px;
     margin-left: 10px;
     margin-top: 5px;
+    color: black;
+    text-shadow: -1px 0 red, 0 1px red, 1px 0 red, 0 -1px red;
 }
 
 .container-css {
@@ -40,20 +48,23 @@
 }
 
 .stock-container-css {
-    background-color: gainsboro;
+    background-color: #1C2541;
     height: 7vw;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
     align-items: center;
-    border: 5px solid beige;
-    color: slategrey;
-    margin-bottom:5px;
+    grid-template-columns: 160px 100px 100px 100px 100px;
+    border: 5px solid #3A506B;
+    margin-bottom: 5px;
 }
- 
-h3 {
+
+h6 {
     color: yellow;
-    font-size: 12px;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    text-shadow: -1px 0 red, 0 1px red, 1px 0 red, 0 -1px red;
+}
+
+h3 {
+    color: black;
+    text-shadow: -1px 0 red, 0 1px red, 1px 0 red, 0 -1px red;
 }
 
 .App-link {
