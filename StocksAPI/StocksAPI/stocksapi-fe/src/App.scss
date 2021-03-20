@@ -3,7 +3,7 @@
 }
 
 body {
-    background-color: #c4f8f8 !important;
+    background-color: #F46036 !important;
 }
 
 .App {
@@ -22,7 +22,7 @@ body {
 }
 
 .App-header {
-    background-color: #1C2542;
+    background-color: #171123;
     min-height: 12vh;
     display: flex;
     justify-content: center;
@@ -39,7 +39,7 @@ body {
     font-size: 50px;
     margin-left: 10px;
     margin-top: 5px;
-    color: #9883E5;
+    color: #F46036;
     text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
 }
 
@@ -51,8 +51,12 @@ body {
     margin-top: 20px;
 }
 
+.stock-column-names {
+    color: #EEE4E1 !important;
+}
+
 .stock-container-css {
-    background-color: #1C2542;
+    background-color: #171123;
     display: flex;
     align-items: center;
     border: 5px solid #000000;
@@ -67,7 +71,7 @@ h6 {
 }
 
 h3 {
-    color: #9883E5;
+    color: #F46036;
     text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
 }
 
@@ -77,6 +81,36 @@ h3 {
 
 .center-container {
     min-width: 80%;
+}
+
+.cool-shadow {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.portfolio-summary{
+    height:30%;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #1C2542;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #1C2988;
 }
 
 @keyframes App-logo-spin {
@@ -105,5 +139,18 @@ h3 {
 
     h6 {
         font-size:12px !important;
+    }
+
+}
+
+
+@media only screen and (max-width: 575px) {
+    .portfolio-summary {
+        margin-bottom: 30px;
+        width:95% !important;
+    }
+
+    .stock-summary {
+        width:95% !important;
     }
 }
