@@ -9,6 +9,10 @@ namespace Services.Models.Stocks
 {
     public class CurrentStockProfile : Stock
     {
+        public CurrentStockProfile() : base()
+        {
+        }
+
         public CurrentStockProfile(Stock stock) : base(stock.Id, stock.Name, stock.PurchaseDate, stock.PurchasePrice, stock.Amount, stock.TotalCost, stock.Country)
         {
         }

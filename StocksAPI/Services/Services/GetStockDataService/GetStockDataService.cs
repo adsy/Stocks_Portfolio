@@ -18,23 +18,16 @@ namespace Services.Services.GetStockDataService
             _stocksRepository = stocksRepository;
         }
 
-        public async Task<StockData> GetStockDataAsync(string id)
+        public async Task<IEnumerable<CurrentStockProfile>> GetStockDataAsync(string id)
         {
             var result = await _stocksRepository.GetStockDataAsync(id);
 
             return result;
         }
 
-        public async Task<PortfolioProfit> GetPortfolioProfitAsync()
+        public async Task<Portfolio> GetPortfolioAsync()
         {
-            var result = await _stocksRepository.GetPortfolioProfitAsync();
-
-            return result;
-        }
-
-        public async Task<IEnumerable<CurrentStockProfile>> GetCurrentStockProfileAsync()
-        {
-            var result = await _stocksRepository.GetIndividualStockProfiles();
+            var result = await _stocksRepository.GetPortfolio();
 
             return result;
         }

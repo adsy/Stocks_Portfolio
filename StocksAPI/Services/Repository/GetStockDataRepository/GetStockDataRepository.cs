@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Services.Data;
 using Services.Interfaces.Repository;
 using Services.IRepository;
@@ -22,81 +23,71 @@ namespace Services.Repository.GetStockDataRepository
 
         #region ApiCalls
 
-        public async Task<PortfolioProfit> GetPortfolioProfitAsync()
+        public async Task<IEnumerable<CurrentStockProfile>> GetStockDataAsync(string ids)
         {
-            var exchangeRate = new ExchangeRate();
-            var body = await HttpRequest.SendGetCall("https://api.exchangeratesapi.io/latest?base=USD");
-            exchangeRate = JsonConvert.DeserializeObject<ExchangeRate>(body);
+            var stockTickers = ids.Split(",");
 
-            var results = await _unitOfWork.Stocks.GetAll();
-
-            var portfolioProfit = new PortfolioProfit();
-
-            var stockApiCalls = new List<Task<StockData>>();
-
-            foreach (var stock in results)
-            {
-                if (stock.Country == "AU")
-                    stock.Name += ".AX";
-                stockApiCalls.Add(GetStockDataAsync(stock.Name));
-            }
-
-            var currentPrices = await Task.WhenAll(stockApiCalls);
-            var count = 0;
-
-            foreach (var stock in results)
-            {
-                if (stock.Country == "US")
-                    stock.TotalCost *= exchangeRate.Rates.AUD;
-
-                portfolioProfit.PurchaseTotal += stock.TotalCost;
-
-                if (stock.Country == "US")
-                {
-                    portfolioProfit.CurrentTotal += (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount;
-                    count++;
-                    continue;
-                }
-                portfolioProfit.CurrentTotal += currentPrices[count].price.regularMarketOpen.raw * stock.Amount;
-                count++;
-            }
-
-            return portfolioProfit;
-        }
-
-        public async Task<StockData> GetStockDataAsync(string id)
-        {
             var headers = new Dictionary<string, string>
             {
                 { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
                 { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
             };
 
-            var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-summary?symbol={id}&region=AU", headers);
+            var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=AU&symbols={ids}", headers);
 
-            var result = JsonConvert.DeserializeObject<StockData>(response);
+            var stockProfiles = new List<CurrentStockProfile>();
 
-            return result;
+            var requestBody = JObject.Parse(response);
+            var count = 0;
+
+            foreach (var stock in stockTickers)
+            {
+                if (stock != "")
+                {
+                    var stockProfile = new CurrentStockProfile
+                    {
+                        currentPrice = (double)requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice"),
+                        Name = stock
+                    };
+
+                    stockProfiles.Add(stockProfile);
+                    count++;
+                }
+            }
+
+            return stockProfiles;
         }
 
-        public async Task<IEnumerable<CurrentStockProfile>> GetIndividualStockProfiles()
+        public async Task<Portfolio> GetPortfolio()
         {
+            // Gets individual stock profiles and places the current prices into an array
             var body = await HttpRequest.SendGetCall("https://api.exchangeratesapi.io/latest?base=USD");
             ExchangeRate exchangeRate = JsonConvert.DeserializeObject<ExchangeRate>(body);
 
             var results = await _unitOfWork.Stocks.GetAll();
 
-            var stockApiCalls = new List<Task<StockData>>();
-
             results = EditData(results, exchangeRate);
 
-            stockApiCalls = AddTasksToList(stockApiCalls, results, exchangeRate);
+            var ids = "";
 
-            var currentPrices = await Task.WhenAll(stockApiCalls);
+            foreach (var stock in results)
+            {
+                if (!ids.Contains(stock.Name))
+                {
+                    ids += stock.Name + ",";
+                }
+            }
 
-            var stockProfiles = CreateCurrentStockProfiles(results, currentPrices, exchangeRate);
+            var currentProfiles = await GetStockDataAsync(ids);
 
-            return stockProfiles;
+            var stockProfiles = CreateCurrentStockProfiles(results, (List<CurrentStockProfile>)currentProfiles, exchangeRate);
+
+            // Create portfolio profit
+            var portfolioProfit = GetPortfolioProfit(stockProfiles);
+
+            var portfolio = new Portfolio { _PortfolioProfit = portfolioProfit, _CurrentStockPortfolio = stockProfiles };
+
+            return portfolio;
         }
 
         #endregion ApiCalls
@@ -107,7 +98,7 @@ namespace Services.Repository.GetStockDataRepository
         {
             foreach (var stock in results)
             {
-                taskList.Add(GetStockDataAsync(stock.Name));
+                //taskList.Add(GetStockDataAsync(stock.Name));
             }
 
             return taskList;
@@ -127,45 +118,56 @@ namespace Services.Repository.GetStockDataRepository
             return results;
         }
 
-        public List<CurrentStockProfile> CreateCurrentStockProfiles(IList<Stock> results, StockData[] currentPrices, ExchangeRate exchangeRate)
+        public List<CurrentStockProfile> CreateCurrentStockProfiles(IList<Stock> results, List<CurrentStockProfile> currentProfiles, ExchangeRate exchangeRate)
         {
             var count = 0;
 
-            var stockProfiles = new List<CurrentStockProfile>();
-
             foreach (var stock in results)
             {
-                var stockExists = stockProfiles.Find(q => q.Id == stock.Id);
+                var stockProfile = currentProfiles.Find(q => q.Name == stock.Name);
 
-                if (stockExists == null)
+                stockProfile.Amount += stock.Amount;
+                if (stockProfile.Country == null)
                 {
-                    if (stock.Country == "AU")
-                    {
-                        stockProfiles.Add(new CurrentStockProfile(stock)
-                        {
-                            currentPrice = currentPrices[count].price.regularMarketOpen.raw,
-                            currentValue = currentPrices[count].price.regularMarketOpen.raw * stock.Amount,
-                            profit = currentPrices[count].price.regularMarketOpen.raw * stock.Amount - stock.TotalCost
-                        });
-                        count++;
-                        continue;
-                    }
+                    stockProfile.Id = stock.Id;
+                    // Needs to eventually be changed into average price
+                    stockProfile.PurchasePrice = stock.PurchasePrice;
+                    stockProfile.TotalCost += stock.TotalCost;
+                    stockProfile.Country = stock.Country;
+                }
 
-                    stockProfiles.Add(new CurrentStockProfile(stock)
-                    {
-                        currentPrice = currentPrices[count].price.regularMarketOpen.raw,
-                        currentValue = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount,
-                        profit = (currentPrices[count].price.regularMarketOpen.raw * exchangeRate.Rates.AUD) * stock.Amount - stock.TotalCost,
-                        averagePrice = stock.PurchasePrice
-                    });
+                if (stock.Country == "AU")
+                {
+                    stockProfile.Country = "AU";
+                    stockProfile.currentValue += stockProfile.currentPrice * stock.Amount;
+                    stockProfile.profit += stockProfile.currentPrice * stock.Amount - stock.TotalCost;
                     count++;
                     continue;
                 }
 
+                stockProfile.Country = "US";
+                stockProfile.currentValue += (stockProfile.currentPrice * exchangeRate.Rates.AUD) * stock.Amount;
+                stockProfile.profit += (stockProfile.currentPrice * stock.Amount * exchangeRate.Rates.AUD) - stock.TotalCost;
+                count++;
+                continue;
+
                 // implement functionality if multiple purchases exists for average price
             }
 
-            return stockProfiles;
+            return currentProfiles;
+        }
+
+        public PortfolioProfit GetPortfolioProfit(List<CurrentStockProfile> currentPortfolio)
+        {
+            var portfolioProfit = new PortfolioProfit();
+
+            foreach (var stock in currentPortfolio)
+            {
+                portfolioProfit.PurchaseTotal += stock.TotalCost;
+                portfolioProfit.CurrentTotal += stock.currentValue;
+            }
+
+            return portfolioProfit;
         }
 
         #endregion Helper Functions

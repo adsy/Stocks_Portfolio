@@ -1,8 +1,8 @@
 ﻿import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css'
 import React, { Component } from "react";
 import { Constants } from "../constants/Constants";
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 
 class StocksContainer extends Component {
     state = { stocks: [], loading: true };
@@ -21,7 +21,6 @@ class StocksContainer extends Component {
 
     async componentDidMount() {
         try {
-
             // api calls
             //const stocks = await this.GetStocks();
 
@@ -36,13 +35,10 @@ class StocksContainer extends Component {
 
             //this.setState({ stocks: cleanedStocks, loading: false });
 
-
-
-
             const mockStocks = [
                 { name: 'BB', amount: '25', currentPrice: 10.05, currentValue: 800, profit: 200.35762345 },
-                { name: "SENS", amount: 200.1234, currentPrice: 10.05, currentValue: 200.35762345, profit: 200.35762345},
-                { name: "LOT.AX", amount: 25, currentPrice: 10.05, currentValue: 800, profit: 200.35762345}
+                { name: "SENS", amount: 200.1234, currentPrice: 10.05, currentValue: 200.35762345, profit: 200.35762345 },
+                { name: "LOT.AX", amount: 25, currentPrice: 10.05, currentValue: 800, profit: 200.35762345 }
             ];
 
             var cleanedStocks = [];
@@ -53,8 +49,6 @@ class StocksContainer extends Component {
                 );
                 cleanedStocks.push(newItem);
             })
-
-
 
             const timer = await setTimeout(() => {
                 console.log('timer done');
@@ -81,22 +75,39 @@ class StocksContainer extends Component {
 
         return (<div className="container-css">
             {this.state.stocks.map((stock, index) => (
-                <Container body className="stock-container-css" style={{ width: "110%", marginTop: "10px", marginBottom: "10px", height: "7vh", paddingLeft:'-15px' }}>
-                    <div>
-                        <h3 style={{paddingTop:'5px'}}>{stock.name} 🚀</h3>
-                    </div>
-                    <div>
-                        <h6> {stock.amount}</h6>
-                    </div>
-                    <div>
-                        <h6> ${(stock.currentPrice)}</h6>
-                    </div>
-                    <div>
-                        <h6> ${stock.currentValue}</h6>
-                    </div>
-                    <div>
-                        <h6> ${stock.profit}</h6>
-                    </div>
+                <Container body className="stock-container-css" style={{ width: "110%", marginTop: "10px", marginBottom: "10px", paddingLeft: '-15px' }}>
+                    <Row style={{ width: "100%", display: "flex", justifyContent: "center" }} className="col-xs-12">
+                        <h3 style={{ paddingTop: '5px' }}>{stock.name} 🚀</h3>
+                    </Row>
+                    <Row style={{ width: "100%", display: "flex", justifyContent: "space-around" }}>
+                        <div className="col-xs-3">
+                            <h6 style={{ color: "yellow" }}>Amount</h6>
+                        </div>
+                        <div className="col-xs-3">
+                            <h6 style={{ color: "yellow" }}>Current Price</h6>
+                        </div>
+                        <div className="col-xs-3">
+                            <h6 style={{ color: "yellow" }}>Current Value</h6>
+                        </div>
+                        <div className="col-xs-3">
+                            <h6 style={{ color: "yellow" }}>Total Profit</h6>
+                        </div>
+                    </Row>
+                    <Row style={{ width: "100%", display: "flex", justifyContent: "space-around" }}>
+                        <div className="col-xs-3">
+                            <h6> {stock.amount}</h6>
+                        </div>
+                        <div className="col-xs-3">
+                            <h6> ${(stock.currentPrice)}</h6>
+                        </div>
+                        <div className="col-xs-3">
+                            <h6> ${stock.currentValue}</h6>
+                        </div>
+                        <div className="col-xs-3">
+                            <h6> ${stock.profit}</h6>
+                        </div>
+                    </Row>
+
                 </Container>
             ))}
         </div>);

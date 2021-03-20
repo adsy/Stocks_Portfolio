@@ -6,10 +6,8 @@ namespace Services.Interfaces.Services
 {
     public interface IStocksService
     {
-        public Task<StockData> GetStockDataAsync(string id);
+        public Task<IEnumerable<CurrentStockProfile>> GetStockDataAsync(string id);
 
-        public Task<PortfolioProfit> GetPortfolioProfitAsync();
-
-        public Task<IEnumerable<CurrentStockProfile>> GetCurrentStockProfileAsync();
+        public Task<Portfolio> GetPortfolioAsync();
     }
 }

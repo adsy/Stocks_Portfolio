@@ -34,19 +34,10 @@ namespace StockAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetPortfolioProfit")]
-        public async Task<IActionResult> GetPortfolioProfitAsync()
+        [Route("GetPortfolio")]
+        public async Task<IActionResult> GetPortfolio()
         {
-            var result = await _mediator.Send(new GetPortfolioProfitQuery());
-
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("GetIndividualStockProfiles")]
-        public async Task<IActionResult> GetIndividualStockProfiles()
-        {
-            var result = await _mediator.Send(new GetIndividualStockProfilesQuery());
+            var result = await _mediator.Send(new GetPortfolioQuery());
 
             return Ok(result);
         }

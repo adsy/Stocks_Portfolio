@@ -11,7 +11,7 @@ using Services.Models.Stocks;
 
 namespace StockAPI.Handlers.StocksHandler
 {
-    public class GetStockDataAsyncHandler : IRequestHandler<GetStockDataQuery, StockData>
+    public class GetStockDataAsyncHandler : IRequestHandler<GetStockDataQuery, IEnumerable<CurrentStockProfile>>
     {
         private readonly IStocksService _stockService;
 
@@ -20,7 +20,7 @@ namespace StockAPI.Handlers.StocksHandler
             _stockService = stockService;
         }
 
-        public Task<StockData> Handle(GetStockDataQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<CurrentStockProfile>> Handle(GetStockDataQuery request, CancellationToken cancellationToken)
         {
             var result = _stockService.GetStockDataAsync(request.Id);
 

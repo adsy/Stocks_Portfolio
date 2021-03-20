@@ -10,11 +10,11 @@ class Home extends Component {
                 <header className="App-header">
                     <h1 class="page-title">WHATCHU WORTH?</h1>
                 </header>
-                <div style={{display:'flex',justifyContent:'space-around'}}>
-                    <div className="col-lg-6" >
+                <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+                    <div className="col-sm-7" >
                         <StocksContainer />
                     </div>
-                    <div style={{ border:"5px solid black", marginTop:"20PX"}} className="col-lg-4">
+                    <div style={{ border: "5px solid black", marginTop: "20PX", backgroundColor: "#1C2541", borderRadius: "2px 16px", width: "90%" }} className="col-sm-3">
                         <DetailsContainer />
                     </div>
                 </div>

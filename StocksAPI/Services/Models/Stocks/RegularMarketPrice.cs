@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Services.Models.Stocks
 {
-    public class StockData
+    public class RegularMarketPrice
     {
-        public Price price { get; set; }
-        public RegularMarketPrice _RegularMarketPrice { get; set; }
+        public double price { get; set; }
     }
 }

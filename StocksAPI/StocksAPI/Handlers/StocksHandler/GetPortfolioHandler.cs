@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Services.Interfaces.Services;
+using Services.IRepository;
 using Services.Models.Stocks;
 using Services.Stocks.Queries;
 using System;
@@ -10,18 +11,18 @@ using System.Threading.Tasks;
 
 namespace StockAPI.Handlers.StocksHandler
 {
-    public class GetPortfolioProfitHandler : IRequestHandler<GetPortfolioProfitQuery, PortfolioProfit>
+    public class GetPortfolioHandler : IRequestHandler<GetPortfolioQuery, Portfolio>
     {
         private readonly IStocksService _stocksService;
 
-        public GetPortfolioProfitHandler(IStocksService stocksService)
+        public GetPortfolioHandler(IStocksService stocksService)
         {
             _stocksService = stocksService;
         }
 
-        public async Task<PortfolioProfit> Handle(GetPortfolioProfitQuery request, CancellationToken cancellationToken)
+        public async Task<Portfolio> Handle(GetPortfolioQuery request, CancellationToken cancellationToken)
         {
-            var result = await _stocksService.GetPortfolioProfitAsync();
+            var result = await _stocksService.GetPortfolioAsync();
 
             return result;
         }

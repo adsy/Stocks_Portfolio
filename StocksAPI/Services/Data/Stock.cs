@@ -8,6 +8,10 @@ namespace Services.Data
 {
     public class Stock
     {
+        public Stock()
+        {
+        }
+
         public Stock(int id, string name, DateTime purchaseDate, double purchasePrice, double amount, double totalCost, string country)
         {
             Id = id;
