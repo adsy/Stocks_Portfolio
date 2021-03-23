@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AutoMapper;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Services.Data;
 using Services.Interfaces.Repository;
@@ -12,13 +13,15 @@ using System.Threading.Tasks;
 
 namespace Services.Repository.GetStockDataRepository
 {
-    public class GetStockDataRepository : IStocksRepository
+    public class StockRepository : IStocksRepository
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public GetStockDataRepository(IUnitOfWork unitOfWork)
+        public StockRepository(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         #region ApiCalls
@@ -91,6 +94,23 @@ namespace Services.Repository.GetStockDataRepository
         }
 
         #endregion ApiCalls
+
+        #region DatabaseCalls
+
+        public async Task<StockDTO> AddStockDataAsync(StockDTO stock)
+        {
+            var stockObj = _mapper.Map<Stock>(stock);
+
+            await _unitOfWork.Stocks.Insert(stockObj);
+
+            await _unitOfWork.Save();
+
+            //var fnResult = new Response { Data = stock, StatusCode = 200 };
+
+            return stock;
+        }
+
+        #endregion DatabaseCalls
 
         #region Helper Functions
 

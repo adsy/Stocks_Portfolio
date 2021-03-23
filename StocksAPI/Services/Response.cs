@@ -4,9 +4,12 @@ using System.Text;
 
 namespace Services
 {
-
-    public class Response<T>
+    public class Response
     {
+        public Response()
+        {
+        }
+
         public Response(string msg, int statusCode)
         {
             Message = msg;
@@ -20,7 +23,7 @@ namespace Services
             StatusCode = statusCode;
         }
 
-        public Response(T data, string msg, int statusCode)
+        public Response(dynamic data, string msg, int statusCode)
         {
             Data = data;
             Message = msg;
@@ -28,7 +31,7 @@ namespace Services
         }
 
         public int StatusCode { get; set; }
-        public T? Data { get; set; }
+        public dynamic? Data { get; set; }
         public string? Message { get; set; }
         public bool? Error { get; set; }
     }

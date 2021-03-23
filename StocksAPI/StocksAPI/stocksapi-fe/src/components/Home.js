@@ -157,11 +157,11 @@ class Home extends Component {
                 <h1 className="page-title">🚀🚀🚀🚀🚀🚀</h1>
             </header>
             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
-                <div className="col-sm-7 cool-shadow stock-summary" style={{ height: "80vh", marginTop: "20PX", overflowY: "auto", borderRadius: "4px 4px", paddingLeft: "20px", paddingRight: "20px", paddingTop: "10px", paddingBottom: "10px", backgroundColor: "#f27450" }}>
-                    <StocksContainer CurrentStockPortfolio={this.state.portfolioData._CurrentStockPortfolio} />
-                </div>
-                <div style={{ border: "5px solid black", marginTop: "20PX", backgroundColor: "#171123", borderRadius: "2px 16px" }} className="col-sm-3 portfolio-summary">
+                <div style={{ border: "5px solid black", marginTop: "20PX", backgroundColor: "#171123", borderRadius: "2px 16px", width:"95%" }} className="col-md-3 portfolio-summary">
                     <DetailsContainer PortfolioProfit={this.state.portfolioData._PortfolioProfit} />
+                </div>
+                <div className="col-md-7 cool-shadow stock-summary" style={{width:"95%", height: "80vh", marginTop: "20PX", overflowY: "auto", borderRadius: "4px 4px", paddingLeft: "20px", paddingRight: "20px", paddingTop: "10px", paddingBottom: "10px", backgroundColor: "#f27450" }}>
+                    <StocksContainer CurrentStockPortfolio={this.state.portfolioData._CurrentStockPortfolio} />
                 </div>
             </div>
         </div>)

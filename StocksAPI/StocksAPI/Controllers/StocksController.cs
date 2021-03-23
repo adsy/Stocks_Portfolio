@@ -1,6 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using Services.Data;
+using Services.Models;
+using Services.Stocks.Commands;
 using Services.Stocks.Queries;
 using System;
 using System.Collections.Generic;
@@ -40,6 +44,25 @@ namespace StockAPI.Controllers
             var result = await _mediator.Send(new GetPortfolioQuery());
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("AddStock")]
+        public async Task<IActionResult> AddStock([FromBody] StockDTO stockData)
+        {
+            try
+            {
+                var result = await _mediator.Send(new AddStockCommand
+                {
+                    stock = stockData
+                });
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Log.Error("---Error adding stock--- \n" + e.Message);
+                return BadRequest();
+            }
         }
     }
 }

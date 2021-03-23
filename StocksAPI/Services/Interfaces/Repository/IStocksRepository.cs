@@ -1,4 +1,6 @@
-﻿using Services.Models.Stocks;
+﻿using Services.Data;
+using Services.Models;
+using Services.Models.Stocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +14,7 @@ namespace Services.Interfaces.Repository
         public Task<IEnumerable<CurrentStockProfile>> GetStockDataAsync(string id);
 
         public Task<Portfolio> GetPortfolio();
+
+        public Task<StockDTO> AddStockDataAsync(StockDTO stock);
     }
 }

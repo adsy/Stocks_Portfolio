@@ -83,8 +83,8 @@ namespace StockAPI
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(IAuthManager), typeof(AuthManager));
-            services.AddScoped(typeof(IStocksRepository), typeof(GetStockDataRepository));
-            services.AddScoped(typeof(IStocksService), typeof(GetStockDataService));
+            services.AddScoped(typeof(IStocksRepository), typeof(StockRepository));
+            services.AddScoped(typeof(IStocksService), typeof(StockService));
 
             services.AddMediatR(typeof(Startup));
 

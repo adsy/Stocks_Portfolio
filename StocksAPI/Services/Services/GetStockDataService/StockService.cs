@@ -6,14 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Services.Models.Stocks;
+using Services.Data;
+using Services.Models;
 
 namespace Services.Services.GetStockDataService
 {
-    public class GetStockDataService : IStocksService
+    public class StockService : IStocksService
     {
         private readonly IStocksRepository _stocksRepository;
 
-        public GetStockDataService(IStocksRepository stocksRepository)
+        public StockService(IStocksRepository stocksRepository)
         {
             _stocksRepository = stocksRepository;
         }
@@ -28,6 +30,13 @@ namespace Services.Services.GetStockDataService
         public async Task<Portfolio> GetPortfolioAsync()
         {
             var result = await _stocksRepository.GetPortfolio();
+
+            return result;
+        }
+
+        public async Task<StockDTO> AddStockAsync(StockDTO stock)
+        {
+            var result = await _stocksRepository.AddStockDataAsync(stock);
 
             return result;
         }

@@ -10,16 +10,11 @@ namespace Services.Configurations
 {
     public class MapperInitialiser : Profile
     {
-
         // Country data class fields has a direct correlation to CountryDTO fields, which go in either direction (ReverseMap)
         public MapperInitialiser()
         {
-            CreateMap<Country, CountryDTO>().ReverseMap();
-            CreateMap<Hotel, HotelDTO>().ReverseMap();
-            CreateMap<Hotel, CreateHotelDTO>().ReverseMap();
-            CreateMap<Country, CreateCountryDTO>().ReverseMap();
             CreateMap<ApiUser, UserDTO>().ReverseMap();
-
+            CreateMap<Stock, StockDTO>().ReverseMap();
         }
     }
 }
