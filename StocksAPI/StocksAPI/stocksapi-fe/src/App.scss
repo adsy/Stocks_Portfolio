@@ -45,7 +45,6 @@ body {
 
 .container-css {
     /*justify-content: center;*/
-    align-items: flex-start;
     display: flex;
     flex-direction: column;
     margin-top: 20px;
@@ -89,6 +88,9 @@ h3 {
 
 .portfolio-summary{
     height:30%;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* width */

@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import StocksContainer from './StocksContainer';
 import DetailsContainer from './DetailsContainer';
 import { Constants } from "../constants/Constants";
+import AddStockModal from './AddStockModal';
 
 class Home extends Component {
     state = { portfolioData: {}, loading: true };
@@ -157,8 +158,12 @@ class Home extends Component {
                 <h1 className="page-title">🚀🚀🚀🚀🚀🚀</h1>
             </header>
             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
-                <div style={{ border: "5px solid black", marginTop: "20PX", backgroundColor: "#171123", borderRadius: "2px 16px", width:"95%" }} className="col-md-3 portfolio-summary">
-                    <DetailsContainer PortfolioProfit={this.state.portfolioData._PortfolioProfit} />
+                <div className="col-md-3 portfolio-summary">
+                    <div style={{ border: "5px solid black", marginTop: "20PX", backgroundColor: "#171123", borderRadius: "2px 16px", width:"95%", justifyContent:"center", display:"flex" }}>
+                        <DetailsContainer PortfolioProfit={this.state.portfolioData._PortfolioProfit} />
+                    </div>
+                    <br/>
+                    <AddStockModal/>
                 </div>
                 <div className="col-md-7 cool-shadow stock-summary" style={{width:"95%", height: "80vh", marginTop: "20PX", overflowY: "auto", borderRadius: "4px 4px", paddingLeft: "20px", paddingRight: "20px", paddingTop: "10px", paddingBottom: "10px", backgroundColor: "#f27450" }}>
                     <StocksContainer CurrentStockPortfolio={this.state.portfolioData._CurrentStockPortfolio} />
