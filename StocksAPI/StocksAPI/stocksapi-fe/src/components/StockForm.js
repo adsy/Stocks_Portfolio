@@ -1,9 +1,9 @@
 import { Button } from '@material-ui/core';
-import React from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import {Constants} from '../constants/Constants'
 
-class StockForm extends React.Component {
+class StockForm extends Component {
     constructor(props) {
         super(props);
         this.state = { value: '', visible:true };
