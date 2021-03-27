@@ -50,12 +50,12 @@ namespace Services.Services
             var expiration = DateTime.Now.AddMinutes(Convert.ToDouble(
                 jwtSettings.GetSection("lifetime").Value));
 
-
             var token = new JwtSecurityToken(
-                issuer:jwtSettings.GetSection("Issuer").Value,
-                claims:claims,
+                issuer: jwtSettings.GetSection("Issuer").Value,
+                audience: "stocksApi",
+                claims: claims,
                 expires: expiration,
-                signingCredentials:signingCredentials
+                signingCredentials: signingCredentials
                 );
 
             return token;
@@ -64,14 +64,13 @@ namespace Services.Services
         private SigningCredentials GetSigningCredentials()
         {
             // Used for local dev
-            var key = "ABCD1234-124124806125";
+            //var key = "ABCD1234-124124806125";
 
-
-            //var key = Environment.GetEnvironmentVariable("KEY");
+            var key = Environment.GetEnvironmentVariable("KEY");
 
             var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
-            return new SigningCredentials(secret,SecurityAlgorithms.HmacSha256);
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
         private async Task<List<Claim>> GetClaims()
@@ -90,6 +89,5 @@ namespace Services.Services
 
             return claims;
         }
-
     }
 }

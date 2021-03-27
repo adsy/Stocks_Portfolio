@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -24,6 +25,7 @@ namespace StockAPI.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         //get certain stock
         [HttpGet]
         [Route("{id}")]

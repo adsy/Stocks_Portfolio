@@ -120,11 +120,22 @@ namespace StockAPI
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HotelListings v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StocksAPI v1"));
 
             app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             app.UseCors("corsPolicy");
             app.UseStaticFiles();
@@ -140,8 +151,6 @@ namespace StockAPI
                 }
             });
 
-            app.UseRouting();
-
             // functions required for caching
 
             app.UseResponseCaching();
@@ -150,15 +159,6 @@ namespace StockAPI
             // function required for rate limit
 
             app.UseIpRateLimiting();
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
         }
     }
 }

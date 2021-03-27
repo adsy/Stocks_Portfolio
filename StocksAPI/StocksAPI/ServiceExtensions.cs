@@ -36,9 +36,9 @@ namespace StockAPI
             var jwtSettings = Configuration.GetSection("Jwt");
 
             // Used for local dev
-            var key = "ABCD1234-124124806125";
+            //var key = "ABCD1234-124124806125";
 
-            //var key = Environment.GetEnvironmentVariable("KEY");
+            var key = Environment.GetEnvironmentVariable("KEY");
 
             services.AddAuthentication(o =>
                 {
@@ -50,10 +50,14 @@ namespace StockAPI
                     o.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidateAudience = false,
                         ValidateLifetime = true,
+                        ValidateAudience = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtSettings.GetSection("Issuer").Value,
+                        ValidAudiences = new List<string>
+                        {
+                            "stocksApi"
+                        },
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                     };
                 });
