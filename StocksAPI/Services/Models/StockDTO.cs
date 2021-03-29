@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 
 namespace Services.Models
 {
-    public class StockDTO
+    public class StockDTO : SellStockDTO
     {
-        public string Name { get; set; }
         public DateTime PurchaseDate { get; set; }
         public double PurchasePrice { get; set; }
-        public double Amount { get; set; }
         public double TotalCost { get; set; }
         public string Country { get; set; }
+    }
+
+    public class SellStockDTO
+    {
+        public string Name { get; set; }
+        public double SellPrice { get; set; }
+        public double Amount { get; set; }
     }
 }

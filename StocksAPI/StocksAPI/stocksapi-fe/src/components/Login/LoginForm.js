@@ -7,7 +7,7 @@ import { Constants } from '../../constants/Constants';
 class LoginForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { email: '', password: '', errorMessage: null };
+        this.state = { email: '', password: '', errorMessage: null, };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -32,6 +32,7 @@ class LoginForm extends Component {
             localStorage.setItem('token', token);
             
 
+            this.props.history.push("/dashboard")
 
         }).catch(error => {
             console.log(error);
@@ -51,8 +52,9 @@ class LoginForm extends Component {
 
     async handleSubmit(event) {
         event.preventDefault();
+
         await this.Login();
-        this.props.history.push("/")
+        console.log(this.props.history);
     }
 
     render() {

@@ -66,5 +66,25 @@ namespace StockAPI.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPost]
+        [Route("SellStock")]
+        public async Task<IActionResult> SellStockAsync([FromBody] SellStockDTO sellStockDtoParam)
+        {
+            try
+            {
+                var result = await _mediator.Send(new SellStockCommand
+                {
+                    sellStockDTO = sellStockDtoParam
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error in SellStockFunction - " + e.Message);
+                return Problem("Error in SellStockAsync function", statusCode: 500);
+            }
+        }
     }
 }

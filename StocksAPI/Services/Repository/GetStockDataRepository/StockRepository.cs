@@ -7,6 +7,7 @@ using Services.IRepository;
 using Services.Models;
 using Services.Models.Stocks;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -108,6 +109,43 @@ namespace Services.Repository.GetStockDataRepository
             //var fnResult = new Response { Data = stock, StatusCode = 200 };
 
             return stock;
+        }
+
+        public async Task<StockDTO> SellStockAsync(SellStockDTO stock)
+        {
+            var stockObj = await _unitOfWork.Stocks.GetAll(q => q.Name == stock.Name);
+
+            var returnStock = new StockDTO();
+
+            if (stock.Amount < stockObj.First().Amount)
+            {
+                stockObj.First().Amount = stockObj.First().Amount - stock.Amount;
+                _unitOfWork.Stocks.Update(stockObj.First());
+                await _unitOfWork.Save();
+
+                returnStock = _mapper.Map<StockDTO>(stockObj.First());
+
+                return returnStock;
+            }
+
+            foreach (var currentStock in stockObj)
+            {
+                if (stock.Amount >= currentStock.Amount)
+                {
+                    stock.Amount = stock.Amount - currentStock.Amount;
+                    await _unitOfWork.Stocks.Delete(currentStock.Id);
+                }
+                else
+                {
+                    currentStock.Amount = currentStock.Amount - stock.Amount;
+                    _unitOfWork.Stocks.Update(currentStock);
+                    returnStock = _mapper.Map<StockDTO>(currentStock);
+                }
+            }
+
+            await _unitOfWork.Save();
+
+            return returnStock;
         }
 
         #endregion DatabaseCalls
