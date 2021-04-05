@@ -65,7 +65,7 @@ namespace Services.Repository.GetStockDataRepository
         public async Task<Portfolio> GetPortfolio()
         {
             // Gets individual stock profiles and places the current prices into an array
-            var body = await HttpRequest.SendGetCall("https://api.exchangeratesapi.io/latest?base=USD");
+            var body = await HttpRequest.SendGetCall("http://api.exchangeratesapi.io/latest?access_key=ffcbf688c38b303d3876d87c46bf9a2a&base=USD&symbols=AUD");
             ExchangeRate exchangeRate = JsonConvert.DeserializeObject<ExchangeRate>(body);
 
             var results = await _unitOfWork.Stocks.GetAll();
@@ -168,7 +168,13 @@ namespace Services.Repository.GetStockDataRepository
             {
                 if (stock.Country == "AU")
                     stock.Name += ".AX";
+            }
 
+            if (exchangeRate.Rates == null)
+                return results;
+
+            foreach (var stock in results)
+            {
                 if (stock.Country == "US")
                     stock.TotalCost *= exchangeRate.Rates.AUD;
             }
@@ -190,7 +196,6 @@ namespace Services.Repository.GetStockDataRepository
                     stockProfile.Id = stock.Id;
                     // Needs to eventually be changed into average price
                     stockProfile.PurchasePrice = stock.PurchasePrice;
-                    stockProfile.TotalCost += stock.TotalCost;
                     stockProfile.Country = stock.Country;
                 }
 
@@ -198,13 +203,25 @@ namespace Services.Repository.GetStockDataRepository
                 {
                     stockProfile.Country = "AU";
                     stockProfile.currentValue += stockProfile.currentPrice * stock.Amount;
+                    stockProfile.TotalCost += stock.TotalCost;
                     stockProfile.profit += stockProfile.currentPrice * stock.Amount - stock.TotalCost;
+                    count++;
+                    continue;
+                }
+
+                if (exchangeRate.Rates == null)
+                {
+                    stockProfile.Country = "US";
+                    stockProfile.currentValue += stockProfile.currentPrice * stock.Amount;
+                    stockProfile.TotalCost += stock.TotalCost;
+                    stockProfile.profit += (stockProfile.currentPrice * stock.Amount) - stock.TotalCost;
                     count++;
                     continue;
                 }
 
                 stockProfile.Country = "US";
                 stockProfile.currentValue += (stockProfile.currentPrice * exchangeRate.Rates.AUD) * stock.Amount;
+                stockProfile.TotalCost += stock.TotalCost;
                 stockProfile.profit += (stockProfile.currentPrice * stock.Amount * exchangeRate.Rates.AUD) - stock.TotalCost;
                 count++;
                 continue;
