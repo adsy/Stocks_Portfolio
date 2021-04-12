@@ -22,6 +22,7 @@ class StockForm extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDate = this.handleDate.bind(this);
+    this.handleInterfaceUpdate = this.handleInterfaceUpdate.bind(this);
   }
 
   async AddStockData() {
@@ -49,19 +50,19 @@ class StockForm extends Component {
     this.setState({ [nam]: val });
   }
 
-  async handleSubmit(event) {
-    let totalCost = this.state.price * this.state.amount;
-    await this.setState({ totalCost: totalCost });
+  handleInterfaceUpdate(state) {
+    let match = false;
 
-    await this.AddStockData();
     let data = this.props.PortfolioData;
 
     let portfolio = this.props.CurrentStockPortfolio.map((stock, index) => {
       if (stock.name == this.state.name) {
         let updateAmount = parseInt(this.state.amount) + parseInt(stock.amount);
+
         let updatePrice = (
           updateAmount * parseFloat(stock.currentPrice)
         ).toFixed(3);
+
         let updateProfit = (
           parseFloat(stock.profit) +
           (parseFloat(stock.currentPrice) - parseFloat(this.state.price)) *
@@ -76,17 +77,40 @@ class StockForm extends Component {
           parseFloat(this.props.PortfolioData.currentTotal) +
           parseFloat(stock.currentPrice) * parseInt(this.state.amount)
         ).toFixed(2);
+
         data.purchaseTotal = (
           parseFloat(this.props.PortfolioData.purchaseTotal) +
           parseFloat(this.state.totalCost)
         ).toFixed(2);
+
+        match = true;
       }
       return stock;
     });
 
-    this.props.handler();
+    if (!match) {
+      window.location.reload();
+    }
 
-    await this.props.Update(portfolio, data);
+    return { data: data, portfolio: portfolio };
+  }
+
+  async handleSubmit(event) {
+    let totalCost = this.state.price * this.state.amount;
+
+    await this.setState({ totalCost: totalCost });
+
+    await this.AddStockData();
+
+    let propsObj = this.handleInterfaceUpdate(this.state);
+
+    console.log(propsObj);
+
+    // update the state in parent component
+    await this.props.Update(propsObj.portfolio, propsObj.data);
+
+    // close the modal
+    this.props.handler();
   }
 
   handleDate(date) {
@@ -133,7 +157,10 @@ class StockForm extends Component {
         <label style={{ marginTop: "10px" }}>
           <h6>Country</h6>
         </label>
-        <input type="text" name="country" onChange={this.handleChange} />
+        <select name="country" id="country" onChange={this.handleChange}>
+          <option value="AU">AU</option>
+          <option value="US">US</option>
+        </select>
         <br />
         <Button
           type="submit"

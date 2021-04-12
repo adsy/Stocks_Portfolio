@@ -1,154 +1,160 @@
 * {
-    font-family: 'Fira Code';
+  font-family: "Fira Code";
 }
 
 body {
-    background-color: #F46036 !important;
+  background-color: #f46036 !important;
 }
 
 .App {
-    text-align: center;
+  text-align: center;
 }
 
 .App-logo {
-    height: 40vmin;
-    pointer-events: none;
+  height: 40vmin;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
 }
 
 .App-header {
-    background-color: #171123;
-    min-height: 12vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 5px solid black;
-    border-radius: 4px 4px;
+  background-color: #171123;
+  min-height: 12vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid black;
+  border-radius: 4px 4px;
 }
 
 .stockAmount-text {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 .page-title {
-    font-size: 50px;
-    margin-left: 10px;
-    margin-top: 5px;
-    color: #F46036;
-    text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
+  font-size: 50px;
+  margin-left: 10px;
+  margin-top: 5px;
+  color: #f46036;
+  text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
 }
 
 .container-css {
-    /*justify-content: center;*/
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
+  /*justify-content: center;*/
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
 }
 
 .stock-column-names {
-    color: #EEE4E1 !important;
+  color: #eee4e1 !important;
+}
+
+.loading-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 62px;
 }
 
 .stock-container-css {
-    background-color: #171123;
-    display: flex;
-    align-items: center;
-    border: 5px solid #000000;
-    margin-bottom: 5px;
-    border-radius: 2px 16px;
-    flex-wrap: wrap;
+  background-color: #171123;
+  display: flex;
+  align-items: center;
+  border: 5px solid #000000;
+  margin-bottom: 5px;
+  border-radius: 2px 16px;
+  flex-wrap: wrap;
 }
 
 h6 {
-    color: #FFFBFC;
-    text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
+  color: #fffbfc;
+  text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
 }
 
 h3 {
-    color: #F46036;
-    text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
+  color: #f46036;
+  text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
 }
 
 .App-link {
-    color: #61dafb;
+  color: #61dafb;
 }
 
 .center-container {
-    min-width: 80%;
+  min-width: 80%;
 }
 
 .cool-shadow {
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
-.centered-box{
-    display: flex;
-    align-items: center;
-    justify-content: center
+.centered-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* width */
 ::-webkit-scrollbar {
-    width: 15px;
+  width: 15px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 5px;
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 5px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #1C2542;
-    border-radius: 5px;
+  background: #1c2542;
+  border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #1C2988;
+  background: #1c2988;
 }
 
 @keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
+  from {
+    transform: rotate(0deg);
+  }
 
-    to {
-        transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media only screen and (max-width: 800px) {
-
-    .page-title {
-        font-size: 42px;
-        margin-left: 10px;
-        margin-top: 5px;
-        color: #FFFBFC;
-        text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
-    }
-
-
+  .page-title {
+    font-size: 42px;
+    margin-left: 10px;
+    margin-top: 5px;
+    color: #fffbfc;
+    text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
+  }
 }
 
-
 @media only screen and (max-width: 575px) {
-    .portfolio-summary {
-        margin-bottom: 30px;
-        width:95% !important;
-    }
+  .portfolio-summary {
+    margin-bottom: 30px;
+    width: 95% !important;
+  }
 
-    .stock-summary {
-        width:95% !important;
-    }
+  .stock-summary {
+    width: 95% !important;
+  }
 
-    .hide-when-small{
-        display:none;
-    }
+  .hide-when-small {
+    display: none;
+  }
 }

@@ -6,7 +6,12 @@ import { Constants } from "../../constants/Constants";
 class SellStockForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: "", visible: true };
+    this.state = {
+      name: this.props.stock.name,
+      sellPrice: 0,
+      amount: 0,
+      visible: true,
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -18,30 +23,33 @@ class SellStockForm extends Component {
         method: "post",
         url: `${Constants.sellStock}`,
         data: {
-          name: ``,
-          sellPrice: "",
-          amount: 0,
+          name: `${this.state.name}`,
+          sellPrice: `${this.state.sellPrice}`,
+          amount: `${this.state.amount}`,
         },
       });
     } catch (error) {
       console.log(error);
-      return [];
     }
   }
 
   handleChange(event) {
-    this.setState({ value: event.target.value });
+    let nam = event.target.name;
+    let val = event.target.value;
+    this.setState({ [nam]: val });
   }
 
-  handleSubmit(event) {
-    this.props.handler();
+  async handleSubmit(event) {
+    await this.SellStockData();
 
-    this.SellStockData();
+    this.props.handler();
+    this.props.Update();
   }
 
   render() {
     return (
       <form
+        onSubmit={this.handleSubmit}
         style={{
           display: "flex",
           justifyContent: "center",
@@ -55,14 +63,14 @@ class SellStockForm extends Component {
         <label style={{ marginTop: "10px" }}>
           <h6>Amount</h6>
         </label>
-        <input type="number" name="name" />
+        <input type="number" name="amount" onChange={this.handleChange} />
         <label style={{ marginTop: "10px" }}>
           <h6>Sell Price</h6>
         </label>
-        <input type="number" name="name" />
+        <input type="number" name="sellPrice" onChange={this.handleChange} />
         <br />
         <Button
-          onClick={this.SellStockData}
+          type="submit"
           variant="contained"
           value="Submit"
           color="secondary"

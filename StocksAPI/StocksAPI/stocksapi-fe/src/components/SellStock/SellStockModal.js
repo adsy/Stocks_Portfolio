@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleModal({ stock }) {
+export default function SimpleModal({ stock, Update }) {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
@@ -54,7 +54,7 @@ export default function SimpleModal({ stock }) {
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <SellStockForm handler={handleClose} stock={stock} />
+      <SellStockForm handler={handleClose} stock={stock} Update={Update} />
     </div>
   );
 

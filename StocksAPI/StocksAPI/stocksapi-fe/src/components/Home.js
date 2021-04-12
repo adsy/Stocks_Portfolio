@@ -11,25 +11,13 @@ class Home extends Component {
     super(props);
     this.state = { portfolioData: {}, stockPortfolio: {}, loading: true };
 
-    this.UpdatePortfolio = this.UpdatePortfolio.bind(this);
+    this.UpdateFromStockApi = this.UpdateFromStockApi.bind(this);
   }
 
-  async GetPortfolioData() {
+  async UpdateFromStockApi() {
     try {
-      const res = await fetch(`${Constants.getPortfolio}`);
-      return await res.json();
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  }
+      this.setState({ loading: true });
 
-  async UpdatePortfolio(stocks,data) {
-    await this.setState({ stockPortfolio:stocks,portfolioData:data });
-  }
-
-  async componentDidMount() {
-    try {
       var portfolioDataJSON = await axios
         .get(`${Constants.getPortfolio}`, {
           headers: {
@@ -176,6 +164,10 @@ class Home extends Component {
     }
   }
 
+  async componentDidMount() {
+    this.UpdateFromStockApi();
+  }
+
   render() {
     if (this.state.loading) {
       return (
@@ -183,7 +175,7 @@ class Home extends Component {
           <header className="App-header">
             <h1 className="page-title">🚀🚀🚀🚀🚀🚀</h1>
           </header>
-          <h1>Loading...</h1>
+          <h1 className="loading-center">Loading...</h1>
         </div>
       );
     }
@@ -217,7 +209,7 @@ class Home extends Component {
             <AddStockModal
               CurrentStockPortfolio={this.state.stockPortfolio}
               PortfolioData={this.state.portfolioData}
-              Update={this.UpdatePortfolio}
+              Update={this.UpdateFromStockApi}
             />
           </div>
           <div
@@ -237,6 +229,8 @@ class Home extends Component {
           >
             <StocksContainer
               CurrentStockPortfolio={this.state.stockPortfolio}
+              PortfolioData={this.state.portfolioData}
+              Update={this.UpdateFromStockApi}
             />
           </div>
         </div>
