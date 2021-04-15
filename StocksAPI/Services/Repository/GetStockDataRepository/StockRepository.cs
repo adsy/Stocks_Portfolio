@@ -114,6 +114,15 @@ namespace Services.Repository.GetStockDataRepository
         public async Task<StockDTO> SellStockAsync(SellStockDTO stock)
         {
             var stockObj = await _unitOfWork.Stocks.GetAll(q => q.Name == stock.Name);
+            var currentStockTotal = 0.0;
+
+            foreach (var foundStock in stockObj)
+            {
+                currentStockTotal += foundStock.Amount;
+            }
+
+            if (stock.Amount > currentStockTotal)
+                return null;
 
             var returnStock = new StockDTO();
 
@@ -122,10 +131,6 @@ namespace Services.Repository.GetStockDataRepository
                 stockObj.First().Amount = stockObj.First().Amount - stock.Amount;
                 _unitOfWork.Stocks.Update(stockObj.First());
                 await _unitOfWork.Save();
-
-                returnStock = _mapper.Map<StockDTO>(stockObj.First());
-
-                return returnStock;
             }
 
             foreach (var currentStock in stockObj)
@@ -144,7 +149,6 @@ namespace Services.Repository.GetStockDataRepository
             }
 
             await _unitOfWork.Save();
-
             return returnStock;
         }
 

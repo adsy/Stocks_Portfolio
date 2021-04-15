@@ -19,7 +19,7 @@ class SellStockForm extends Component {
 
   async SellStockData() {
     try {
-      axios({
+      var result = await axios({
         method: "post",
         url: `${Constants.sellStock}`,
         data: {
@@ -28,6 +28,8 @@ class SellStockForm extends Component {
           amount: `${this.state.amount}`,
         },
       });
+
+      return result;
     } catch (error) {
       console.log(error);
     }
@@ -40,16 +42,17 @@ class SellStockForm extends Component {
   }
 
   async handleSubmit(event) {
-    await this.SellStockData();
+    var result = await this.SellStockData();
 
-    this.props.handler();
-    this.props.Update();
+    if (result.status === 200) {
+      this.props.handler();
+      this.props.Update();
+    }
   }
 
   render() {
     return (
       <form
-        onSubmit={this.handleSubmit}
         style={{
           display: "flex",
           justifyContent: "center",
@@ -59,7 +62,7 @@ class SellStockForm extends Component {
         <label style={{ width: "100%" }}>
           <h6>Ticker</h6>
         </label>
-        <input type="text" name="name" value={this.props.stock.name} />
+        <input type="text" name="name" value={this.props.stock.name} readOnly />
         <label style={{ marginTop: "10px" }}>
           <h6>Amount</h6>
         </label>
@@ -70,7 +73,8 @@ class SellStockForm extends Component {
         <input type="number" name="sellPrice" onChange={this.handleChange} />
         <br />
         <Button
-          type="submit"
+          type="button"
+          onClick={this.handleSubmit}
           variant="contained"
           value="Submit"
           color="secondary"

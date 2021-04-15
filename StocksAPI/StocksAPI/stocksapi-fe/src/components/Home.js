@@ -1,5 +1,4 @@
 ﻿import React, { Component } from "react";
-import Container from "react-bootstrap/Container";
 import StocksContainer from "./StocksContainer";
 import DetailsContainer from "./DetailsContainer";
 import { Constants } from "../constants/Constants";
@@ -33,7 +32,7 @@ class Home extends Component {
       portfolioDataJSON._PortfolioProfit = JSON.parse(
         JSON.stringify(portfolioDataJSON._PortfolioProfit),
         (key, value) =>
-          typeof value === "number" && key != "amount"
+          typeof value === "number" && key !== "amount"
             ? value.toFixed(2)
             : value
       );
@@ -173,9 +172,11 @@ class Home extends Component {
       return (
         <div className="App">
           <header className="App-header">
-            <h1 className="page-title">🚀🚀🚀🚀🚀🚀</h1>
+            <h1 className="page-title">How much have you lost so far?</h1>
           </header>
-          <h1 className="loading-center">Loading...</h1>
+          <div>
+            <h1 className="loading-center">One Moment...</h1>
+          </div>
         </div>
       );
     }
@@ -183,7 +184,7 @@ class Home extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="page-title">🚀🚀🚀🚀🚀🚀</h1>
+          <h1 className="page-title">How much have you lost so far?</h1>
         </header>
         <div
           style={{

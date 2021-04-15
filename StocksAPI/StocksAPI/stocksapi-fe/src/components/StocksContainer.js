@@ -1,9 +1,6 @@
 ﻿import "bootstrap/dist/css/bootstrap.min.css";
-import React, { Component } from "react";
-import { Constants } from "../constants/Constants";
-import Container from "react-bootstrap/Container";
+import React from "react";
 import Row from "react-bootstrap/Row";
-import { Button } from "@material-ui/core";
 import SellStockModal from "./SellStock/SellStockModal";
 
 const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
@@ -13,6 +10,7 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
         <div
           className="stock-container-css"
           style={{ marginTop: "10px", marginBottom: "10px" }}
+          key={index}
         >
           <div className="col-xl-10">
             <Row

@@ -27,7 +27,7 @@ class StockForm extends Component {
 
   async AddStockData() {
     try {
-      axios({
+      var result = axios({
         method: "post",
         url: `${Constants.addStock}`,
         data: {
@@ -39,6 +39,8 @@ class StockForm extends Component {
           country: `${this.state.country}`,
         },
       });
+
+      return result;
     } catch (error) {
       console.log(error);
     }
@@ -51,12 +53,10 @@ class StockForm extends Component {
   }
 
   handleInterfaceUpdate(state) {
-    let match = false;
-
     let data = this.props.PortfolioData;
 
     let portfolio = this.props.CurrentStockPortfolio.map((stock, index) => {
-      if (stock.name == this.state.name) {
+      if (stock.name === this.state.name) {
         let updateAmount = parseInt(this.state.amount) + parseInt(stock.amount);
 
         let updatePrice = (
@@ -82,15 +82,9 @@ class StockForm extends Component {
           parseFloat(this.props.PortfolioData.purchaseTotal) +
           parseFloat(this.state.totalCost)
         ).toFixed(2);
-
-        match = true;
       }
       return stock;
     });
-
-    if (!match) {
-      window.location.reload();
-    }
 
     return { data: data, portfolio: portfolio };
   }
@@ -100,17 +94,16 @@ class StockForm extends Component {
 
     await this.setState({ totalCost: totalCost });
 
-    await this.AddStockData();
+    var result = await this.AddStockData();
 
-    let propsObj = this.handleInterfaceUpdate(this.state);
-
-    console.log(propsObj);
-
-    // update the state in parent component
-    await this.props.Update(propsObj.portfolio, propsObj.data);
-
-    // close the modal
-    this.props.handler();
+    if (result.status === 200) {
+      // update interface
+      let propsObj = this.handleInterfaceUpdate(this.state);
+      // close the modal
+      this.props.handler();
+      // update the state in parent component
+      await this.props.Update(propsObj.portfolio, propsObj.data);
+    }
   }
 
   handleDate(date) {
@@ -128,7 +121,6 @@ class StockForm extends Component {
   render() {
     return (
       <form
-        onSubmit={this.handleSubmit}
         style={{
           display: "flex",
           justifyContent: "center",
@@ -163,7 +155,8 @@ class StockForm extends Component {
         </select>
         <br />
         <Button
-          type="submit"
+          type="button"
+          onClick={this.handleSubmit}
           variant="contained"
           value="Submit"
           color="secondary"

@@ -70,6 +70,7 @@ namespace StockAPI.Controllers
         [HttpPost]
         [Route("SellStock")]
         public async Task<IActionResult> SellStockAsync([FromBody] SellStockDTO sellStockDtoParam)
+
         {
             try
             {
@@ -77,6 +78,9 @@ namespace StockAPI.Controllers
                 {
                     sellStockDTO = sellStockDtoParam
                 });
+
+                if (result == null)
+                    return BadRequest();
 
                 return Ok();
             }

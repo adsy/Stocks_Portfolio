@@ -44,7 +44,6 @@ namespace Services.Services.GetStockDataService
         public async Task<StockDTO> SellStockAsync(SellStockDTO stock)
         {
             var result = await _stocksRepository.SellStockAsync(stock);
-
             return result;
         }
     }

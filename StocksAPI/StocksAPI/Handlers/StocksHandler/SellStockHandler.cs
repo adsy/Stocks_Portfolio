@@ -22,7 +22,6 @@ namespace StockAPI.Handlers.StocksHandler
         public async Task<StockDTO> Handle(SellStockCommand request, CancellationToken cancellationToken)
         {
             var result = await _stocksService.SellStockAsync(request.sellStockDTO);
-
             return result;
         }
     }

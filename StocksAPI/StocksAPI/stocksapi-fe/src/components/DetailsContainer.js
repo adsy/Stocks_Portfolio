@@ -1,6 +1,4 @@
-﻿import React, { Component } from "react";
-import Container from "react-bootstrap/esm/Container";
-import { Constants } from "../constants/Constants";
+﻿import React from "react";
 
 const DetailsContainer = ({ PortfolioProfit }) => {
   return (

@@ -63,7 +63,7 @@ namespace StockAPI
 
             services.AddCors(cors =>
             {
-                cors.AddPolicy("corsPolicy", builder =>
+                cors.AddDefaultPolicy(builder =>
                 {
                     builder.AllowAnyOrigin()
                         .AllowAnyMethod()
@@ -130,6 +130,8 @@ namespace StockAPI
 
             app.UseAuthentication();
 
+            app.UseCors();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -137,9 +139,9 @@ namespace StockAPI
                 endpoints.MapControllers();
             });
 
-            app.UseCors("corsPolicy");
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+
             app.UseMvc();
             app.UseSpa(spa =>
             {

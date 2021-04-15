@@ -1,13 +1,17 @@
 import { Button } from "@material-ui/core";
 import axios from "axios";
-import React, { Component, setState } from "react";
-import { Router, useHistory } from "react-router";
+import React, { Component } from "react";
 import { Constants } from "../../constants/Constants";
 
 class LoginForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", password: "", errorMessage: null };
+    this.state = {
+      email: "",
+      password: "",
+      errorMessage: null,
+      loading: false,
+    };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -17,11 +21,12 @@ class LoginForm extends Component {
   async Login() {
     axios({
       method: "post",
-      url: `https://localhost:44345/api/Account/Login`,
+      url: `${Constants.login}`,
       data: {
         email: `${this.state.email}`,
         password: `${this.state.password}`,
       },
+      headers: { "Access-Control-Allow-Origin": "*" },
     })
       .then((response) => {
         localStorage.removeItem("token");
@@ -37,6 +42,7 @@ class LoginForm extends Component {
         console.log(error);
         this.setState({
           errorMessage: "Error logging in - Incorrect username or password",
+          loading: false,
         });
       });
   }
@@ -52,9 +58,9 @@ class LoginForm extends Component {
   async handleSubmit(event) {
     event.preventDefault();
 
-    await this.Login();
+    this.setState({ loading: true });
 
-    console.log(this.props.history);
+    await this.Login();
   }
 
   render() {
@@ -108,16 +114,19 @@ class LoginForm extends Component {
           style={{ width: "300px" }}
         />
         <br />
-        <Button
-          type="button"
-          variant="contained"
-          value="Submit"
-          color="secondary"
-          style={{ width: "10vw", marginBottom: "10px" }}
-          onKeyDown={this.handleSubmit}
-        >
-          Login
-        </Button>
+        {this.state.loading == false ? (
+          <Button
+            type="submit"
+            variant="contained"
+            value="Submit"
+            color="secondary"
+            style={{ width: "10vw", marginBottom: "10px" }}
+          >
+            Login
+          </Button>
+        ) : (
+          <p style={{ color: "white" }}>Loading...</p>
+        )}
       </form>
     );
   }
