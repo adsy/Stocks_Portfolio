@@ -171,11 +171,8 @@ class Home extends Component {
     if (this.state.loading) {
       return (
         <div className="App">
-          <header className="App-header">
-            <h1 className="page-title">How much have you lost so far?</h1>
-          </header>
           <div>
-            <h1 className="loading-center">One Moment...</h1>
+            <h1 className="loading-center">🚀</h1>
           </div>
         </div>
       );
@@ -184,7 +181,7 @@ class Home extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="page-title">How much have you lost so far?</h1>
+          <h1 className="page-title">Portfolio</h1>
         </header>
         <div
           style={{
