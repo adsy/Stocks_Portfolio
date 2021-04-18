@@ -3,7 +3,7 @@
 }
 
 body {
-  background-image: url(./StockChart.svg);
+  background-image: url(./StockChart-white.svg);
 
   /* Full height */
   background-size: 100%;
@@ -26,24 +26,26 @@ body {
 
 .App-header {
   background-color: #171123;
-  min-height: 12vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 2vw 5vw 5vw 68vw 5vw 5vw;
+  grid-template-rows: 10%;
   border: 5px solid black;
   border-radius: 4px 4px;
+  height: 10vh;
+}
+
+.page-title {
+  font-size: 44px;
+  margin-top: 5px;
+}
+
+.logout-button {
+  grid-column-start: 6;
+  grid-column-end: seven;
 }
 
 .stockAmount-text {
   font-size: 12px;
-}
-
-.page-title {
-  font-size: 50px;
-  margin-left: 10px;
-  margin-top: 5px;
-  color: #f46036;
-  text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
 }
 
 .container-css {
@@ -54,7 +56,7 @@ body {
 }
 
 .stock-column-names {
-  color: #eee4e1 !important;
+  color: #212121 !important;
 }
 
 .loading-center {
@@ -86,7 +88,7 @@ body {
 }
 
 .stock-container-css {
-  background-color: #171123;
+  background-color: white;
   display: flex;
   align-items: center;
   border: 5px solid #000000;
@@ -96,13 +98,17 @@ body {
 }
 
 h6 {
-  color: #fffbfc;
-  text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
+  color: #212121;
 }
 
 h3 {
-  color: #f46036;
-  text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
+  color: #212121;
+}
+
+.login-loading {
+  color: "#212121";
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6,
+    0 0 25px #fff, 0 0 30px #fff, 0 0 35px #fff;
 }
 
 .App-link {

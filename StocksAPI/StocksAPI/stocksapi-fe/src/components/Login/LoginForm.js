@@ -30,10 +30,9 @@ class LoginForm extends Component {
     })
       .then((response) => {
         localStorage.removeItem("token");
-        // 10 minutes from now.
-        var time = Date.now() + 3600000;
-        localStorage.setItem("token-expire", time.toString());
+
         const token = response.data.token;
+
         localStorage.setItem("token", token);
 
         this.props.history.push("/dashboard");
@@ -70,7 +69,7 @@ class LoginForm extends Component {
         className="centered-box col-lg-12"
         style={{
           borderRadius: "0px 50px",
-          backgroundColor: "#171123",
+          backgroundColor: "white",
           width: "400px",
           display: "flex",
           flexDirection: "column",
@@ -82,8 +81,8 @@ class LoginForm extends Component {
         <h3
           style={{
             marginTop: "20px",
-            marginBottom: "40px",
-            fontSize: "42px",
+            marginBottom: "30px",
+            fontSize: "48px",
           }}
         >
           LOGIN
@@ -125,7 +124,7 @@ class LoginForm extends Component {
             Login
           </Button>
         ) : (
-          <p style={{ color: "white" }}>Loading...</p>
+          <p className="login-loading">Loading...</p>
         )}
       </form>
     );
