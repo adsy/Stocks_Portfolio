@@ -70,6 +70,15 @@ body {
   -moz-animation: spin 0.8s linear infinite;
   animation: spin 0.8s linear infinite;
 }
+
+.login-loading-center {
+  width: 40px;
+  height: 40px;
+  -webkit-animation: spin 0.8s linear infinite;
+  -moz-animation: spin 0.8s linear infinite;
+  animation: spin 0.8s linear infinite;
+}
+
 @-moz-keyframes spin {
   100% {
     -moz-transform: rotate(360deg);
@@ -131,6 +140,11 @@ h3 {
   justify-content: center;
 }
 
+.chart-size {
+  height: 40vh;
+  width: 40vw;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 15px;
@@ -168,8 +182,6 @@ h3 {
     font-size: 42px;
     margin-left: 10px;
     margin-top: 5px;
-    color: #fffbfc;
-    text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black;
   }
 
   .stock-summary {

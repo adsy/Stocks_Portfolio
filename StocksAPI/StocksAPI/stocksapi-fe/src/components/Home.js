@@ -5,6 +5,7 @@ import AddStockModal from "./AddStock/AddStockModal";
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import AppHeader from "./Header/AppHeader";
+import PortfolioChart from "./Chart/PortfolioChart";
 
 class Home extends Component {
   constructor(props) {
@@ -55,7 +56,6 @@ class Home extends Component {
       //   loading: false,
       // });
 
-      // fake stock data for portfolio
       const fakeData = {
         _PortfolioProfit: {
           currentTotal: 1702.17,
@@ -220,6 +220,8 @@ class Home extends Component {
               PortfolioData={this.state.portfolioData}
               Update={this.UpdateFromStockApi}
             />
+            <br />
+            <PortfolioChart width="400" height="300" />
           </div>
           <div
             className="col-md-7 cool-shadow stock-summary"
