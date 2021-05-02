@@ -70,7 +70,6 @@ namespace StockAPI.Controllers
         [HttpPost]
         [Route("SellStock")]
         public async Task<IActionResult> SellStockAsync([FromBody] SellStockDTO sellStockDtoParam)
-
         {
             try
             {
@@ -86,7 +85,30 @@ namespace StockAPI.Controllers
             }
             catch (Exception e)
             {
-                Log.Error("Error in SellStockFunction - " + e.Message);
+                Log.Error("Error in SellStock function - " + e.Message);
+                return Problem("Error in SellStockAsync function", statusCode: 500);
+            }
+        }
+
+        [HttpPost]
+        [Route("AddPortfolioValue")]
+        public async Task<IActionResult> AddPortfolioValueAsync([FromBody] PortfolioTrackerDTO portfolioTrackerDTO)
+        {
+            try
+            {
+                var result = await _mediator.Send(new AddPortfolioValueCommand
+                {
+                    portfolioTracker = portfolioTrackerDTO
+                });
+
+                if (result == null)
+                    return BadRequest();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error in AddPortfolioValue function - " + e.Message);
                 return Problem("Error in SellStockAsync function", statusCode: 500);
             }
         }

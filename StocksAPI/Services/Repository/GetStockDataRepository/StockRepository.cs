@@ -132,23 +132,26 @@ namespace Services.Repository.GetStockDataRepository
                 _unitOfWork.Stocks.Update(stockObj.First());
                 await _unitOfWork.Save();
             }
-
-            foreach (var currentStock in stockObj)
+            else
             {
-                if (stock.Amount >= currentStock.Amount)
+                foreach (var currentStock in stockObj)
                 {
-                    stock.Amount = stock.Amount - currentStock.Amount;
-                    await _unitOfWork.Stocks.Delete(currentStock.Id);
+                    if (stock.Amount >= currentStock.Amount)
+                    {
+                        stock.Amount = stock.Amount - currentStock.Amount;
+                        await _unitOfWork.Stocks.Delete(currentStock.Id);
+                    }
+                    else
+                    {
+                        currentStock.Amount = currentStock.Amount - stock.Amount;
+                        _unitOfWork.Stocks.Update(currentStock);
+                        returnStock = _mapper.Map<StockDTO>(currentStock);
+                    }
                 }
-                else
-                {
-                    currentStock.Amount = currentStock.Amount - stock.Amount;
-                    _unitOfWork.Stocks.Update(currentStock);
-                    returnStock = _mapper.Map<StockDTO>(currentStock);
-                }
+
+                await _unitOfWork.Save();
             }
 
-            await _unitOfWork.Save();
             return returnStock;
         }
 
@@ -247,6 +250,19 @@ namespace Services.Repository.GetStockDataRepository
             }
 
             return portfolioProfit;
+        }
+
+        public async Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker)
+        {
+            var portfolioObj = _mapper.Map<PortfolioTracker>(portfolioTracker);
+
+            await _unitOfWork.PortfolioTrackers.Insert(portfolioObj);
+
+            await _unitOfWork.Save();
+
+            //var fnResult = new Response { Data = stock, StatusCode = 200 };
+
+            return portfolioTracker;
         }
 
         #endregion Helper Functions

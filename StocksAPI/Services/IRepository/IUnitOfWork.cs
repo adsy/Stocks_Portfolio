@@ -10,6 +10,7 @@ namespace Services.IRepository
     public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<Stock> Stocks { get; }
+        IGenericRepository<PortfolioTracker> PortfolioTrackers { get; }
 
         Task Save();
     }

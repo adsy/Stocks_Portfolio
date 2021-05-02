@@ -11,6 +11,7 @@ class SellStockForm extends Component {
       sellPrice: 0,
       amount: 0,
       visible: true,
+      errorMessage: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -31,7 +32,7 @@ class SellStockForm extends Component {
 
       return result;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   }
 
@@ -42,11 +43,16 @@ class SellStockForm extends Component {
   }
 
   async handleSubmit(event) {
+    this.setState({ errorMessage: false });
     var result = await this.SellStockData();
 
     if (result.status === 200) {
       this.props.handler();
       this.props.Update();
+    } else {
+      this.setState({
+        errorMessage: true,
+      });
     }
   }
 
@@ -57,8 +63,16 @@ class SellStockForm extends Component {
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
+          width: "90%",
         }}
       >
+        {this.state.errorMessage ? (
+          <span style={{ marginBottom: "20px", textAlign: "center" }}>
+            There was an error submitting your request.
+          </span>
+        ) : (
+          <span></span>
+        )}
         <label style={{ width: "100%" }}>
           <h6>Ticker</h6>
         </label>
@@ -67,7 +81,7 @@ class SellStockForm extends Component {
           <h6>Amount</h6>
         </label>
         <input type="number" name="amount" onChange={this.handleChange} />
-        <label style={{ marginTop: "10px" }}>
+        <label style={{ marginTop: "8px" }}>
           <h6>Sell Price</h6>
         </label>
         <input type="number" name="sellPrice" onChange={this.handleChange} />

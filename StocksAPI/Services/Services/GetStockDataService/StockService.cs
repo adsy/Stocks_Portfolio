@@ -46,5 +46,12 @@ namespace Services.Services.GetStockDataService
             var result = await _stocksRepository.SellStockAsync(stock);
             return result;
         }
+
+        public async Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker)
+        {
+            var result = await _stocksRepository.AddPortfolioValueAsync(portfolioTracker);
+
+            return result;
+        }
     }
 }

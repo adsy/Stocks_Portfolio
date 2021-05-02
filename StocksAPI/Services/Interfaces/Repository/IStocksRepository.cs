@@ -18,5 +18,7 @@ namespace Services.Interfaces.Repository
         public Task<StockDTO> AddStockDataAsync(StockDTO stock);
 
         public Task<StockDTO> SellStockAsync(SellStockDTO stock);
+
+        public Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker);
     }
 }

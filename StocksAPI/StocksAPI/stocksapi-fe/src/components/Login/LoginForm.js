@@ -124,7 +124,10 @@ class LoginForm extends Component {
             Login
           </Button>
         ) : (
-          <h5 className="login-loading-center">🚀</h5>
+          <div className="div">
+            <h5 className="login-loading-center">🚀</h5>
+            <br />
+          </div>
         )}
       </form>
     );

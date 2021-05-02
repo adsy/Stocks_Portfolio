@@ -11,6 +11,7 @@ namespace Services.Repository
     {
         private readonly StockDbContext _dbContext;
         private IGenericRepository<Stock> _stocks;
+        private IGenericRepository<PortfolioTracker> _portfolioTrackers;
 
         public UnitOfWork(StockDbContext dbContext)
         {
@@ -18,6 +19,7 @@ namespace Services.Repository
         }
 
         public IGenericRepository<Stock> Stocks => _stocks ?? new GenericRepository<Stock>(_dbContext);
+        public IGenericRepository<PortfolioTracker> PortfolioTrackers => _portfolioTrackers ?? new GenericRepository<PortfolioTracker>(_dbContext);
 
         public void Dispose()
         {

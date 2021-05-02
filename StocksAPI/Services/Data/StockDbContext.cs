@@ -19,6 +19,7 @@ namespace Services.Data
         }
 
         public DbSet<Stock> Stocks { get; set; }
+        public DbSet<PortfolioTracker> PortfolioTrackers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -27,6 +28,7 @@ namespace Services.Data
             // Example of exporting the HasData configuration files
             builder.ApplyConfiguration(new RoleConfiguration());
             builder.ApplyConfiguration(new StockConfiguration());
+            builder.ApplyConfiguration(new HourlyPortfolioTrackerConfiguration());
         }
     }
 }

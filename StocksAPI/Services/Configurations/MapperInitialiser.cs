@@ -15,6 +15,7 @@ namespace Services.Configurations
         {
             CreateMap<ApiUser, UserDTO>().ReverseMap();
             CreateMap<Stock, StockDTO>().ReverseMap();
+            CreateMap<PortfolioTracker, PortfolioTrackerDTO>().ReverseMap();
         }
     }
 }
