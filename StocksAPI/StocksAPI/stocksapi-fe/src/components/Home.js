@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import AppHeader from "./Header/AppHeader";
 import axios from "axios";
 import { Constants } from "../constants/Constants";
+import Chart from "./Chart/PortfolioChart";
 
 class Home extends Component {
   constructor(props) {
@@ -222,6 +223,7 @@ class Home extends Component {
               Update={this.UpdateFromStockApi}
             />
             <br />
+            <Chart />
           </div>
           <div
             className="col-md-7 cool-shadow stock-summary"

@@ -29,7 +29,7 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
                 ServiceResultCode = (int)HttpStatusCode.BadRequest
             };
 
-            var portfolio = new PortfolioTracker { PortfolioTotal = value, TimeStamp = DateTime.Now };
+            var portfolio = new PortfolioTracker { PortfolioTotal = value, TimeStamp = DateTime.Now.ToLocalTime() };
 
             var json = JsonConvert.SerializeObject(portfolio);
 

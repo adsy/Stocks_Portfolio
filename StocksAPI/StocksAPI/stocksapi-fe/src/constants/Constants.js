@@ -4,6 +4,8 @@
 //   static addStock = "https://localhost:44345/api/Stocks/AddStock";
 //   static sellStock = "https://localhost:44345/api/Stocks/SellStock";
 //   static login = "https://localhost:44345/api/Account/Login";
+//   static portfolioValueList =
+//     "https://localhost:44345/api/Stocks/GetPortfolioValueList";
 // }
 
 export class Constants {
@@ -17,4 +19,6 @@ export class Constants {
     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/SellStock";
   static login =
     "https://stockapi20210415184956.azurewebsites.net/api/Account/Login";
+  static portfolioValueList =
+    "https://stockapi20210415184956.azurewebsites.net/api/Stocks/GetPortfolioValueList";
 }

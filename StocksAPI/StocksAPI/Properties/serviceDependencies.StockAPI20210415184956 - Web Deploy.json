@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "mssql2": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/adsy-stockapidbserver/databases/adsy-stockapi-db",
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/stockapidbserver/databases/StockAPI_db",
       "type": "mssql.azure",
       "connectionId": "sqlConnection",
       "secretStore": "AzureAppSettings"

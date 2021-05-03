@@ -53,5 +53,12 @@ namespace Services.Services.GetStockDataService
 
             return result;
         }
+
+        public async Task<IEnumerable<PortfolioTrackerDTO>> GetPortfolioValueListAsync()
+        {
+            var result = await _stocksRepository.GetPortfolioValueListAsync();
+
+            return result;
+        }
     }
 }

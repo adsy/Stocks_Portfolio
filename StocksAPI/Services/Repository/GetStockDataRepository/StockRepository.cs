@@ -155,6 +155,50 @@ namespace Services.Repository.GetStockDataRepository
             return returnStock;
         }
 
+        public PortfolioProfit GetPortfolioProfit(List<CurrentStockProfile> currentPortfolio)
+        {
+            var portfolioProfit = new PortfolioProfit();
+
+            foreach (var stock in currentPortfolio)
+            {
+                portfolioProfit.PurchaseTotal += stock.TotalCost;
+                portfolioProfit.CurrentTotal += stock.currentValue;
+            }
+
+            return portfolioProfit;
+        }
+
+        public async Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker)
+        {
+            var portfolioObj = _mapper.Map<PortfolioTracker>(portfolioTracker);
+
+            portfolioObj.TimeStamp = portfolioObj.TimeStamp.ToLocalTime();
+
+            await _unitOfWork.PortfolioTrackers.Insert(portfolioObj);
+
+            await _unitOfWork.Save();
+
+            //var fnResult = new Response { Data = stock, StatusCode = 200 };
+
+            return portfolioTracker;
+        }
+
+        public async Task<IEnumerable<PortfolioTrackerDTO>> GetPortfolioValueListAsync()
+        {
+            var result = await _unitOfWork.PortfolioTrackers.GetAll(q => q.TimeStamp > DateTime.Now.AddDays(-1));
+
+            var newList = new List<PortfolioTrackerDTO>();
+
+            foreach (var entry in result)
+            {
+                var portfolioTrackerObj = _mapper.Map<PortfolioTrackerDTO>(entry);
+
+                newList.Add(portfolioTrackerObj);
+            }
+
+            return newList;
+        }
+
         #endregion DatabaseCalls
 
         #region Helper Functions
@@ -237,32 +281,6 @@ namespace Services.Repository.GetStockDataRepository
             }
 
             return currentProfiles;
-        }
-
-        public PortfolioProfit GetPortfolioProfit(List<CurrentStockProfile> currentPortfolio)
-        {
-            var portfolioProfit = new PortfolioProfit();
-
-            foreach (var stock in currentPortfolio)
-            {
-                portfolioProfit.PurchaseTotal += stock.TotalCost;
-                portfolioProfit.CurrentTotal += stock.currentValue;
-            }
-
-            return portfolioProfit;
-        }
-
-        public async Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker)
-        {
-            var portfolioObj = _mapper.Map<PortfolioTracker>(portfolioTracker);
-
-            await _unitOfWork.PortfolioTrackers.Insert(portfolioObj);
-
-            await _unitOfWork.Save();
-
-            //var fnResult = new Response { Data = stock, StatusCode = 200 };
-
-            return portfolioTracker;
         }
 
         #endregion Helper Functions

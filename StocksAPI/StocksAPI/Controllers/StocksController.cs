@@ -112,5 +112,25 @@ namespace StockAPI.Controllers
                 return Problem("Error in SellStockAsync function", statusCode: 500);
             }
         }
+
+        [HttpGet]
+        [Route("GetPortfolioValueList")]
+        public async Task<IActionResult> GetPortfolioValueListAsync()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetPortfolioValueListQuery());
+
+                if (result == null)
+                    return BadRequest();
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error in GetPortfolioValueList function - " + e.Message);
+                return Problem("Error in SellStockAsync function", statusCode: 500);
+            }
+        }
     }
 }
