@@ -193,6 +193,8 @@ namespace Services.Repository.GetStockDataRepository
             {
                 var portfolioTrackerObj = _mapper.Map<PortfolioTrackerDTO>(entry);
 
+                portfolioTrackerObj.timeString = portfolioTrackerObj.TimeStamp.ToString("g");
+
                 newList.Add(portfolioTrackerObj);
             }
 

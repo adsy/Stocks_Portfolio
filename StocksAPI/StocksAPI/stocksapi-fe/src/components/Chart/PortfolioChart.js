@@ -5,6 +5,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -23,39 +24,30 @@ const Chart = () => {
       })
       .catch((error) => {
         console.log(error);
-      })
-      .then((valueArray) => {
-        console.log(valueArray);
       });
 
-    return valueArray;
+    return valueArray.data;
   };
 
   useEffect(() => {
-    var log = realData();
-
-    // setTimeout(() => {
-    //   setData();
-    // }, 1000);
-
-    // setData(realData());
+    var key = realData().then((obj) => {
+      setData(obj);
+    });
   }, []);
 
   return (
-    <LineChart
-      width={400}
-      height={300}
-      data={data}
-      margin={{ top: 25, right: 40 }}
-      style={{ backgroundColor: "white" }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Line type="monotone" dataKey="portfolioTotal" stroke="#000000" />
-    </LineChart>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={data} margin={{ top: 25, right: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="timeString" />
+        <YAxis
+          type="number"
+          tickFormatter={(value) => "$" + value.toFixed(0)}
+        />
+        <Tooltip formatter={(value) => "$" + value.toFixed(2)} />
+        <Line type="monotone" dataKey="portfolioTotal" stroke="#000000" />
+      </LineChart>
+    </ResponsiveContainer>
   );
 };
 

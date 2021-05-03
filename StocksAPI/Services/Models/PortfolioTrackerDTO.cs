@@ -10,5 +10,6 @@ namespace Services.Models
     {
         public double PortfolioTotal { get; set; }
         public DateTime TimeStamp { get; set; }
+        public string timeString { get; set; }
     }
 }

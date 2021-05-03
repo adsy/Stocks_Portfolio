@@ -203,7 +203,7 @@ class Home extends Component {
             flexWrap: "wrap",
           }}
         >
-          <div className="col-md-3 portfolio-summary">
+          <div className="col-lg-4 portfolio-summary">
             <div
               style={{
                 border: "5px solid black",
@@ -223,10 +223,12 @@ class Home extends Component {
               Update={this.UpdateFromStockApi}
             />
             <br />
-            <Chart />
+            <div className="portfolio-chart cool-shadow">
+              <Chart />
+            </div>
           </div>
           <div
-            className="col-md-7 cool-shadow stock-summary"
+            className="col-lg-7 cool-shadow stock-summary"
             style={{
               width: "95%",
               height: "80vh",
