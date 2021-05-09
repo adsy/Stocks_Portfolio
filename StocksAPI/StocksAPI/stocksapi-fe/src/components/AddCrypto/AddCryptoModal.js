@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
-import StockForm from "./StockForm";
+import CryptoForm from "./CryptoForm";
 
 function getModalStyle() {
   return {
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SimpleModal = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
+const CryptoModal = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = useState(getModalStyle);
@@ -43,7 +43,7 @@ const SimpleModal = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <StockForm
+      <CryptoForm
         handler={handleClose}
         CurrentStockPortfolio={CurrentStockPortfolio}
         PortfolioData={PortfolioData}
@@ -57,10 +57,10 @@ const SimpleModal = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
       <Button
         style={{ width: "95%" }}
         variant="contained"
-        color="secondary"
+        color="primary"
         onClick={handleOpen}
       >
-        Buy Stonk 🚀
+        Buy Crypto 🛸
       </Button>
       <Modal
         open={open}
@@ -74,4 +74,4 @@ const SimpleModal = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
   );
 };
 
-export default SimpleModal;
+export default CryptoModal;

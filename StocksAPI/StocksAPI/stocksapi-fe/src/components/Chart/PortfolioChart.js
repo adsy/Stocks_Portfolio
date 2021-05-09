@@ -29,10 +29,21 @@ const Chart = () => {
     return valueArray.data;
   };
 
+  const MINUTE_MS = 60000;
+
   useEffect(() => {
-    var key = realData().then((obj) => {
+    realData().then((obj) => {
       setData(obj);
     });
+
+    const interval = setInterval(() => {
+      console.log("Getting updated portfolioValue");
+      realData().then((obj) => {
+        setData(obj);
+      });
+    }, MINUTE_MS * 5);
+
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
   }, []);
 
   return (
@@ -45,7 +56,12 @@ const Chart = () => {
           tickFormatter={(value) => "$" + value.toFixed(0)}
         />
         <Tooltip formatter={(value) => "$" + value.toFixed(2)} />
-        <Line type="monotone" dataKey="portfolioTotal" stroke="#000000" />
+        <Line
+          type="monotone"
+          dataKey="portfolioTotal"
+          stroke="#000000"
+          dot={false}
+        />
       </LineChart>
     </ResponsiveContainer>
   );

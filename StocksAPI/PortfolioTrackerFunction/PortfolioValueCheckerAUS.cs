@@ -13,16 +13,17 @@ using PortfolioTrackerFunction.Infrastructure.Models;
 
 namespace PortfolioTrackerFunction
 {
-    public class PortfolioValueChecker
+    public class PortfolioValueCheckerAUS
     {
         private readonly IStocksApiService _stockApiService;
 
-        public PortfolioValueChecker(IStocksApiService stocksApiService)
+        public PortfolioValueCheckerAUS(IStocksApiService stocksApiService)
         {
             _stockApiService = stocksApiService ?? throw new ArgumentNullException(nameof(stocksApiService));
         }
 
-        [FunctionName("PortfolioValueChecker")]
+        // When US market is open
+        [FunctionName("PortfolioValueCheckerAUS")]
         public async void Run([TimerTrigger("0 */5 10-16 * * *")] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");

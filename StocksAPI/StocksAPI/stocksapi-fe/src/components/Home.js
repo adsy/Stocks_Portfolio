@@ -2,8 +2,7 @@
 import StocksContainer from "./StocksContainer";
 import DetailsContainer from "./DetailsContainer";
 import AddStockModal from "./AddStock/AddStockModal";
-import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import AddCryptoModal from "./AddCrypto/AddCryptoModal";
 import AppHeader from "./Header/AppHeader";
 import axios from "axios";
 import { Constants } from "../constants/Constants";
@@ -218,6 +217,12 @@ class Home extends Component {
             </div>
             <br />
             <AddStockModal
+              CurrentStockPortfolio={this.state.stockPortfolio}
+              PortfolioData={this.state.portfolioData}
+              Update={this.UpdateFromStockApi}
+            />
+            <br />
+            <AddCryptoModal
               CurrentStockPortfolio={this.state.stockPortfolio}
               PortfolioData={this.state.portfolioData}
               Update={this.UpdateFromStockApi}

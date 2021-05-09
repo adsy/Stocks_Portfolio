@@ -27,6 +27,8 @@ using Services.Interfaces.Services;
 using Services.Services.GetStockDataService;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using System.IO;
+using Services.Services.CryptoService;
+using Services.Repository.CryptoRepository;
 
 namespace StockAPI
 {
@@ -85,6 +87,8 @@ namespace StockAPI
             services.AddScoped(typeof(IAuthManager), typeof(AuthManager));
             services.AddScoped(typeof(IStocksRepository), typeof(StockRepository));
             services.AddScoped(typeof(IStocksService), typeof(StockService));
+            services.AddScoped(typeof(ICryptoService), typeof(CryptoService));
+            services.AddScoped(typeof(ICryptoRepository), typeof(CryptoRepository));
 
             services.AddMediatR(typeof(Startup));
 
