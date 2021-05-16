@@ -10,5 +10,9 @@ namespace Services.Interfaces.Services
     public interface ICryptoService
     {
         Task<IEnumerable<CryptoValue>> GetCryptoValuesAsync(string ids);
+
+        Task<Response> AddCryptoToDbAsync(CryptocurrencyDTO crypto);
+
+        Task<CryptoPortfolio> GetCryptoPortfolioAsync();
     }
 }

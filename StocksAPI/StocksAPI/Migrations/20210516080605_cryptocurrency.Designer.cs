@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services.Data;
 
 namespace StockAPI.Migrations
 {
     [DbContext(typeof(StockDbContext))]
-    partial class StockDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210516080605_cryptocurrency")]
+    partial class cryptocurrency
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,15 +50,15 @@ namespace StockAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4eed6c2a-d8c2-41df-8940-3252c85e4255",
-                            ConcurrencyStamp = "5e7c7b41-2ebf-4cc9-8ef4-1afd86802e01",
+                            Id = "b00fa05a-11c2-4ab9-9fc3-5570ac1120b4",
+                            ConcurrencyStamp = "31a88e92-ec6c-4c01-91dd-4a9e9a435416",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "96b3abd1-56d3-4980-83d0-55469fa4bf23",
-                            ConcurrencyStamp = "e042e2df-45fd-4eee-8a5b-a4030f31e592",
+                            Id = "9a0c4e8c-da6c-4039-a170-1bb490d90ed7",
+                            ConcurrencyStamp = "1b9529d8-acaa-44c7-b443-e84b9e73fb14",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -247,6 +249,9 @@ namespace StockAPI.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -286,13 +291,13 @@ namespace StockAPI.Migrations
                         {
                             Id = 1,
                             PortfolioTotal = 2000.0,
-                            TimeStamp = new DateTime(2021, 5, 16, 17, 7, 54, 87, DateTimeKind.Local).AddTicks(9382)
+                            TimeStamp = new DateTime(2021, 5, 16, 17, 6, 5, 104, DateTimeKind.Local).AddTicks(6463)
                         },
                         new
                         {
                             Id = 2,
                             PortfolioTotal = 2000.0,
-                            TimeStamp = new DateTime(2021, 5, 16, 18, 7, 54, 88, DateTimeKind.Local).AddTicks(3928)
+                            TimeStamp = new DateTime(2021, 5, 16, 18, 6, 5, 104, DateTimeKind.Local).AddTicks(9226)
                         });
                 });
 

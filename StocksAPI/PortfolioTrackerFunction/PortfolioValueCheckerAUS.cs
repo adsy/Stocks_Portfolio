@@ -24,7 +24,7 @@ namespace PortfolioTrackerFunction
 
         // When US market is open
         [FunctionName("PortfolioValueCheckerAUS")]
-        public async void Run([TimerTrigger("0 */5 10-16 * * *")] TimerInfo myTimer, ILogger log)
+        public async void Run([TimerTrigger("0 */5 10-16 * * 1-5")] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             await _stockApiService.AddPortfolioValueToDB();

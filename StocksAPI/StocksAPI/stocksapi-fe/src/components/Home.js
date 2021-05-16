@@ -56,118 +56,6 @@ class Home extends Component {
         stockPortfolio: portfolioDataJSON._CurrentStockPortfolio,
         loading: false,
       });
-
-      // const fakeData = {
-      //   _PortfolioProfit: {
-      //     currentTotal: 1702.17,
-      //     purchaseTotal: 1507.63,
-      //   },
-      //   _CurrentStockPortfolio: [
-      //     {
-      //       amount: 15.0,
-      //       averagePrice: 0.0,
-      //       country: "US",
-      //       currentPrice: 10.95,
-      //       currentValue: 212.236,
-      //       id: 1.0,
-      //       name: "BB",
-      //       profit: -59.116,
-      //       purchaseDate: "0001-01-01T00:00:00",
-      //       purchasePrice: 14.0,
-      //       totalCost: 271.352,
-      //     },
-      //     {
-      //       amount: 214.624,
-      //       averagePrice: 0.0,
-      //       country: "US",
-      //       currentPrice: 3.28,
-      //       currentValue: 909.634,
-      //       id: 2.0,
-      //       name: "SENS",
-      //       profit: 173.326,
-      //       purchaseDate: "0001-01-01T00:00:00",
-      //       purchasePrice: 2.65,
-      //       totalCost: 736.308,
-      //     },
-      //     {
-      //       amount: 3517.0,
-      //       averagePrice: 0.0,
-      //       country: "AU",
-      //       currentPrice: 0.165,
-      //       currentValue: 580.305,
-      //       id: 3.0,
-      //       name: "LOT.AX",
-      //       profit: 80.335,
-      //       purchaseDate: "0001-01-01T00:00:00",
-      //       purchasePrice: 0.148,
-      //       totalCost: 499.97,
-      //     },
-      //     {
-      //       amount: 15.0,
-      //       averagePrice: 0.0,
-      //       country: "US",
-      //       currentPrice: 10.95,
-      //       currentValue: 212.236,
-      //       id: 1.0,
-      //       name: "APPL ",
-      //       profit: -59.116,
-      //       purchaseDate: "0001-01-01T00:00:00",
-      //       purchasePrice: 14.0,
-      //       totalCost: 271.352,
-      //     },
-      //     {
-      //       amount: 214.624,
-      //       averagePrice: 0.0,
-      //       country: "US",
-      //       currentPrice: 3.28,
-      //       currentValue: 909.634,
-      //       id: 2.0,
-      //       name: "PLUG",
-      //       profit: 173.326,
-      //       purchaseDate: "0001-01-01T00:00:00",
-      //       purchasePrice: 2.65,
-      //       totalCost: 736.308,
-      //     },
-      //     {
-      //       amount: 3517.0,
-      //       averagePrice: 0.0,
-      //       country: "US",
-      //       currentPrice: 0.165,
-      //       currentValue: 580.305,
-      //       id: 3.0,
-      //       name: "TSLA",
-      //       profit: 80.335,
-      //       purchaseDate: "0001-01-01T00:00:00",
-      //       purchasePrice: 0.148,
-      //       totalCost: 499.97,
-      //     },
-      //   ],
-      // };
-
-      // fakeData._PortfolioProfit = JSON.parse(
-      //   JSON.stringify(fakeData._PortfolioProfit),
-      //   (key, value) =>
-      //     typeof value === "number" && key != "amount"
-      //       ? value.toFixed(2)
-      //       : value
-      // );
-
-      // var cleanedStocks = [];
-
-      // fakeData._CurrentStockPortfolio.forEach((stock) => {
-      //   var newItem = JSON.parse(JSON.stringify(stock), (key, value) =>
-      //     typeof value === "number" ? value.toFixed(3) : value
-      //   );
-      //   cleanedStocks.push(newItem);
-      // });
-
-      // fakeData._CurrentStockPortfolio = cleanedStocks;
-
-      // this.setState({
-      //   portfolioData: fakeData._PortfolioProfit,
-      //   stockPortfolio: fakeData._CurrentStockPortfolio,
-      //   loading: false,
-      // });
     } catch (e) {
       console.log(e);
     }
@@ -186,7 +74,8 @@ class Home extends Component {
       return (
         <div className="App">
           <div>
-            <h1 className="loading-center">🚀</h1>
+            <h1 className="loading-center row">🚀</h1>
+            <div className="row">Getting Stock Data...</div>
           </div>
         </div>
       );
@@ -236,7 +125,7 @@ class Home extends Component {
             className="col-lg-7 cool-shadow stock-summary"
             style={{
               width: "95%",
-              height: "80vh",
+              height: "43vh",
               marginTop: "20PX",
               overflowY: "auto",
               borderRadius: "4px 4px",

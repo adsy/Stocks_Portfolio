@@ -24,5 +24,19 @@ namespace Services.Services.CryptoService
 
             return result;
         }
+
+        public async Task<Response> AddCryptoToDbAsync(CryptocurrencyDTO crypto)
+        {
+            var result = await _cryptoRepository.AddCryptoToDbAsync(crypto);
+
+            return result;
+        }
+
+        public async Task<CryptoPortfolio> GetCryptoPortfolioAsync()
+        {
+            var result = await _cryptoRepository.GetCryptoPortfolioAsync();
+
+            return result;
+        }
     }
 }

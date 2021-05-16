@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Services.Data;
 using Services.Models;
+using Services.Models.Crypto;
 
 namespace Services.Configurations
 {
@@ -16,6 +17,8 @@ namespace Services.Configurations
             CreateMap<ApiUser, UserDTO>().ReverseMap();
             CreateMap<Stock, StockDTO>().ReverseMap();
             CreateMap<PortfolioTracker, PortfolioTrackerDTO>().ReverseMap();
+            CreateMap<Cryptocurrency, CryptocurrencyDTO>().ReverseMap();
+            CreateMap<Cryptocurrency, CoinInfo>().ReverseMap();
         }
     }
 }
