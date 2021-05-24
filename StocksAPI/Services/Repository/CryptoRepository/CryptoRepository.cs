@@ -53,7 +53,26 @@ namespace Services.Repository.CryptoRepository
             {
                 var coinInfo = _mapper.Map<CoinInfo>(crypto);
 
-                cryptoPortfolio.Cryptocurrencies.Add(coinInfo);
+                if (!cryptoPortfolio.Cryptocurrencies.ContainsKey(coinInfo.Name))
+                {
+                    cryptoPortfolio.Cryptocurrencies.Add(coinInfo.Name, new CryptoProfile
+                    {
+                        CoinList = new List<CoinInfo>
+                        {
+                            coinInfo
+                        },
+                        CoinCount = 1,
+                        AvgPrice = 0,
+                        TotalProfit = 0
+                    });
+                }
+                else
+                {
+                    var profile = cryptoPortfolio.Cryptocurrencies[coinInfo.Name];
+                    profile.CoinList.Add(coinInfo);
+                    profile.CoinCount += 1;
+                    cryptoPortfolio.Cryptocurrencies[coinInfo.Name] = profile;
+                }
 
                 queryString += coinInfo.Name + ",";
             }
@@ -64,13 +83,24 @@ namespace Services.Repository.CryptoRepository
 
             foreach (var value in prices)
             {
-                var result = cryptoPortfolio.Cryptocurrencies.Find(q => q.Name == value.Name);
+                var coinProfile = cryptoPortfolio.Cryptocurrencies[value.Name];
 
-                result.CurrentPrice = value.Price;
+                double avgPrice = 0;
 
-                result.CurrentValue = result.Amount * result.CurrentPrice;
+                foreach (var entry in coinProfile.CoinList)
+                {
+                    entry.CurrentPrice = value.Price;
 
-                result.Profit = result.CurrentValue - result.TotalCost;
+                    entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+
+                    entry.Profit = entry.CurrentValue - entry.TotalCost;
+
+                    coinProfile.TotalProfit += entry.Profit;
+
+                    avgPrice += entry.PurchasePrice;
+                }
+
+                coinProfile.AvgPrice = avgPrice / coinProfile.CoinCount;
             }
 
             return cryptoPortfolio;

@@ -7,9 +7,9 @@ namespace Services.Models
     {
         public CryptoPortfolio()
         {
-            Cryptocurrencies = new List<CoinInfo>();
+            Cryptocurrencies = new Dictionary<string, CryptoProfile>();
         }
 
-        public List<CoinInfo> Cryptocurrencies { get; set; }
+        public Dictionary<string, CryptoProfile> Cryptocurrencies { get; set; }
     }
 }
