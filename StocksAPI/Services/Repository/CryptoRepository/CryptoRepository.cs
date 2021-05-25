@@ -65,6 +65,7 @@ namespace Services.Repository.CryptoRepository
                         AvgPrice = 0,
                         TotalProfit = 0
                     });
+                    queryString += coinInfo.Name + ",";
                 }
                 else
                 {
@@ -73,8 +74,6 @@ namespace Services.Repository.CryptoRepository
                     profile.CoinCount += 1;
                     cryptoPortfolio.Cryptocurrencies[coinInfo.Name] = profile;
                 }
-
-                queryString += coinInfo.Name + ",";
             }
 
             var ids = queryString.Remove(queryString.Length - 1);

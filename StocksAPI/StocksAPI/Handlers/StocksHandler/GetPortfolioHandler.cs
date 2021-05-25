@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace StockAPI.Handlers.StocksHandler
 {
-    public class GetPortfolioHandler : IRequestHandler<GetPortfolioQuery, Portfolio>
+    public class GetPortfolioHandler : IRequestHandler<GetPortfolioQuery, StockPortfolio>
     {
         private readonly IStocksService _stocksService;
 
@@ -20,7 +20,7 @@ namespace StockAPI.Handlers.StocksHandler
             _stocksService = stocksService;
         }
 
-        public async Task<Portfolio> Handle(GetPortfolioQuery request, CancellationToken cancellationToken)
+        public async Task<StockPortfolio> Handle(GetPortfolioQuery request, CancellationToken cancellationToken)
         {
             var result = await _stocksService.GetPortfolioAsync();
 

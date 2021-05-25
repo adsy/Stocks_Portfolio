@@ -8,6 +8,12 @@ namespace Services.Models.Stocks
 {
     public class PortfolioProfit
     {
+        public PortfolioProfit()
+        {
+            CurrentTotal = 0;
+            PurchaseTotal = 0;
+        }
+
         public double CurrentTotal { get; set; }
         public double PurchaseTotal { get; set; }
     }

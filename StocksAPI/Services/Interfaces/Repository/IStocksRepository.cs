@@ -11,9 +11,9 @@ namespace Services.Interfaces.Repository
 {
     public interface IStocksRepository
     {
-        public Task<IEnumerable<CurrentStockProfile>> GetStockDataAsync(string id);
+        public Task<IEnumerable<StockValue>> GetStockDataAsync(string id);
 
-        public Task<Portfolio> GetPortfolio();
+        public Task<StockPortfolio> GetPortfolio();
 
         public Task<StockDTO> AddStockDataAsync(StockDTO stock);
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Services.Stocks.Queries
 {
-    public class GetStockDataQuery : IRequest<IEnumerable<CurrentStockProfile>>
+    public class GetStockDataQuery : IRequest<IEnumerable<StockValue>>
     {
         public string Id { get; set; }
     }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Services.Models.Stocks
 {
-    public class Portfolio
+    public class StockValue
     {
-        public PortfolioProfit _PortfolioProfit { get; set; }
-        public List<CurrentStockProfile> _CurrentStockPortfolio { get; set; }
+        public string Name { get; set; }
+        public double CurrentPrice { get; set; }
     }
 }

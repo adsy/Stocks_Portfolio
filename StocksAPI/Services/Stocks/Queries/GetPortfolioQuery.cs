@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Services.Stocks.Queries
 {
-    public class GetPortfolioQuery : IRequest<Portfolio>
+    public class GetPortfolioQuery : IRequest<StockPortfolio>
     {
     }
 }

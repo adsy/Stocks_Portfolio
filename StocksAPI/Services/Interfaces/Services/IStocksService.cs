@@ -8,9 +8,9 @@ namespace Services.Interfaces.Services
 {
     public interface IStocksService
     {
-        public Task<IEnumerable<CurrentStockProfile>> GetStockDataAsync(string id);
+        public Task<IEnumerable<StockValue>> GetStockDataAsync(string id);
 
-        public Task<Portfolio> GetPortfolioAsync();
+        public Task<StockPortfolio> GetPortfolioAsync();
 
         public Task<StockDTO> AddStockAsync(StockDTO stock);
 
