@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace StockAPI.Handlers.StocksHandler
+namespace StockAPI.Handlers.PortfolioHandler
 {
     public class GetPortfolioHandler : IRequestHandler<GetPortfolioQuery, StockPortfolio>
     {
