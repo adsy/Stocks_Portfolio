@@ -32,8 +32,8 @@ class Home extends Component {
 
       portfolioDataJSON = portfolioDataJSON.data;
 
-      portfolioDataJSON._PortfolioProfit = JSON.parse(
-        JSON.stringify(portfolioDataJSON._PortfolioProfit),
+      portfolioDataJSON.portfolioProfit = JSON.parse(
+        JSON.stringify(portfolioDataJSON.portfolioProfit),
         (key, value) =>
           typeof value === "number" && key !== "amount"
             ? value.toFixed(2)
@@ -42,18 +42,23 @@ class Home extends Component {
 
       var cleanedStocks = [];
 
-      portfolioDataJSON._CurrentStockPortfolio.forEach((stock) => {
-        var newItem = JSON.parse(JSON.stringify(stock), (key, value) =>
-          typeof value === "number" ? value.toFixed(3) : value
+      for (let stock in portfolioDataJSON.currentStockPortfolio) {
+        var newItem = JSON.parse(
+          JSON.stringify(portfolioDataJSON.currentStockPortfolio[stock]),
+          (key, value) => {
+            return typeof value === "number" ? value.toFixed(3) : value;
+          }
         );
         cleanedStocks.push(newItem);
-      });
+      }
 
-      portfolioDataJSON._CurrentStockPortfolio = cleanedStocks;
+      portfolioDataJSON.currentStockPortfolio = cleanedStocks;
+
+      console.log(portfolioDataJSON);
 
       this.setState({
-        portfolioData: portfolioDataJSON._PortfolioProfit,
-        stockPortfolio: portfolioDataJSON._CurrentStockPortfolio,
+        portfolioData: portfolioDataJSON.portfolioProfit,
+        stockPortfolio: portfolioDataJSON.currentStockPortfolio,
         loading: false,
       });
     } catch (e) {

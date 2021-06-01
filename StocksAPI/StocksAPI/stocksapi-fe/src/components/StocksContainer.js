@@ -53,7 +53,7 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
               }}
             >
               <div style={{ width: "25%" }}>
-                <h6> {stock.amount}</h6>
+                <h6> {stock.totalAmount}</h6>
               </div>
               <div style={{ width: "25%" }}>
                 <h6> ${stock.currentPrice}</h6>
@@ -62,7 +62,7 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
                 <h6> ${stock.currentValue}</h6>
               </div>
               <div style={{ width: "25%" }}>
-                <h6> ${stock.profit}</h6>
+                <h6> ${stock.totalProfit}</h6>
               </div>
             </Row>
           </div>

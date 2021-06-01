@@ -82,11 +82,7 @@ namespace Services.Repository.GetStockDataRepository
                         {
                             stockInfo
                         },
-                        StockCount = 1,
-                        AvgPrice = 0,
-                        TotalProfit = 0,
-                        TotalCost = 0,
-                        CurrentValue = 0
+                        StockCount = 1
                     });
                     ids += stockInfo.Name + ',';
                 }
@@ -107,6 +103,8 @@ namespace Services.Repository.GetStockDataRepository
             {
                 var stockProfile = stockPortfolio.CurrentStockPortfolio[value.Name];
 
+                stockProfile.CurrentPrice = value.CurrentPrice;
+
                 double avgPrice = 0;
 
                 foreach (var entry in stockProfile.StockList)
@@ -122,6 +120,8 @@ namespace Services.Repository.GetStockDataRepository
                     stockProfile.TotalProfit += entry.Profit;
 
                     stockProfile.TotalCost += entry.TotalCost;
+
+                    stockProfile.TotalAmount += entry.Amount;
 
                     avgPrice += entry.PurchasePrice;
                 }
