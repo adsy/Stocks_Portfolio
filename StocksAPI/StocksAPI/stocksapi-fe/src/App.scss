@@ -59,6 +59,19 @@ body {
   color: #212121 !important;
 }
 
+.instrument-container {
+  width: 95%;
+  height: 43vh;
+  margin-top: 20px;
+  overflow-y: auto;
+  border-radius: 4px 4px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+}
+
 .loading-center {
   position: absolute;
   top: 50%;

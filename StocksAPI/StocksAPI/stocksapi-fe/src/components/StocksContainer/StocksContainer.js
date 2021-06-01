@@ -1,7 +1,7 @@
 ﻿import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import Row from "react-bootstrap/Row";
-import SellStockModal from "./SellStock/SellStockModal";
+import SellStockModal from "../SellStock/SellStockModal";
 
 const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
   return (

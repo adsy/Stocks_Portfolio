@@ -1,5 +1,5 @@
 ﻿import React, { Component } from "react";
-import StocksContainer from "./StocksContainer";
+import StocksContainer from "./StocksContainer/StocksContainer";
 import DetailsContainer from "./DetailsContainer";
 import AddStockModal from "./AddStock/AddStockModal";
 import AddCryptoModal from "./AddCrypto/AddCryptoModal";
@@ -7,6 +7,7 @@ import AppHeader from "./Header/AppHeader";
 import axios from "axios";
 import { Constants } from "../constants/Constants";
 import Chart from "./Chart/PortfolioChart";
+import CryptoContainer from "./CryptoContainer/CryptoContainer";
 
 class Home extends Component {
   constructor(props) {
@@ -80,7 +81,7 @@ class Home extends Component {
         <div className="App">
           <div>
             <h1 className="loading-center row">🚀</h1>
-            <div className="row">Getting Stock Data...</div>
+            <h5 style={{ marginTop: "10px" }}>Getting Stock Data...</h5>
           </div>
         </div>
       );
@@ -126,26 +127,20 @@ class Home extends Component {
               <Chart />
             </div>
           </div>
-          <div
-            className="col-lg-7 cool-shadow stock-summary"
-            style={{
-              width: "95%",
-              height: "43vh",
-              marginTop: "20PX",
-              overflowY: "auto",
-              borderRadius: "4px 4px",
-              paddingLeft: "20px",
-              paddingRight: "20px",
-              paddingTop: "10px",
-              paddingBottom: "10px",
-              backgroundColor: "white",
-            }}
-          >
-            <StocksContainer
-              CurrentStockPortfolio={this.state.stockPortfolio}
-              PortfolioData={this.state.portfolioData}
-              Update={this.UpdateFromStockApi}
-            />
+          <div class="col-lg-7">
+            <div className="cool-shadow stock-summary instrument-container">
+              <StocksContainer
+                CurrentStockPortfolio={this.state.stockPortfolio}
+                PortfolioData={this.state.portfolioData}
+                Update={this.UpdateFromStockApi}
+              />
+            </div>
+            <div className="cool-shadow stock-summary instrument-container">
+              <CryptoContainer
+                CurrentStockPortfolio={this.state.stockPortfolio}
+                Update={this.UpdateFromStockApi}
+              />
+            </div>
           </div>
         </div>
       </div>

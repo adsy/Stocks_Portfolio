@@ -61,9 +61,7 @@ namespace Services.Repository.CryptoRepository
                         {
                             coinInfo
                         },
-                        CoinCount = 1,
-                        AvgPrice = 0,
-                        TotalProfit = 0
+                        CoinCount = 1
                     });
                     queryString += coinInfo.Name + ",";
                 }
@@ -84,6 +82,8 @@ namespace Services.Repository.CryptoRepository
             {
                 var coinProfile = cryptoPortfolio.Cryptocurrencies[value.Name];
 
+                coinProfile.CurrentValue = value.Price;
+
                 double avgPrice = 0;
 
                 foreach (var entry in coinProfile.CoinList)
@@ -92,9 +92,15 @@ namespace Services.Repository.CryptoRepository
 
                     entry.CurrentValue = entry.Amount * entry.CurrentPrice;
 
+                    coinProfile.CurrentValue += entry.CurrentValue;
+
                     entry.Profit = entry.CurrentValue - entry.TotalCost;
 
                     coinProfile.TotalProfit += entry.Profit;
+
+                    coinProfile.TotalCost += entry.TotalCost;
+
+                    coinProfile.TotalAmount += entry.Amount;
 
                     avgPrice += entry.PurchasePrice;
                 }
