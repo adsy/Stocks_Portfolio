@@ -39,6 +39,15 @@ namespace StockAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("stockPortfolio")]
+        public async Task<IActionResult> GetStockPortfolioAsync()
+        {
+            var result = await _mediator.Send(new GetStockPortfolioQuery());
+
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("AddStock")]
         public async Task<IActionResult> AddStock([FromBody] StockDTO stockData)

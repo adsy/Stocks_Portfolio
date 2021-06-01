@@ -29,7 +29,7 @@ namespace Services.Services.GetStockDataService
 
         public async Task<StockPortfolio> GetPortfolioAsync()
         {
-            var result = await _stocksRepository.GetPortfolio();
+            var result = await _stocksRepository.GetStockPortfolioAsync();
 
             return result;
         }

@@ -10,11 +10,9 @@ namespace Services.Models.Stocks
     {
         public StockPortfolio()
         {
-            PortfolioProfit = new PortfolioProfit();
-            CurrentStockPortfolio = new Dictionary<string, StockProfile>();
+            Stocks = new Dictionary<string, StockProfile>();
         }
 
-        public PortfolioProfit PortfolioProfit { get; set; }
-        public Dictionary<string, StockProfile> CurrentStockPortfolio { get; set; }
+        public Dictionary<string, StockProfile> Stocks { get; set; }
     }
 }

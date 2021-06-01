@@ -62,11 +62,13 @@ namespace Services.Repository.GetStockDataRepository
             return stockProfiles;
         }
 
-        public async Task<StockPortfolio> GetPortfolio()
+        public async Task<StockPortfolio> GetStockPortfolioAsync()
         {
             var stocks = await _unitOfWork.Stocks.GetAll();
 
             var stockPortfolio = new StockPortfolio();
+
+            //var stockPortfolio = new Portfolio();
 
             var ids = "";
 
@@ -74,9 +76,9 @@ namespace Services.Repository.GetStockDataRepository
             {
                 var stockInfo = _mapper.Map<StockInfo>(stock);
 
-                if (!stockPortfolio.CurrentStockPortfolio.ContainsKey(stockInfo.Name))
+                if (!stockPortfolio.Stocks.ContainsKey(stockInfo.Name))
                 {
-                    stockPortfolio.CurrentStockPortfolio.Add(stockInfo.Name, new StockProfile
+                    stockPortfolio.Stocks.Add(stockInfo.Name, new StockProfile
                     {
                         StockList = new List<StockInfo>
                         {
@@ -88,10 +90,10 @@ namespace Services.Repository.GetStockDataRepository
                 }
                 else
                 {
-                    var profile = stockPortfolio.CurrentStockPortfolio[stockInfo.Name];
+                    var profile = stockPortfolio.Stocks[stockInfo.Name];
                     profile.StockList.Add(stockInfo);
                     profile.StockCount += 1;
-                    stockPortfolio.CurrentStockPortfolio[stockInfo.Name] = profile;
+                    stockPortfolio.Stocks[stockInfo.Name] = profile;
                 }
             }
 
@@ -101,7 +103,7 @@ namespace Services.Repository.GetStockDataRepository
 
             foreach (var value in prices)
             {
-                var stockProfile = stockPortfolio.CurrentStockPortfolio[value.Name];
+                var stockProfile = stockPortfolio.Stocks[value.Name];
 
                 stockProfile.CurrentPrice = value.CurrentPrice;
 
@@ -127,9 +129,6 @@ namespace Services.Repository.GetStockDataRepository
                 }
 
                 stockProfile.AvgPrice = avgPrice / stockProfile.StockCount;
-
-                stockPortfolio.PortfolioProfit.CurrentTotal += stockProfile.CurrentValue;
-                stockPortfolio.PortfolioProfit.PurchaseTotal += stockProfile.TotalCost;
             }
 
             // Create portfolio profit

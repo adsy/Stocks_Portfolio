@@ -13,7 +13,7 @@ namespace Services.Interfaces.Repository
     {
         public Task<IEnumerable<StockValue>> GetStockDataAsync(string id);
 
-        public Task<StockPortfolio> GetPortfolio();
+        Task<StockPortfolio> GetStockPortfolioAsync();
 
         public Task<StockDTO> AddStockDataAsync(StockDTO stock);
 

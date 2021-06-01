@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Services.Portfolio.Query;
 using Services.Stocks.Queries;
 using System;
 using System.Collections.Generic;
