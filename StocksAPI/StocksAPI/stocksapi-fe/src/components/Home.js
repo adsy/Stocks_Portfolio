@@ -21,7 +21,7 @@ class Home extends Component {
     try {
       this.setState({ loading: true });
 
-      var portfolioDataJSON = await axios
+      var portfolioData = await axios
         .get(`${Constants.getPortfolio}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -31,37 +31,37 @@ class Home extends Component {
           console.log(error);
         });
 
-      portfolioDataJSON = portfolioDataJSON.data;
+      // portfolioDataJSON.stocks = JSON.parse(
+      //   JSON.stringify(portfolioDataJSON.stocks),
+      //   (key, value) =>
+      //     typeof value === "number" && key !== "amount"
+      //       ? value.toFixed(2)
+      //       : value
+      // );
 
-      portfolioDataJSON.portfolioProfit = JSON.parse(
-        JSON.stringify(portfolioDataJSON.portfolioProfit),
-        (key, value) =>
-          typeof value === "number" && key !== "amount"
-            ? value.toFixed(2)
-            : value
-      );
+      // var cleanedStocks = [];
 
-      var cleanedStocks = [];
+      // for (let stock in portfolioDataJSON.stocks) {
+      //   var newItem = JSON.parse(
+      //     JSON.stringify(portfolioDataJSON.stocks[stock]),
+      //     (key, value) => {
+      //       return typeof value === "number" ? value.toFixed(3) : value;
+      //     }
+      //   );
+      //   cleanedStocks.push(newItem);
+      // }
 
-      for (let stock in portfolioDataJSON.currentStockPortfolio) {
-        var newItem = JSON.parse(
-          JSON.stringify(portfolioDataJSON.currentStockPortfolio[stock]),
-          (key, value) => {
-            return typeof value === "number" ? value.toFixed(3) : value;
-          }
-        );
-        cleanedStocks.push(newItem);
-      }
+      // portfolioDataJSON.stocks = cleanedStocks;
 
-      portfolioDataJSON.currentStockPortfolio = cleanedStocks;
-
-      console.log(portfolioDataJSON);
+      console.log(portfolioData.data.currentStockPortfolio.stocks);
+      console.log(portfolioData.data.portfolioProfit);
 
       this.setState({
-        portfolioData: portfolioDataJSON.portfolioProfit,
-        stockPortfolio: portfolioDataJSON.currentStockPortfolio,
+        portfolioData: portfolioData.data.portfolioProfit,
+        stockPortfolio: portfolioData.data.currentStockPortfolio.stocks,
         loading: false,
       });
+      console.log(this.state.stockPortfolio);
     } catch (e) {
       console.log(e);
     }
@@ -136,10 +136,10 @@ class Home extends Component {
               />
             </div>
             <div className="cool-shadow stock-summary instrument-container">
-              <CryptoContainer
+              {/* <CryptoContainer
                 CurrentStockPortfolio={this.state.stockPortfolio}
                 Update={this.UpdateFromStockApi}
-              />
+              /> */}
             </div>
           </div>
         </div>

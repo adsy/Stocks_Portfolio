@@ -34,6 +34,16 @@ namespace Services.Repository.PortfolioRepository
             fnResult.CurrentCryptoPortfolio = await _cryptoRepository.GetCryptoPortfolioAsync();
 
             // loop through and pull out current values and profit amounts for fnResult.PortfolioProfit property
+            foreach (var stock in fnResult.CurrentStockPortfolio.Stocks)
+            {
+                fnResult.PortfolioProfit.CurrentTotal += stock.Value.CurrentValue;
+                fnResult.PortfolioProfit.PurchaseTotal += stock.Value.TotalCost;
+            }
+            foreach (var crypto in fnResult.CurrentCryptoPortfolio.Cryptocurrencies)
+            {
+                fnResult.PortfolioProfit.CurrentTotal += crypto.Value.CurrentValue;
+                fnResult.PortfolioProfit.PurchaseTotal += crypto.Value.TotalCost;
+            }
 
             return fnResult;
         }

@@ -64,6 +64,12 @@ namespace Services.Repository.GetStockDataRepository
 
         public async Task<StockPortfolio> GetStockPortfolioAsync()
         {
+            var response = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
+
+            var requestBody = JObject.Parse(response);
+
+            var exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
+
             var stocks = await _unitOfWork.Stocks.GetAll();
 
             var stockPortfolio = new StockPortfolio();
@@ -111,13 +117,21 @@ namespace Services.Repository.GetStockDataRepository
 
                 foreach (var entry in stockProfile.StockList)
                 {
-                    entry.CurrentPrice = value.CurrentPrice;
-
-                    entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+                    if (!entry.Name.Contains(".AX"))
+                    {
+                        entry.TotalCost *= exchangeRate;
+                        entry.CurrentPrice = value.CurrentPrice * exchangeRate;
+                        entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+                        entry.Profit = entry.CurrentValue - entry.TotalCost;
+                    }
+                    else
+                    {
+                        entry.CurrentPrice = value.CurrentPrice;
+                        entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+                        entry.Profit = entry.CurrentValue - entry.TotalCost;
+                    }
 
                     stockProfile.CurrentValue += entry.CurrentValue;
-
-                    entry.Profit = entry.CurrentValue - entry.TotalCost;
 
                     stockProfile.TotalProfit += entry.Profit;
 
