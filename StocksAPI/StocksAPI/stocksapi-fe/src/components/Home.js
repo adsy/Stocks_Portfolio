@@ -12,7 +12,12 @@ import CryptoContainer from "./CryptoContainer/CryptoContainer";
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = { portfolioData: {}, stockPortfolio: {}, loading: true };
+    this.state = {
+      portfolioData: {},
+      stockPortfolio: {},
+      cryptoPortfolio: {},
+      loading: true,
+    };
 
     this.UpdateFromStockApi = this.UpdateFromStockApi.bind(this);
   }
@@ -31,37 +36,40 @@ class Home extends Component {
           console.log(error);
         });
 
-      // portfolioDataJSON.stocks = JSON.parse(
-      //   JSON.stringify(portfolioDataJSON.stocks),
-      //   (key, value) =>
-      //     typeof value === "number" && key !== "amount"
-      //       ? value.toFixed(2)
-      //       : value
-      // );
+      var stocks = portfolioData.data.currentStockPortfolio.stocks;
+      var cryptos = portfolioData.data.currentCryptoPortfolio.cryptocurrencies;
+      var portfolioProfit = portfolioData.data.portfolioProfit;
 
-      // var cleanedStocks = [];
+      var cryptoArray = [];
 
-      // for (let stock in portfolioDataJSON.stocks) {
-      //   var newItem = JSON.parse(
-      //     JSON.stringify(portfolioDataJSON.stocks[stock]),
-      //     (key, value) => {
-      //       return typeof value === "number" ? value.toFixed(3) : value;
-      //     }
-      //   );
-      //   cleanedStocks.push(newItem);
-      // }
+      for (let crypto in cryptos) {
+        cryptoArray.push(cryptos[crypto]);
+      }
 
-      // portfolioDataJSON.stocks = cleanedStocks;
+      stocks = JSON.parse(JSON.stringify(stocks), (key, value) =>
+        typeof value === "number" && key !== "amount" ? value.toFixed(2) : value
+      );
 
-      console.log(portfolioData.data.currentStockPortfolio.stocks);
-      console.log(portfolioData.data.portfolioProfit);
+      var cleanedStocks = [];
+
+      for (let stock in stocks) {
+        var newItem = JSON.parse(
+          JSON.stringify(stocks[stock]),
+          (key, value) => {
+            return typeof value === "number" ? value.toFixed(3) : value;
+          }
+        );
+        cleanedStocks.push(newItem);
+      }
+
+      console.log(cryptoArray);
 
       this.setState({
-        portfolioData: portfolioData.data.portfolioProfit,
-        stockPortfolio: portfolioData.data.currentStockPortfolio.stocks,
+        portfolioData: portfolioProfit,
+        stockPortfolio: cleanedStocks,
+        cryptoPortfolio: cryptoArray,
         loading: false,
       });
-      console.log(this.state.stockPortfolio);
     } catch (e) {
       console.log(e);
     }
@@ -81,7 +89,7 @@ class Home extends Component {
         <div className="App">
           <div>
             <h1 className="loading-center row">🚀</h1>
-            <h5 style={{ marginTop: "10px" }}>Getting Stock Data...</h5>
+            <h5 style={{ marginTop: "10px" }}>...Getting Portfolio Data...</h5>
           </div>
         </div>
       );
@@ -136,10 +144,10 @@ class Home extends Component {
               />
             </div>
             <div className="cool-shadow stock-summary instrument-container">
-              {/* <CryptoContainer
-                CurrentStockPortfolio={this.state.stockPortfolio}
+              <CryptoContainer
+                CurrentCryptoPortfolio={this.state.cryptoPortfolio}
                 Update={this.UpdateFromStockApi}
-              /> */}
+              />
             </div>
           </div>
         </div>

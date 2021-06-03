@@ -19,6 +19,7 @@ namespace Services.Models.Crypto
             CurrentPrice = 0;
         }
 
+        public string CoinName { get; set; }
         public List<CoinInfo> CoinList { get; set; }
         public int CoinCount { get; set; }
         public double TotalProfit { get; set; }

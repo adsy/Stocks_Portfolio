@@ -45,6 +45,9 @@ namespace Services.Repository.PortfolioRepository
                 fnResult.PortfolioProfit.PurchaseTotal += crypto.Value.TotalCost;
             }
 
+            fnResult.PortfolioProfit.CurrentTotal = Math.Round(fnResult.PortfolioProfit.CurrentTotal, 2);
+            fnResult.PortfolioProfit.PurchaseTotal = Math.Round(fnResult.PortfolioProfit.PurchaseTotal, 2);
+
             return fnResult;
         }
     }

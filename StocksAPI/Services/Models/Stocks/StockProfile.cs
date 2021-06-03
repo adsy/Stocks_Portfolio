@@ -19,6 +19,7 @@ namespace Services.Models.Stocks
             CurrentPrice = 0;
         }
 
+        public string StockName { get; set; }
         public List<StockInfo> StockList { get; set; }
         public int StockCount { get; set; }
         public double TotalProfit { get; set; }

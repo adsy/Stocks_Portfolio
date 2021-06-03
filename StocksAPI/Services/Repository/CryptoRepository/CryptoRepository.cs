@@ -82,7 +82,9 @@ namespace Services.Repository.CryptoRepository
             {
                 var coinProfile = cryptoPortfolio.Cryptocurrencies[value.Name];
 
-                coinProfile.CurrentValue = value.Price;
+                coinProfile.CoinName = value.Name;
+
+                coinProfile.CurrentPrice = value.Price;
 
                 double avgPrice = 0;
 
@@ -104,6 +106,11 @@ namespace Services.Repository.CryptoRepository
 
                     avgPrice += entry.PurchasePrice;
                 }
+
+                coinProfile.TotalCost = Math.Round(coinProfile.TotalCost, 2);
+                coinProfile.TotalProfit = Math.Round(coinProfile.TotalProfit, 2);
+                coinProfile.CurrentValue = Math.Round(coinProfile.CurrentValue, 2);
+                coinProfile.CurrentPrice = Math.Round(coinProfile.CurrentPrice, 8);
 
                 coinProfile.AvgPrice = avgPrice / coinProfile.CoinCount;
             }

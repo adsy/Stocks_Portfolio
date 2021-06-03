@@ -111,6 +111,8 @@ namespace Services.Repository.GetStockDataRepository
             {
                 var stockProfile = stockPortfolio.Stocks[value.Name];
 
+                stockProfile.StockName = value.Name;
+
                 stockProfile.CurrentPrice = value.CurrentPrice;
 
                 double avgPrice = 0;
