@@ -23,16 +23,14 @@ namespace Services
             StatusCode = statusCode;
         }
 
-        public Response(dynamic data, string msg, int statusCode)
-        {
-            Data = data;
-            Message = msg;
-            StatusCode = statusCode;
-        }
-
         public int StatusCode { get; set; }
-        public dynamic? Data { get; set; }
         public string? Message { get; set; }
         public bool? Error { get; set; }
+        public Exception exception { get; set; }
+    }
+
+    public class Response<T> : Response
+    {
+        public T Data { get; set; }
     }
 }

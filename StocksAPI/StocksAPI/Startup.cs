@@ -85,14 +85,14 @@ namespace StockAPI
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddScoped<IAuthManager, AuthManager>();
 
-            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
-            services.AddScoped(typeof(IAuthManager), typeof(AuthManager));
-            services.AddScoped(typeof(IStocksRepository), typeof(StockRepository));
-            services.AddScoped(typeof(IStocksService), typeof(StockService));
-            services.AddScoped(typeof(ICryptoService), typeof(CryptoService));
-            services.AddScoped(typeof(ICryptoRepository), typeof(CryptoRepository));
-            services.AddScoped(typeof(IPortfolioService), typeof(PortfolioService));
-            services.AddScoped(typeof(IPortfolioRepository), typeof(PortfolioRepository));
+            services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
+            services.AddTransient(typeof(IAuthManager), typeof(AuthManager));
+            services.AddTransient(typeof(IStocksRepository), typeof(StockRepository));
+            services.AddTransient(typeof(IStocksService), typeof(StockService));
+            services.AddTransient(typeof(ICryptoService), typeof(CryptoService));
+            services.AddTransient(typeof(ICryptoRepository), typeof(CryptoRepository));
+            services.AddTransient(typeof(IPortfolioService), typeof(PortfolioService));
+            services.AddTransient(typeof(IPortfolioRepository), typeof(PortfolioRepository));
 
             services.AddMediatR(typeof(Startup));
 
@@ -147,19 +147,7 @@ namespace StockAPI
                 endpoints.MapControllers();
             });
 
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-
             app.UseMvc();
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = Path.Join(env.ContentRootPath, "stocksapi-fe");
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
 
             // functions required for caching
 

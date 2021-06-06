@@ -8,6 +8,6 @@ namespace PortfolioTrackerFunction.Infrastructure.Models
 {
     public class Portfolio
     {
-        public PortfolioProfit _PortfolioProfit { get; set; }
+        public PortfolioProfit PortfolioProfit { get; set; }
     }
 }

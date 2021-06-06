@@ -10,7 +10,7 @@ namespace Services.Interfaces.Services
     {
         public Task<IEnumerable<StockValue>> GetStockDataAsync(string id);
 
-        public Task<StockPortfolio> GetPortfolioAsync();
+        public Task<Response<StockPortfolio>> GetPortfolioAsync();
 
         public Task<StockDTO> AddStockAsync(StockDTO stock);
 

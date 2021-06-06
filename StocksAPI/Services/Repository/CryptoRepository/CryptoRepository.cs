@@ -137,12 +137,15 @@ namespace Services.Repository.CryptoRepository
 
             foreach (var ticker in cryptoTickers)
             {
-                var cryptoTicker = new CryptoValue
+                if (requestBody.SelectToken($"data.{ticker}.quote.AUD.price") != null)
                 {
-                    Name = ticker,
-                    Price = (double)requestBody.SelectToken($"data.{ticker}.quote.AUD.price")
-                };
-                cryptoValueList.Add(cryptoTicker);
+                    var cryptoTicker = new CryptoValue
+                    {
+                        Name = ticker,
+                        Price = (double)requestBody.SelectToken($"data.{ticker}.quote.AUD.price")
+                    };
+                    cryptoValueList.Add(cryptoTicker);
+                }
             }
 
             return cryptoValueList;

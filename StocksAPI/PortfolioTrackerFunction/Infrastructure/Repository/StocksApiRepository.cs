@@ -56,7 +56,7 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
 
             try
             {
-                HttpResponseMessage response = await _client.GetAsync("https://stockapi20210415184956.azurewebsites.net/api/stocks/GetPortfolio");
+                HttpResponseMessage response = await _client.GetAsync("https://stockapi20210415184956.azurewebsites.net/api/Portfolio/GetPortfolio");
 
                 response.EnsureSuccessStatusCode();
 
@@ -64,7 +64,7 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
 
                 var portfolioProfit = JsonConvert.DeserializeObject<Portfolio>(responseBody);
 
-                fnResult.Data = portfolioProfit._PortfolioProfit.CurrentTotal;
+                fnResult.Data = portfolioProfit.PortfolioProfit.CurrentTotal;
 
                 fnResult.ServiceResultCode = (int)HttpStatusCode.OK;
 

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace Services.Repository.GetStockDataRepository
 {
@@ -48,13 +49,16 @@ namespace Services.Repository.GetStockDataRepository
             {
                 if (stock != "")
                 {
-                    var stockProfile = new StockValue
+                    if (requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice") != null)
                     {
-                        CurrentPrice = (double)requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice"),
-                        Name = stock
-                    };
+                        var stockProfile = new StockValue
+                        {
+                            CurrentPrice = (double)requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice"),
+                            Name = stock
+                        };
 
-                    stockProfiles.Add(stockProfile);
+                        stockProfiles.Add(stockProfile);
+                    }
                     count++;
                 }
             }
@@ -62,94 +66,111 @@ namespace Services.Repository.GetStockDataRepository
             return stockProfiles;
         }
 
-        public async Task<StockPortfolio> GetStockPortfolioAsync()
+        public async Task<Response<StockPortfolio>> GetStockPortfolioAsync()
         {
-            var response = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
-
-            var requestBody = JObject.Parse(response);
-
-            var exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
-
-            var stocks = await _unitOfWork.Stocks.GetAll();
-
-            var stockPortfolio = new StockPortfolio();
-
-            //var stockPortfolio = new Portfolio();
-
-            var ids = "";
-
-            foreach (var stock in stocks)
+            var fnResult = new Response<StockPortfolio>
             {
-                var stockInfo = _mapper.Map<StockInfo>(stock);
+                StatusCode = (int)HttpStatusCode.BadRequest
+            };
 
-                if (!stockPortfolio.Stocks.ContainsKey(stockInfo.Name))
+            try
+            {
+                var response = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
+
+                var requestBody = JObject.Parse(response);
+
+                var exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
+
+                var stocks = await _unitOfWork.Stocks.GetAll();
+
+                var stockPortfolio = new StockPortfolio();
+
+                var ids = "";
+
+                foreach (var stock in stocks)
                 {
-                    stockPortfolio.Stocks.Add(stockInfo.Name, new StockProfile
+                    var stockInfo = _mapper.Map<StockInfo>(stock);
+
+                    if (!stockPortfolio.Stocks.ContainsKey(stockInfo.Name))
                     {
-                        StockList = new List<StockInfo>
+                        stockPortfolio.Stocks.Add(stockInfo.Name, new StockProfile
+                        {
+                            StockList = new List<StockInfo>
                         {
                             stockInfo
                         },
-                        StockCount = 1
-                    });
-                    ids += stockInfo.Name + ',';
-                }
-                else
-                {
-                    var profile = stockPortfolio.Stocks[stockInfo.Name];
-                    profile.StockList.Add(stockInfo);
-                    profile.StockCount += 1;
-                    stockPortfolio.Stocks[stockInfo.Name] = profile;
-                }
-            }
-
-            ids = ids.Remove(ids.Length - 1);
-
-            var prices = await GetStockDataAsync(ids);
-
-            foreach (var value in prices)
-            {
-                var stockProfile = stockPortfolio.Stocks[value.Name];
-
-                stockProfile.StockName = value.Name;
-
-                stockProfile.CurrentPrice = value.CurrentPrice;
-
-                double avgPrice = 0;
-
-                foreach (var entry in stockProfile.StockList)
-                {
-                    if (!entry.Name.Contains(".AX"))
-                    {
-                        entry.TotalCost *= exchangeRate;
-                        entry.CurrentPrice = value.CurrentPrice * exchangeRate;
-                        entry.CurrentValue = entry.Amount * entry.CurrentPrice;
-                        entry.Profit = entry.CurrentValue - entry.TotalCost;
+                            StockCount = 1
+                        });
+                        ids += stockInfo.Name + ',';
                     }
                     else
                     {
-                        entry.CurrentPrice = value.CurrentPrice;
-                        entry.CurrentValue = entry.Amount * entry.CurrentPrice;
-                        entry.Profit = entry.CurrentValue - entry.TotalCost;
+                        var profile = stockPortfolio.Stocks[stockInfo.Name];
+                        profile.StockList.Add(stockInfo);
+                        profile.StockCount += 1;
+                        stockPortfolio.Stocks[stockInfo.Name] = profile;
                     }
-
-                    stockProfile.CurrentValue += entry.CurrentValue;
-
-                    stockProfile.TotalProfit += entry.Profit;
-
-                    stockProfile.TotalCost += entry.TotalCost;
-
-                    stockProfile.TotalAmount += entry.Amount;
-
-                    avgPrice += entry.PurchasePrice;
                 }
 
-                stockProfile.AvgPrice = avgPrice / stockProfile.StockCount;
+                ids = ids.Remove(ids.Length - 1);
+
+                var prices = await GetStockDataAsync(ids);
+
+                foreach (var value in prices)
+                {
+                    var stockProfile = stockPortfolio.Stocks[value.Name];
+
+                    stockProfile.StockName = value.Name;
+
+                    stockProfile.CurrentPrice = value.CurrentPrice;
+
+                    double avgPrice = 0;
+
+                    foreach (var entry in stockProfile.StockList)
+                    {
+                        if (!entry.Name.Contains(".AX"))
+                        {
+                            entry.TotalCost *= exchangeRate;
+                            entry.CurrentPrice = value.CurrentPrice * exchangeRate;
+                            entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+                            entry.Profit = entry.CurrentValue - entry.TotalCost;
+                        }
+                        else
+                        {
+                            entry.CurrentPrice = value.CurrentPrice;
+                            entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+                            entry.Profit = entry.CurrentValue - entry.TotalCost;
+                        }
+                        //entry.CurrentPrice = value.CurrentPrice;
+                        //entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+                        //entry.Profit = entry.CurrentValue - entry.TotalCost;
+
+                        stockProfile.CurrentValue += entry.CurrentValue;
+
+                        stockProfile.TotalProfit += entry.Profit;
+
+                        stockProfile.TotalCost += entry.TotalCost;
+
+                        stockProfile.TotalAmount += entry.Amount;
+
+                        avgPrice += entry.PurchasePrice;
+                    }
+
+                    stockProfile.AvgPrice = avgPrice / stockProfile.StockCount;
+                }
+
+                // Create portfolio profit
+                fnResult.Data = stockPortfolio;
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
+
+                return fnResult;
             }
-
-            // Create portfolio profit
-
-            return stockPortfolio;
+            catch (Exception e)
+            {
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
+                fnResult.exception = e;
+                return fnResult;
+            }
         }
 
         #endregion ApiCalls

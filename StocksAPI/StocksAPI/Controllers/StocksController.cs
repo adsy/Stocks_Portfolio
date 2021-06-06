@@ -10,6 +10,7 @@ using Services.Stocks.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace StockAPI.Controllers
@@ -25,7 +26,6 @@ namespace StockAPI.Controllers
             _mediator = mediator;
         }
 
-        [Authorize]
         //get certain stock
         [HttpGet]
         [Route("{id}")]
@@ -45,7 +45,10 @@ namespace StockAPI.Controllers
         {
             var result = await _mediator.Send(new GetStockPortfolioQuery());
 
-            return Ok(result);
+            if (result.StatusCode == (int)HttpStatusCode.OK)
+                return Ok(result.Data);
+            else
+                return StatusCode(result.StatusCode, result.exception);
         }
 
         [HttpPost]

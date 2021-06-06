@@ -8,6 +8,7 @@ import axios from "axios";
 import { Constants } from "../constants/Constants";
 import Chart from "./Chart/PortfolioChart";
 import CryptoContainer from "./CryptoContainer/CryptoContainer";
+import { client } from "../cache/baseClient";
 
 class Home extends Component {
   constructor(props) {
@@ -26,19 +27,20 @@ class Home extends Component {
     try {
       this.setState({ loading: true });
 
-      var portfolioData = await axios
-        .get(`${Constants.getPortfolio}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      let response;
+
+      await client
+        .get("/Portfolio/GetPortfolio")
+        .then((res) => {
+          response = res.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((e) => {
+          console.log(e);
         });
 
-      var stocks = portfolioData.data.currentStockPortfolio.stocks;
-      var cryptos = portfolioData.data.currentCryptoPortfolio.cryptocurrencies;
-      var portfolioProfit = portfolioData.data.portfolioProfit;
+      var stocks = response.currentStockPortfolio.stocks;
+      var cryptos = response.currentCryptoPortfolio.cryptocurrencies;
+      var portfolioProfit = response.portfolioProfit;
 
       var cryptoArray = [];
 

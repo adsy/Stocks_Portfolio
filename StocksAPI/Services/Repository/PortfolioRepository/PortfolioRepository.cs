@@ -30,7 +30,9 @@ namespace Services.Repository.PortfolioRepository
         {
             var fnResult = new CompletePortfolio();
 
-            fnResult.CurrentStockPortfolio = await _stocksRepository.GetStockPortfolioAsync();
+            var result = await _stocksRepository.GetStockPortfolioAsync();
+
+            fnResult.CurrentStockPortfolio = result.Data;
             fnResult.CurrentCryptoPortfolio = await _cryptoRepository.GetCryptoPortfolioAsync();
 
             // loop through and pull out current values and profit amounts for fnResult.PortfolioProfit property
