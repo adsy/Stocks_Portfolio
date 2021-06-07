@@ -5,6 +5,7 @@ import Home from "../components/Home";
 import LoginPage from "../components/Login/Login";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import StockInfo from "../components/StockInfo/StockInfo";
+import CryptoInfo from "../components/CryptoInfo/CryptoInfo";
 
 // Instead of BrowserRouter, we use the regular router,
 // but we pass in a customer history to it.
@@ -17,7 +18,8 @@ const AppRouter = () => (
         <Route path="/login" component={LoginPage} />
         <AuthenticatedRoute exact path="/" component={Home} />
         <AuthenticatedRoute path="/dashboard" component={Home} />
-        <AuthenticatedRoute path="/:stock" component={StockInfo} />
+        <AuthenticatedRoute path="/stock/:stock" component={StockInfo} />
+        <AuthenticatedRoute path="/crypto/:crypto" component={CryptoInfo} />
       </Switch>
     </div>
   </Router>

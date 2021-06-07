@@ -1,15 +1,11 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using Services.Data;
 using Services.Models;
 using Services.Stocks.Commands;
 using Services.Stocks.Queries;
+using StockAPI.Handlers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -37,6 +33,21 @@ namespace StockAPI.Controllers
             });
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("chart/{id}")]
+        public async Task<IActionResult> GetStockChartDataAsync(string id)
+        {
+            var result = await _mediator.Send(new GetStockChartDataQuery
+            {
+                Id = id
+            });
+
+            if (result.StatusCode == (int)HttpStatusCode.OK)
+                return Ok(result);
+
+            return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpGet]

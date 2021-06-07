@@ -8,7 +8,7 @@ const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
   return (
     <div>
       {CurrentCryptoPortfolio.map((crypto, index) => (
-        <Link to={`/${crypto.coinName}`}>
+        <Link to={`crypto/${crypto.coinName}`}>
           <div
             className="stock-container-css"
             style={{ marginTop: "10px", marginBottom: "10px" }}

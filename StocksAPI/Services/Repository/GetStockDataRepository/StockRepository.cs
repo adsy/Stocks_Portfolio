@@ -66,6 +66,43 @@ namespace Services.Repository.GetStockDataRepository
             return stockProfiles;
         }
 
+        public async Task<Response<StockChartData>> GetStockChartDataAsync(string id)
+        {
+            var fnResult = new Response<StockChartData>
+            {
+                StatusCode = (int)HttpStatusCode.OK
+            };
+
+            try
+            {
+                var client = new HttpClient();
+
+                var headers = new Dictionary<string, string>
+                {
+                    { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
+                    { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
+                };
+
+                var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-chart?interval=5m&symbol={id}&range=1d&region=US", headers);
+
+                var requestBody = JObject.Parse(response);
+
+                var timestampList = requestBody.SelectToken($"chart.result[0].timestamp").Values<long>().ToList();
+                var priceList = requestBody.SelectToken($"chart.result[0].indicators.quote.close").Values<double>().ToList();
+
+                var count = 0;
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                fnResult.Message = e.Message;
+                return fnResult;
+            }
+        }
+
         public async Task<Response<StockPortfolio>> GetStockPortfolioAsync()
         {
             var fnResult = new Response<StockPortfolio>
