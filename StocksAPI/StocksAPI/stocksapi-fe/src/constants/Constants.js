@@ -2,6 +2,7 @@
   static getStockData = "https://localhost:44345/api/Stocks/{id}";
   static getStockSummaryData =
     "https://localhost:44345/api/Stocks/stock-summary/{id}";
+  static getStockNewsData = "https://localhost:44345/api/Stocks/news/{id}";
   static getStockChartData = "https://localhost:44345/api/Stocks/chart/{id}";
   static getPortfolio = "https://localhost:44345/api/Portfolio/GetPortfolio";
   static addStock = "https://localhost:44345/api/Stocks/AddStock";

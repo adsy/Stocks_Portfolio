@@ -3,18 +3,21 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router";
 import { Constants } from "../../constants/Constants";
 import StockChart from "../Chart/StockChart";
+import NewsContainer from "../NewsContainer/NewsContainer";
 import FinancialsContainer from "./FinancialsContainer/FinancialsContainer";
 import PurchaseList from "./PurchaseList/PurchaseList";
 
 const StockInfo = () => {
   const [stockTimeData, setStockTimeData] = useState([]);
   const [stockSummaryData, setStockSummaryData] = useState({});
+  const [stockNewsData, setStockNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { stock } = useParams();
   let stockData = useLocation();
 
   const chartURL = Constants.getStockChartData.replace("{id}", stock);
   const summaryURL = Constants.getStockSummaryData.replace("{id}", stock);
+  const newsURL = Constants.getStockNewsData.replace("{id}", stock);
 
   const GetChartData = () => {
     axios
@@ -31,6 +34,15 @@ const StockInfo = () => {
       .then((res) => res.data)
       .then((data) => {
         setStockSummaryData(data);
+      });
+  };
+
+  const GetNewsData = () => {
+    axios
+      .get(newsURL)
+      .then((res) => res.data)
+      .then((data) => {
+        setStockNewsData(data);
         setLoading(false);
       });
   };
@@ -38,6 +50,7 @@ const StockInfo = () => {
   useEffect(() => {
     GetChartData();
     GetSummaryData();
+    GetNewsData();
   }, []);
 
   if (loading) return <div>Page loading...</div>;
@@ -106,7 +119,8 @@ const StockInfo = () => {
             <PurchaseList stockList={stockData.state.stock.stockList} />
           </div>{" "}
           <div className="cool-shadow stock-summary instrument-container">
-            <h4>News</h4>
+            <h2>News</h2>
+            <NewsContainer stockNewsData={stockNewsData} />
           </div>
         </div>
       </div>

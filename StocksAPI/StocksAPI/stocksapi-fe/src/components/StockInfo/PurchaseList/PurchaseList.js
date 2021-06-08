@@ -3,10 +3,6 @@ import React, { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 
 const PurchaseList = ({ stockList }) => {
-  useEffect(() => {
-    console.log(stockList);
-  }, []);
-
   return (
     <div>
       {stockList.map((stock, index) => (

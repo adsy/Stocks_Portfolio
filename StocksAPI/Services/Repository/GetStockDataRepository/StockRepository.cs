@@ -75,20 +75,25 @@ namespace Services.Repository.GetStockDataRepository
             try
             {
                 var headers = new Dictionary<string, string>
-            {
-                { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
-            };
+                {
+                    { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
+                    { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
+                };
 
                 var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-profile?symbol={id}&region=AU", headers);
 
                 var requestBody = JObject.Parse(response);
 
-                var exRateRepsonse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
+                double exchangeRate = 1;
 
-                var exRateBody = JObject.Parse(exRateRepsonse);
+                if (!id.Contains(".AX"))
+                {
+                    var exRateRepsonse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
 
-                var exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+                    var exRateBody = JObject.Parse(exRateRepsonse);
+
+                    exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+                }
 
                 var stockSummary = new StockSummaryData
                 {
@@ -111,6 +116,58 @@ namespace Services.Repository.GetStockDataRepository
                 fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
 
                 fnResult.Message = e.Message;
+                return fnResult;
+            }
+        }
+
+        public async Task<Response<List<StockNews>>> GetStockNewsAsync(string id)
+        {
+            var fnResult = new Response<List<StockNews>>
+            {
+                StatusCode = (int)HttpStatusCode.OK
+            };
+
+            try
+            {
+                var headers = new Dictionary<string, string>
+                {
+                    { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
+                    { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
+                };
+
+                var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/get-news?category={id}&region=AU", headers);
+
+                var responseBody = JObject.Parse(response);
+
+                var newsList = new List<StockNews>();
+
+                var tokenList = responseBody.SelectToken("items.result");
+
+                foreach (var token in tokenList)
+                {
+                    var publishedDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    publishedDate = publishedDate.AddSeconds((long)token.SelectToken("published_at")).ToLocalTime();
+                    var dateString = publishedDate.ToString("g");
+
+                    newsList.Add(new StockNews
+                    {
+                        Title = (string)token.SelectToken("title"),
+                        Link = (string)token.SelectToken("link"),
+                        Summary = (string)token.SelectToken("summary"),
+                        Publisher = (string)token.SelectToken("publisher"),
+                        Type = (string)token.SelectToken("type"),
+                        PublishedAt = dateString
+                    });
+                }
+
+                fnResult.Data = newsList;
+
+                return fnResult;
+            }
+            catch (Exception e)
+            {
+                fnResult.Message = e.Message;
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return fnResult;
             }
         }

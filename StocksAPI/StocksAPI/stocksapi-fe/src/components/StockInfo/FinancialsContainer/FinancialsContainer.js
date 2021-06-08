@@ -2,14 +2,6 @@ import React, { useEffect } from "react";
 import { Row } from "react-bootstrap";
 
 const FinancialsContainer = ({ stockSummaryData, stockData }) => {
-  const GetSpecificStockData = () => {
-    console.log(stockData);
-  };
-
-  useEffect(() => {
-    GetSpecificStockData();
-  }, []);
-
   return (
     <div className="container-css">
       <h3 className="portfolio-summary-resize" style={{ marginTop: "-5px" }}>
