@@ -6,6 +6,7 @@ import LoginPage from "../components/Login/Login";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import StockInfo from "../components/StockInfo/StockInfo";
 import CryptoInfo from "../components/CryptoInfo/CryptoInfo";
+import AppHeader from "../components/Header/AppHeader";
 
 // Instead of BrowserRouter, we use the regular router,
 // but we pass in a customer history to it.

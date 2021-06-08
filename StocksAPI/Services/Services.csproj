@@ -11,14 +11,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Models\Stocks\CompletePortfolio" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="Models\Stocks\CompletePortfolio" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 		<PackageReference Include="MediatR" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />

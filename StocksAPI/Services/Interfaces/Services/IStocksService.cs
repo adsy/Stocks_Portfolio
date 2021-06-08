@@ -10,6 +10,8 @@ namespace Services.Interfaces.Services
     {
         public Task<IEnumerable<StockValue>> GetStockDataAsync(string id);
 
+        public Task<Response<StockSummaryData>> GetStockSummaryDataAsync(string id);
+
         public Task<Response<StockChartData>> GetStockChartDataAsync(string id);
 
         public Task<Response<StockPortfolio>> GetPortfolioAsync();

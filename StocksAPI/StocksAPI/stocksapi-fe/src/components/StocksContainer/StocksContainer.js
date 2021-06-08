@@ -12,7 +12,12 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
   return (
     <div>
       {CurrentStockPortfolio.map((stock, index) => (
-        <Link to={`stock/${stock.stockName}`}>
+        <Link
+          to={{
+            pathname: `stock/${stock.stockName}`,
+            state: { stock: stock },
+          }}
+        >
           <div
             className="stock-container-css"
             style={{ marginTop: "10px", marginBottom: "10px" }}
@@ -37,16 +42,19 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
                   paddingLeft: "10px",
                 }}
               >
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Amount</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Current Price</h6>
                 </div>
-                <div className="hide-when-small" style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Current Value</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
+                  <h6 className="stock-column-names">Average Price</h6>
+                </div>
+                <div style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Total Profit</h6>
                 </div>
               </Row>
@@ -58,16 +66,19 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
                   paddingLeft: "10px",
                 }}
               >
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "20%" }}>
                   <h6> {stock.totalAmount}</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "20%" }}>
                   <h6> ${stock.currentPrice}</h6>
                 </div>
-                <div className="hide-when-small" style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
                   <h6> ${stock.currentValue}</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
+                  <h6> ${stock.avgPrice}</h6>
+                </div>
+                <div style={{ width: "20%" }}>
                   <h6> ${stock.totalProfit}</h6>
                 </div>
               </Row>

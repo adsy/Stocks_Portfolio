@@ -36,6 +36,21 @@ namespace StockAPI.Controllers
         }
 
         [HttpGet]
+        [Route("stock-summary/{id}")]
+        public async Task<IActionResult> GetStockSummaryDataAsync(string id)
+        {
+            var result = await _mediator.Send(new GetStockSummaryDataQuery
+            {
+                Id = id
+            });
+
+            if (result.StatusCode == (int)HttpStatusCode.OK)
+                return Ok(result.Data);
+
+            return StatusCode(result.StatusCode, result.Message);
+        }
+
+        [HttpGet]
         [Route("chart/{id}")]
         public async Task<IActionResult> GetStockChartDataAsync(string id)
         {

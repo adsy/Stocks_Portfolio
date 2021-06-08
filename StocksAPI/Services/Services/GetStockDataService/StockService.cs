@@ -27,6 +27,13 @@ namespace Services.Services.GetStockDataService
             return result;
         }
 
+        public async Task<Response<StockSummaryData>> GetStockSummaryDataAsync(string id)
+        {
+            var result = await _stocksRepository.GetStockSummaryDataAsync(id);
+
+            return result;
+        }
+
         public async Task<Response<StockChartData>> GetStockChartDataAsync(string id)
         {
             var result = await _stocksRepository.GetStockChartDataAsync(id);

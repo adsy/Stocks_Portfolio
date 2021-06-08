@@ -33,16 +33,19 @@ const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
                   paddingLeft: "10px",
                 }}
               >
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Amount</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Current Price</h6>
                 </div>
-                <div className="hide-when-small" style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Current Value</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
+                  <h6 className="stock-column-names">Average Price</h6>
+                </div>
+                <div style={{ width: "20%" }}>
                   <h6 className="stock-column-names">Total Profit</h6>
                 </div>
               </Row>
@@ -54,16 +57,19 @@ const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
                   paddingLeft: "10px",
                 }}
               >
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "20%" }}>
                   <h6> {crypto.totalAmount}</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div style={{ width: "250" }}>
                   <h6> ${crypto.currentPrice}</h6>
                 </div>
-                <div className="hide-when-small" style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
                   <h6> ${crypto.currentValue}</h6>
                 </div>
-                <div style={{ width: "25%" }}>
+                <div className="hide-when-small" style={{ width: "20%" }}>
+                  <h6> ${crypto.avgPrice}</h6>
+                </div>
+                <div style={{ width: "20%" }}>
                   <h6> ${crypto.totalProfit}</h6>
                 </div>
               </Row>

@@ -1,23 +1,117 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { Constants } from "../../constants/Constants";
+import StockChart from "../Chart/StockChart";
+import FinancialsContainer from "./FinancialsContainer/FinancialsContainer";
+import PurchaseList from "./PurchaseList/PurchaseList";
 
 const StockInfo = () => {
-  const [stockData, setStockData] = useState({});
+  const [stockTimeData, setStockTimeData] = useState([]);
+  const [stockSummaryData, setStockSummaryData] = useState({});
+  const [loading, setLoading] = useState(true);
   const { stock } = useParams();
+  let stockData = useLocation();
+
+  const chartURL = Constants.getStockChartData.replace("{id}", stock);
+  const summaryURL = Constants.getStockSummaryData.replace("{id}", stock);
+
+  const GetChartData = () => {
+    axios
+      .get(chartURL)
+      .then((res) => res.data.data)
+      .then((data) => {
+        setStockTimeData(data.chartDataList);
+      });
+  };
+
+  const GetSummaryData = () => {
+    axios
+      .get(summaryURL)
+      .then((res) => res.data)
+      .then((data) => {
+        setStockSummaryData(data);
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
-    axios
-      .get(`${Constants.getStockData}`)
-      .then((res) => console.log(res))
-      .then((res) => {
-        setStockData(res);
-        console.log(res);
-      });
+    GetChartData();
+    GetSummaryData();
   }, []);
 
-  return <div>{stock}</div>;
+  if (loading) return <div>Page loading...</div>;
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <div
+          className="col-lg-5"
+          style={{
+            marginLeft: "20px",
+          }}
+        >
+          <div
+            style={{
+              marginTop: "20px",
+              marginLeft: "3.85vw",
+              backgroundColor: "rgba(255, 255, 255, .85)",
+              width: "80%",
+            }}
+            className="col-lg-10"
+          >
+            <h1 style={{ fontSize: "36px", opacity: "1" }}>
+              {stockSummaryData.fullName}
+            </h1>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{ marginTop: "15px", width: "80%" }}
+              className="portfolio-chart cool-shadow"
+            >
+              <StockChart stockTimeData={stockTimeData} />
+            </div>
+            <div
+              style={{
+                border: "5px solid black",
+                marginTop: "20PX",
+                backgroundColor: "white",
+                borderRadius: "2px 16px",
+                justifyContent: "center",
+                display: "flex",
+                width: "80%",
+              }}
+            >
+              <FinancialsContainer
+                stock={stock}
+                stockSummaryData={stockSummaryData}
+                stockData={stockData.state.stock}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="col-lg-6"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <div className="cool-shadow stock-summary instrument-container">
+            <h4>Purchases</h4>
+            <PurchaseList stockList={stockData.state.stock.stockList} />
+          </div>{" "}
+          <div className="cool-shadow stock-summary instrument-container">
+            <h4>News</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default StockInfo;

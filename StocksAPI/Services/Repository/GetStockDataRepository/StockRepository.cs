@@ -66,6 +66,55 @@ namespace Services.Repository.GetStockDataRepository
             return stockProfiles;
         }
 
+        public async Task<Response<StockSummaryData>> GetStockSummaryDataAsync(string id)
+        {
+            var fnResult = new Response<StockSummaryData>
+            {
+                StatusCode = (int)HttpStatusCode.OK
+            };
+            try
+            {
+                var headers = new Dictionary<string, string>
+            {
+                { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
+                { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
+            };
+
+                var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-profile?symbol={id}&region=AU", headers);
+
+                var requestBody = JObject.Parse(response);
+
+                var exRateRepsonse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
+
+                var exRateBody = JObject.Parse(exRateRepsonse);
+
+                var exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+
+                var stockSummary = new StockSummaryData
+                {
+                    FullName = (string)requestBody.SelectToken($"quoteType.longName"),
+                    MarketCap = (string)requestBody.SelectToken($"price.marketCap.fmt"),
+                    PercentChange = (double)requestBody.SelectToken($"price.regularMarketChangePercent.raw"),
+                    YearHigh = (double)requestBody.SelectToken($"summaryDetail.fiftyTwoWeekHigh.raw") * exchangeRate,
+                    YearLow = (double)requestBody.SelectToken($"summaryDetail.fiftyTwoWeekLow.raw") * exchangeRate,
+                    DayHigh = (double)requestBody.SelectToken($"price.regularMarketDayHigh.raw") * exchangeRate,
+                    DayLow = (double)requestBody.SelectToken($"price.regularMarketDayLow.raw") * exchangeRate,
+                    OpenPrice = (double)requestBody.SelectToken($"price.regularMarketOpen.raw") * exchangeRate,
+                };
+
+                fnResult.Data = stockSummary;
+
+                return fnResult;
+            }
+            catch (Exception e)
+            {
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                fnResult.Message = e.Message;
+                return fnResult;
+            }
+        }
+
         public async Task<Response<StockChartData>> GetStockChartDataAsync(string id)
         {
             var fnResult = new Response<StockChartData>
@@ -88,16 +137,43 @@ namespace Services.Repository.GetStockDataRepository
                 var requestBody = JObject.Parse(response);
 
                 var timestampList = requestBody.SelectToken($"chart.result[0].timestamp").Values<long>().ToList();
-                var priceList = requestBody.SelectToken($"chart.result[0].indicators.quote.close").Values<double>().ToList();
+                var priceJToken = requestBody.SelectToken($"chart.result[0].indicators.quote[0].close");
+                var priceList = new List<double>();
 
-                var count = 0;
+                foreach (var price in priceJToken)
+                {
+                    var priceString = price.ToString();
+                    if (string.IsNullOrWhiteSpace(priceString))
+                    {
+                        priceList.Add(0);
+                    }
+                    else
+                    {
+                        priceList.Add((double)price);
+                    }
+                }
 
-                return null;
+                var stockChartData = new StockChartData();
+
+                for (int i = 0; i < timestampList.Count; i++)
+                {
+                    var start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    start = start.AddSeconds(timestampList[i]).ToLocalTime();
+
+                    stockChartData.ChartDataList.Add(new ChartData
+                    {
+                        price = priceList[i],
+                        timestampLong = timestampList[i],
+                        time = start.ToString("g")
+                    });
+                }
+                fnResult.Data = stockChartData;
+
+                return fnResult;
             }
             catch (Exception e)
             {
                 fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
-
                 fnResult.Message = e.Message;
                 return fnResult;
             }
@@ -158,9 +234,6 @@ namespace Services.Repository.GetStockDataRepository
                     var stockProfile = stockPortfolio.Stocks[value.Name];
 
                     stockProfile.StockName = value.Name;
-
-                    stockProfile.CurrentPrice = value.CurrentPrice;
-
                     double avgPrice = 0;
 
                     foreach (var entry in stockProfile.StockList)
@@ -168,19 +241,19 @@ namespace Services.Repository.GetStockDataRepository
                         if (!entry.Name.Contains(".AX"))
                         {
                             entry.TotalCost *= exchangeRate;
+                            entry.PurchasePrice *= exchangeRate;
                             entry.CurrentPrice = value.CurrentPrice * exchangeRate;
                             entry.CurrentValue = entry.Amount * entry.CurrentPrice;
                             entry.Profit = entry.CurrentValue - entry.TotalCost;
+                            stockProfile.CurrentPrice = value.CurrentPrice * exchangeRate;
                         }
                         else
                         {
                             entry.CurrentPrice = value.CurrentPrice;
                             entry.CurrentValue = entry.Amount * entry.CurrentPrice;
                             entry.Profit = entry.CurrentValue - entry.TotalCost;
+                            stockProfile.CurrentPrice = value.CurrentPrice;
                         }
-                        //entry.CurrentPrice = value.CurrentPrice;
-                        //entry.CurrentValue = entry.Amount * entry.CurrentPrice;
-                        //entry.Profit = entry.CurrentValue - entry.TotalCost;
 
                         stockProfile.CurrentValue += entry.CurrentValue;
 

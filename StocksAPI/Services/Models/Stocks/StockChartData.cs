@@ -10,11 +10,9 @@ namespace Services.Models.Stocks
     {
         public StockChartData()
         {
-            TimestampData = new Dictionary<int, string>();
-            StockPriceData = new List<long>();
+            ChartDataList = new List<ChartData>();
         }
 
-        public Dictionary<int, string> TimestampData { get; set; }
-        public List<long> StockPriceData { get; set; }
+        public List<ChartData> ChartDataList { get; set; }
     }
 }

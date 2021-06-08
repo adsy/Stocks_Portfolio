@@ -48,11 +48,25 @@ body {
   font-size: 12px;
 }
 
+.green-text {
+  color: rgb(27, 119, 27);
+}
+
+.red-text {
+  color: red;
+}
+
 .container-css {
   /*justify-content: center;*/
   display: flex;
   flex-direction: column;
   margin-top: 20px;
+  width: 90%;
+}
+.container-css-noColumn {
+  /*justify-content: center;*/
+  margin-top: 20px;
+  width: 90%;
 }
 
 .stock-column-names {
@@ -108,7 +122,13 @@ body {
     transform: rotate(360deg);
   }
 }
-
+.striped-border {
+  border: 1px dashed #000;
+  width: 100%;
+  margin: auto;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
 .stock-container-css {
   background-color: white;
   display: flex;
