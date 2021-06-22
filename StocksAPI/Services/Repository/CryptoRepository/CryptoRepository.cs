@@ -74,7 +74,7 @@ namespace Services.Repository.CryptoRepository
                 foreach (var data in chartData)
                 {
                     var start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                    start = start.AddSeconds(data.timestampLong/1000).ToLocalTime();
+                    start = start.AddSeconds(data.timestampLong / 1000).ToLocalTime();
                     data.time = start.ToString("g");
                 }
 
@@ -170,6 +170,49 @@ namespace Services.Repository.CryptoRepository
             }
 
             return cryptoPortfolio;
+        }
+
+        public async Task<Response<CryptoSummaryData>> GetCryptoSummaryDataAsync(string id)
+        {
+            var fnResult = new Response<CryptoSummaryData>
+            {
+                StatusCode = (int)HttpStatusCode.BadRequest
+            };
+
+            try
+            {
+                var headers = new Dictionary<string, string>
+                    {
+                        { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
+                        { "x-rapidapi-host", "coingecko.p.rapidapi.com" }
+                    };
+
+                var apiUrl = $"https://coingecko.p.rapidapi.com/coins/{id}?localization=true&tickers=true&market_data=true&community_data=true&developer_data=true&sparkline=false";
+
+                var response = await HttpRequest.SendGetCall(apiUrl, headers);
+
+                var chartResponse = JsonConvert.DeserializeObject<CryptoSummaryResponse>(response);
+
+                fnResult.Data = new CryptoSummaryData
+                {
+                    High24H = chartResponse.Market_Data.High_24h["aud"],
+                    Low24H = chartResponse.Market_Data.Low_24h["aud"],
+                    MarketCapChange24H = chartResponse.Market_Data.Market_Cap_Change_24h,
+                    MarketCapChangePercentage24H = chartResponse.Market_Data.Market_Cap_Change_Percentage_24h,
+                    MarketCapRank = chartResponse.Market_Cap_Rank,
+                    PriceChangePercentage24H = chartResponse.Market_Data.Price_Change_Percentage_24h,
+                };
+
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
+
+                return fnResult;
+            }
+            catch (Exception e)
+            {
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
+                fnResult.Message = e.Message;
+                return fnResult;
+            }
         }
 
         public async Task<IEnumerable<CryptoValue>> GetCryptoValuesAsync(string ids)

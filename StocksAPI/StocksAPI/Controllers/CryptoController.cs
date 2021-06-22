@@ -60,6 +60,21 @@ namespace StockAPI.Controllers
             return StatusCode(result.StatusCode, result.Message);
         }
 
+        [Route("GetSummary/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> GetCryptoSummaryDataAsync(string id)
+        {
+            var result = await _mediator.Send(new GetCryptoSummaryDataRequest
+            {
+                Id = id
+            });
+
+            if (result.StatusCode == (int)HttpStatusCode.OK)
+                return Ok(result.Data);
+
+            return StatusCode(result.StatusCode, result.Message);
+        }
+
         [Route("AddCrypto")]
         [HttpPost]
         public async Task<IActionResult> AddCryptoToDbAsync([FromBody] CryptocurrencyDTO crypto)

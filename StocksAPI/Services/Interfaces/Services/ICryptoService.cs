@@ -19,5 +19,7 @@ namespace Services.Interfaces.Services
         Task<Response> RemoveCryptoFromDbAsync(CryptocurrencyDTO crypto);
 
         Task<Response<CryptoChartData>> GetChartDataAsync(string id);
+
+        Task<Response<CryptoSummaryData>> GetCryptoSummaryDataAsync(string id);
     }
 }

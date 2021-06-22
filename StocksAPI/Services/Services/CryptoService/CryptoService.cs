@@ -53,5 +53,12 @@ namespace Services.Services.CryptoService
 
             return result;
         }
+
+        public async Task<Response<CryptoSummaryData>> GetCryptoSummaryDataAsync(string id)
+        {
+            var result = await _cryptoRepository.GetCryptoSummaryDataAsync(id);
+
+            return result;
+        }
     }
 }
