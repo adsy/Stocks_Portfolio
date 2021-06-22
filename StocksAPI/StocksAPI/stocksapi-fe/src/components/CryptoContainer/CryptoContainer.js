@@ -15,7 +15,12 @@ const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
           key={index}
         >
           <div className="col-xl-10">
-            <Link to={`crypto/${crypto.coinName}`}>
+            <Link
+              to={{
+                pathname: `crypto/${crypto.coinName}`,
+                state: { crypto: crypto },
+              }}
+            >
               <Row
                 style={{
                   width: "100%",

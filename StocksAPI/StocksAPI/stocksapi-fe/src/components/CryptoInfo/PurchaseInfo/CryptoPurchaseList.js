@@ -2,10 +2,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 
-const PurchaseList = ({ stockList }) => {
+const CryptoPurchaseList = ({ cryptoList }) => {
   return (
     <div>
-      {stockList.map((stock, index) => (
+      {cryptoList.map((crypto, index) => (
         <div
           style={{
             marginTop: "10px",
@@ -46,16 +46,16 @@ const PurchaseList = ({ stockList }) => {
               }}
             >
               <div style={{ width: "20%" }}>
-                <h6> {stock.amount}</h6>
+                <h6> {crypto.amount}</h6>
               </div>
               <div className="hide-when-small" style={{ width: "20%" }}>
-                <h6> ${stock.currentValue}</h6>
+                <h6> ${crypto.currentValue}</h6>
               </div>
               <div className="hide-when-small" style={{ width: "20%" }}>
-                <h6> ${stock.purchasePrice}</h6>
+                <h6> ${crypto.purchasePrice}</h6>
               </div>
               <div style={{ width: "20%" }}>
-                <h6> ${(stock.currentValue - stock.totalCost).toFixed(2)}</h6>
+                <h6>${(crypto.currentValue - crypto.totalCost).toFixed(2)}</h6>
               </div>
             </Row>
           </div>
@@ -63,8 +63,7 @@ const PurchaseList = ({ stockList }) => {
         </div>
       ))}
     </div>
-    // <div>test</div>
   );
 };
 
-export default PurchaseList;
+export default CryptoPurchaseList;

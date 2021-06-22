@@ -5,7 +5,7 @@ import { Constants } from "../../constants/Constants";
 import StockChart from "../Chart/StockChart";
 import NewsContainer from "../NewsContainer/NewsContainer";
 import FinancialsContainer from "./FinancialsContainer/FinancialsContainer";
-import PurchaseList from "./PurchaseList/PurchaseList";
+import StockPurchaseList from "./PurchaseList/StockPurchaseList";
 
 const StockInfo = () => {
   const [stockTimeData, setStockTimeData] = useState([]);
@@ -116,7 +116,7 @@ const StockInfo = () => {
         >
           <div className="cool-shadow stock-summary instrument-container">
             <h4>Purchases</h4>
-            <PurchaseList stockList={stockData.state.stock.stockList} />
+            <StockPurchaseList stockList={stockData.state.stock.stockList} />
           </div>{" "}
           <div className="cool-shadow stock-summary instrument-container">
             <h2>News</h2>

@@ -17,10 +17,11 @@ const StockChart = ({ stockTimeData }) => {
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={stockTimeData} margin={{ top: 25, right: 20 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" />
+        <XAxis dataKey="time" tick={{ fontSize: 12 }} />
         <YAxis
           type="number"
-          tickFormatter={(value) => "$" + value.toFixed(0)}
+          tickFormatter={(value) => "$" + value.toFixed(3)}
+          tick={{ fontSize: 12 }}
         />
         <Tooltip formatter={(value) => "$" + value.toFixed(4)} />
         <Line type="monotone" dataKey="price" stroke="#000000" dot={false} />
