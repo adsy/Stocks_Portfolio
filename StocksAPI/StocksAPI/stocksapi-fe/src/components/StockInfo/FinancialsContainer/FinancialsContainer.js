@@ -52,7 +52,9 @@ const FinancialsContainer = ({ stockSummaryData, stockData }) => {
           Day Return:
           <span
             className={
-              stockSummaryData.percentChange > 0 ? "green-text" : "red-text"
+              stockData.totalAmount * stockSummaryData.percentChange > 0
+                ? "green-text"
+                : "red-text"
             }
             style={{ float: "right", fontWeight: "1000" }}
           >
@@ -66,9 +68,7 @@ const FinancialsContainer = ({ stockSummaryData, stockData }) => {
           <div>
             Total Return:
             <span
-              className={
-                stockSummaryData.percentChange > 0 ? "green-text" : "red-text"
-              }
+              className={stockData.totalProfit > 0 ? "green-text" : "red-text"}
               style={{ float: "right", fontWeight: "1000" }}
             >
               ${stockData.totalProfit}

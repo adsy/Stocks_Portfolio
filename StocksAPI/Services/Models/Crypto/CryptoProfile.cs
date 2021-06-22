@@ -20,6 +20,7 @@ namespace Services.Models.Crypto
         }
 
         public string CoinName { get; set; }
+        public string FullName { get; set; }
         public List<CoinInfo> CoinList { get; set; }
         public int CoinCount { get; set; }
         public double TotalProfit { get; set; }

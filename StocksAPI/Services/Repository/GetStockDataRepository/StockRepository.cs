@@ -88,11 +88,16 @@ namespace Services.Repository.GetStockDataRepository
 
                 if (!id.Contains(".AX"))
                 {
+                    exchangeRate = 1.33; // api calls are limited
+
                     var exRateRepsonse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
 
                     var exRateBody = JObject.Parse(exRateRepsonse);
 
-                    exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+                    if (!(exRateBody.SelectToken("result").ToString() == "error"))
+                    {
+                        exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+                    }
                 }
 
                 var stockSummary = new StockSummaryData
@@ -249,7 +254,14 @@ namespace Services.Repository.GetStockDataRepository
 
                 var requestBody = JObject.Parse(response);
 
-                var exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
+                var exchangeRate = 1.33;
+
+                var test = requestBody.SelectToken("result").ToString();
+
+                if (!(requestBody.SelectToken("result").ToString() == "error"))
+                {
+                    exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
+                }
 
                 var stocks = await _unitOfWork.Stocks.GetAll();
 

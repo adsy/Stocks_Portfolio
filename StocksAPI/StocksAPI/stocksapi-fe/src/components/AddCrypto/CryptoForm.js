@@ -15,7 +15,6 @@ class CryptoForm extends Component {
       price: 0,
       amount: 0,
       totalCost: 0,
-      country: "",
       visible: true,
     };
 
@@ -25,18 +24,17 @@ class CryptoForm extends Component {
     this.handleInterfaceUpdate = this.handleInterfaceUpdate.bind(this);
   }
 
-  async AddStockData() {
+  async AddCyrptoData() {
     try {
       var result = axios({
         method: "post",
-        url: `${Constants.addStock}`,
+        url: `${Constants.addCrypto}`,
         data: {
           name: `${this.state.name}`,
           purchaseDate: `${this.state.formattedDate}`,
           purchasePrice: `${this.state.price}`,
           amount: `${this.state.amount}`,
           totalCost: `${this.state.totalCost}`,
-          country: `${this.state.country}`,
         },
       });
 
@@ -55,27 +53,30 @@ class CryptoForm extends Component {
   handleInterfaceUpdate(state) {
     let data = this.props.PortfolioData;
 
-    let portfolio = this.props.CurrentStockPortfolio.map((stock, index) => {
-      if (stock.name === this.state.name) {
-        let updateAmount = parseInt(this.state.amount) + parseInt(stock.amount);
+    console.log(this.props.Current);
+
+    let portfolio = this.props.CurrentCryptoPortfolio.map((crypto, index) => {
+      if (crypto.name === this.state.name) {
+        let updateAmount =
+          parseInt(this.state.amount) + parseInt(crypto.amount);
 
         let updatePrice = (
-          updateAmount * parseFloat(stock.currentPrice)
+          updateAmount * parseFloat(crypto.currentPrice)
         ).toFixed(3);
 
         let updateProfit = (
-          parseFloat(stock.profit) +
-          (parseFloat(stock.currentPrice) - parseFloat(this.state.price)) *
+          parseFloat(crypto.profit) +
+          (parseFloat(crypto.currentPrice) - parseFloat(this.state.price)) *
             parseInt(this.state.amount)
         ).toFixed(3);
 
-        stock.amount = updateAmount;
-        stock.currentValue = updatePrice;
-        stock.profit = updateProfit;
+        crypto.amount = updateAmount;
+        crypto.currentValue = updatePrice;
+        crypto.profit = updateProfit;
 
         data.currentTotal = (
           parseFloat(this.props.PortfolioData.currentTotal) +
-          parseFloat(stock.currentPrice) * parseInt(this.state.amount)
+          parseFloat(crypto.currentPrice) * parseInt(this.state.amount)
         ).toFixed(2);
 
         data.purchaseTotal = (
@@ -83,7 +84,7 @@ class CryptoForm extends Component {
           parseFloat(this.state.totalCost)
         ).toFixed(2);
       }
-      return stock;
+      return crypto;
     });
 
     return { data: data, portfolio: portfolio };
@@ -94,7 +95,7 @@ class CryptoForm extends Component {
 
     await this.setState({ totalCost: totalCost });
 
-    var result = await this.AddStockData();
+    var result = await this.AddCyrptoData();
 
     if (result.status === 200) {
       // update interface
@@ -128,7 +129,7 @@ class CryptoForm extends Component {
         }}
       >
         <label style={{ width: "100%" }}>
-          <h6>Ticker</h6>
+          <h6>Coin Name</h6>
         </label>
         <input type="text" name="name" onChange={this.handleChange} />
         <label style={{ marginTop: "10px" }}>
@@ -146,13 +147,6 @@ class CryptoForm extends Component {
           <h6>Amount</h6>
         </label>
         <input type="number" name="amount" onChange={this.handleChange} />
-        <label style={{ marginTop: "10px" }}>
-          <h6>Country</h6>
-        </label>
-        <select name="country" id="country" onChange={this.handleChange}>
-          <option value="AU">AU</option>
-          <option value="US">US</option>
-        </select>
         <br />
         <Button
           type="button"

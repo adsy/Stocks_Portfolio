@@ -40,7 +40,7 @@ class LoginForm extends Component {
       .catch((error) => {
         console.log(error);
         this.setState({
-          errorMessage: "Error logging in - Incorrect username or password",
+          errorMessage: "INCORRECT EMAIL OR PASSWORD",
           loading: false,
         });
       });
@@ -55,6 +55,7 @@ class LoginForm extends Component {
   }
 
   async handleSubmit(event) {
+    this.setState({ errorMessage: null });
     event.preventDefault();
 
     this.setState({ loading: true });
@@ -81,17 +82,13 @@ class LoginForm extends Component {
         <h3
           style={{
             marginTop: "20px",
-            marginBottom: "30px",
+            marginBottom: "20px",
             fontSize: "48px",
           }}
         >
           LOGIN
         </h3>
-        {this.state.errorMessage != null ? (
-          <p style={{ color: "red" }}> {this.state.errorMessage} </p>
-        ) : (
-          ""
-        )}
+
         <label>
           <h6>Email</h6>
         </label>
@@ -113,6 +110,15 @@ class LoginForm extends Component {
           style={{ width: "300px" }}
         />
         <br />
+        {this.state.errorMessage != null ? (
+          <h6
+            style={{ color: "red", textAlign: "center", marginBottom: "30px" }}
+          >
+            {this.state.errorMessage}
+          </h6>
+        ) : (
+          ""
+        )}
         {this.state.loading == false ? (
           <Button
             type="submit"

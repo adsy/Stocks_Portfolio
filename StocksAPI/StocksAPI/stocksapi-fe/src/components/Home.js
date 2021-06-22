@@ -128,7 +128,7 @@ class Home extends Component {
             />
             <br />
             <AddCryptoModal
-              CurrentStockPortfolio={this.state.stockPortfolio}
+              CurrentCryptoPortfolio={this.state.cryptoPortfolio}
               PortfolioData={this.state.portfolioData}
               Update={this.UpdateFromStockApi}
             />

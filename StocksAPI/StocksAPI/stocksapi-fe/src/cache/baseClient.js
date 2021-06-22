@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { cache } from "./cacheHandler";
 
 export const client = axios.create({
-  baseURL: "https://stockapi20210415184956.azurewebsites.net/api",
+  baseURL: "https://localhost:44345/api",
 });
 
 const whiteList = ["Portfolio/GetPortfolio"];

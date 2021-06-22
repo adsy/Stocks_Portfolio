@@ -3,11 +3,11 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Constants } from "../../constants/Constants";
 
-class SellStockForm extends Component {
+class SellCryptoForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: this.props.stock.stockName,
+      name: this.props.crypto.coinName,
       sellPrice: 0,
       amount: 0,
       visible: true,
@@ -18,11 +18,11 @@ class SellStockForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async SellStockData() {
+  async SellCryptoData() {
     try {
       var result = await axios({
         method: "post",
-        url: `${Constants.sellStock}`,
+        url: `${Constants.sellCrypto}`,
         data: {
           name: `${this.state.name}`,
           sellPrice: `${this.state.sellPrice}`,
@@ -44,7 +44,7 @@ class SellStockForm extends Component {
 
   async handleSubmit(event) {
     this.setState({ errorMessage: false });
-    var result = await this.SellStockData();
+    var result = await this.SellCryptoData();
 
     if (result.status === 200) {
       this.props.handler();
@@ -112,4 +112,4 @@ class SellStockForm extends Component {
   }
 }
 
-export default SellStockForm;
+export default SellCryptoForm;

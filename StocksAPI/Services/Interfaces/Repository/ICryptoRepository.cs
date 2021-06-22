@@ -1,4 +1,5 @@
 ﻿using Services.Models;
+using Services.Models.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace Services.Interfaces.Repository
         Task<Response> AddCryptoToDbAsync(CryptocurrencyDTO crypto);
 
         Task<CryptoPortfolio> GetCryptoPortfolioAsync();
+
+        Task<Response> RemoveCryptoFromDbAsync(CryptocurrencyDTO crypto);
+
+        Task<Response<CryptoChartData>> GetChartDataAsync(string id);
     }
 }

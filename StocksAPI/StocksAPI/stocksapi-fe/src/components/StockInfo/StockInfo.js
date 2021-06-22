@@ -53,7 +53,7 @@ const StockInfo = () => {
     GetNewsData();
   }, []);
 
-  if (loading) return <div>Page loading...</div>;
+  if (loading) return <h1 className="loading-center row">🚀</h1>;
 
   return (
     <div>

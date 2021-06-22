@@ -6,7 +6,9 @@
   static getStockChartData = "https://localhost:44345/api/Stocks/chart/{id}";
   static getPortfolio = "https://localhost:44345/api/Portfolio/GetPortfolio";
   static addStock = "https://localhost:44345/api/Stocks/AddStock";
+  static addCrypto = "https://localhost:44345/api/Crypto/AddCrypto";
   static sellStock = "https://localhost:44345/api/Stocks/SellStock";
+  static sellCrypto = "https://localhost:44345/api/Crypto/SellCrypto";
   static login = "https://localhost:44345/api/Account/Login";
   static portfolioValueList =
     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/GetPortfolioValueList";
@@ -15,6 +17,10 @@
 // export class Constants {
 //   static getStockData =
 //     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/{id}";
+//   static getStockSummaryData =
+//     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/stock-summary/{id}";
+//   static getStockNewsData =
+//     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/news/{id}";
 //   static getStockChartData =
 //     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/chart/{id}";
 //   static getPortfolio =

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Services.Crypto.Commands;
 using Services.Crypto.Querys;
+using Services.Crypto.Request;
 using Services.Models;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace StockAPI.Controllers
 {
+    [Route("api/Crypto")]
     public class CryptoController : Controller
     {
         private readonly IMediator _mediator;
@@ -43,6 +45,21 @@ namespace StockAPI.Controllers
             }
         }
 
+        [Route("GetChart/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> GetCryptoChartDataAsync(string id)
+        {
+            var result = await _mediator.Send(new GetCryptoChartDataRequest
+            {
+                Id = id
+            });
+
+            if (result.StatusCode == (int)HttpStatusCode.OK)
+                return Ok(result.Data);
+
+            return StatusCode(result.StatusCode, result.Message);
+        }
+
         [Route("AddCrypto")]
         [HttpPost]
         public async Task<IActionResult> AddCryptoToDbAsync([FromBody] CryptocurrencyDTO crypto)
@@ -63,6 +80,21 @@ namespace StockAPI.Controllers
                 Log.Error("---Error adding crypto to do --- \n" + e.Message);
                 return Problem();
             }
+        }
+
+        [Route("SellCrypto")]
+        [HttpPost]
+        public async Task<IActionResult> RemoveCryptoFromDbAsync([FromBody] CryptocurrencyDTO crypto)
+        {
+            var result = await _mediator.Send(new RemoveCryptoFromDbAsyncCommand
+            {
+                cryptocurrencyDTO = crypto
+            });
+
+            if (result.StatusCode == (int)HttpStatusCode.OK)
+                return StatusCode(result.StatusCode);
+
+            return StatusCode(result.StatusCode, result.Message);
         }
 
         [Route("GetCryptoPortfolio")]

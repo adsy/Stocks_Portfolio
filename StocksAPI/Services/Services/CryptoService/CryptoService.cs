@@ -1,6 +1,7 @@
 ﻿using Services.Interfaces.Repository;
 using Services.Interfaces.Services;
 using Services.Models;
+using Services.Models.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,20 @@ namespace Services.Services.CryptoService
         public async Task<CryptoPortfolio> GetCryptoPortfolioAsync()
         {
             var result = await _cryptoRepository.GetCryptoPortfolioAsync();
+
+            return result;
+        }
+
+        public async Task<Response> RemoveCryptoFromDbAsync(CryptocurrencyDTO crypto)
+        {
+            var result = await _cryptoRepository.RemoveCryptoFromDbAsync(crypto);
+
+            return result;
+        }
+
+        public async Task<Response<CryptoChartData>> GetChartDataAsync(string id)
+        {
+            var result = await _cryptoRepository.GetChartDataAsync(id);
 
             return result;
         }

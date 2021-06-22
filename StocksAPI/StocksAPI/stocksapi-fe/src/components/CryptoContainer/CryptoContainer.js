@@ -3,18 +3,19 @@ import React from "react";
 import Row from "react-bootstrap/Row";
 import { Link } from "react-router-dom";
 import SellStockModal from "../SellStock/SellStockModal";
+import SellCryptoModal from "../SellCrypto/SellCryptoModal";
 
 const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
   return (
     <div>
       {CurrentCryptoPortfolio.map((crypto, index) => (
-        <Link to={`crypto/${crypto.coinName}`}>
-          <div
-            className="stock-container-css"
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-            key={index}
-          >
-            <div className="col-xl-10">
+        <div
+          className="stock-container-css"
+          style={{ marginTop: "10px", marginBottom: "10px" }}
+          key={index}
+        >
+          <div className="col-xl-10">
+            <Link to={`crypto/${crypto.coinName}`}>
               <Row
                 style={{
                   width: "100%",
@@ -23,7 +24,7 @@ const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
                 }}
                 className="col-xs-12"
               >
-                <h3 style={{ paddingTop: "5px" }}>{crypto.coinName} 🚀</h3>
+                <h3 style={{ paddingTop: "5px" }}>{crypto.fullName} 🚀</h3>
               </Row>
               <Row
                 style={{
@@ -73,12 +74,12 @@ const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
                   <h6> ${crypto.totalProfit}</h6>
                 </div>
               </Row>
-            </div>
-            <div className="col-xl-1">
-              <SellStockModal stock={crypto} Update={Update} />
-            </div>
+            </Link>
           </div>
-        </Link>
+          <div className="col-xl-1">
+            <SellCryptoModal crypto={crypto} Update={Update} />
+          </div>
+        </div>
       ))}
     </div>
   );

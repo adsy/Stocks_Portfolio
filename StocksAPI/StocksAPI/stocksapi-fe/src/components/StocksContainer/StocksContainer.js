@@ -12,18 +12,18 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
   return (
     <div>
       {CurrentStockPortfolio.map((stock, index) => (
-        <Link
-          to={{
-            pathname: `stock/${stock.stockName}`,
-            state: { stock: stock },
-          }}
+        <div
+          className="stock-container-css"
+          style={{ marginTop: "10px", marginBottom: "10px" }}
+          key={index}
         >
-          <div
-            className="stock-container-css"
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-            key={index}
-          >
-            <div className="col-xl-10">
+          <div className="col-xl-10">
+            <Link
+              to={{
+                pathname: `stock/${stock.stockName}`,
+                state: { stock: stock },
+              }}
+            >
               <Row
                 style={{
                   width: "100%",
@@ -82,12 +82,12 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
                   <h6> ${stock.totalProfit}</h6>
                 </div>
               </Row>
-            </div>
-            <div className="col-xl-1">
-              <SellStockModal stock={stock} Update={Update} />
-            </div>
+            </Link>
           </div>
-        </Link>
+          <div className="col-xl-1">
+            <SellStockModal stock={stock} Update={Update} />
+          </div>
+        </div>
       ))}
     </div>
     // <div>test</div>
