@@ -19,7 +19,7 @@ namespace Services.Services.CryptoService
             _cryptoRepository = cryptoRepository ?? throw new ArgumentNullException(nameof(cryptoRepository));
         }
 
-        public async Task<IEnumerable<CryptoValue>> GetCryptoValuesAsync(string ids)
+        public async Task<Response<IEnumerable<CryptoValue>>> GetCryptoValuesAsync(string ids)
         {
             var result = await _cryptoRepository.GetCryptoValuesAsync(ids);
 
@@ -33,7 +33,7 @@ namespace Services.Services.CryptoService
             return result;
         }
 
-        public async Task<CryptoPortfolio> GetCryptoPortfolioAsync()
+        public async Task<Response<CryptoPortfolio>> GetCryptoPortfolioAsync()
         {
             var result = await _cryptoRepository.GetCryptoPortfolioAsync();
 

@@ -63,7 +63,10 @@ namespace Services.Repository.CryptoRepository
 
                 var response = await HttpRequest.SendGetCall(apiUrl, headers);
 
-                var chartResponse = JsonConvert.DeserializeObject<CryptoChartResponse>(response);
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var chartResponse = JsonConvert.DeserializeObject<CryptoChartResponse>(response.Data);
 
                 var chartData = chartResponse.Prices.Select(q => new ChartData
                 {
@@ -92,84 +95,103 @@ namespace Services.Repository.CryptoRepository
             }
         }
 
-        public async Task<CryptoPortfolio> GetCryptoPortfolioAsync()
+        public async Task<Response<CryptoPortfolio>> GetCryptoPortfolioAsync()
         {
-            var cryptocurrenies = await _unitOfWork.Cryptocurrencies.GetAll();
-
-            var cryptoPortfolio = new CryptoPortfolio();
-
-            var queryString = "";
-
-            foreach (var crypto in cryptocurrenies)
+            var fnResult = new Response<CryptoPortfolio>
             {
-                var coinInfo = _mapper.Map<CoinInfo>(crypto);
+                StatusCode = (int)HttpStatusCode.BadRequest
+            };
 
-                if (!cryptoPortfolio.Cryptocurrencies.ContainsKey(coinInfo.Name))
+            try
+            {
+                var cryptocurrenies = await _unitOfWork.Cryptocurrencies.GetAll();
+
+                var cryptoPortfolio = new CryptoPortfolio();
+
+                var queryString = "";
+
+                foreach (var crypto in cryptocurrenies)
                 {
-                    cryptoPortfolio.Cryptocurrencies.Add(coinInfo.Name, new CryptoProfile
+                    var coinInfo = _mapper.Map<CoinInfo>(crypto);
+
+                    if (!cryptoPortfolio.Cryptocurrencies.ContainsKey(coinInfo.Name))
                     {
-                        CoinList = new List<CoinInfo>
+                        cryptoPortfolio.Cryptocurrencies.Add(coinInfo.Name, new CryptoProfile
+                        {
+                            CoinList = new List<CoinInfo>
                         {
                             coinInfo
                         },
-                        CoinCount = 1
-                    });
-                    queryString += coinInfo.Name + ",";
+                            CoinCount = 1
+                        });
+                        queryString += coinInfo.Name + ",";
+                    }
+                    else
+                    {
+                        var profile = cryptoPortfolio.Cryptocurrencies[coinInfo.Name];
+                        profile.CoinList.Add(coinInfo);
+                        profile.CoinCount += 1;
+                        cryptoPortfolio.Cryptocurrencies[coinInfo.Name] = profile;
+                    }
                 }
-                else
+
+                var ids = queryString.Remove(queryString.Length - 1);
+
+                var prices = await GetCryptoValuesAsync(ids);
+
+                if (prices.StatusCode != (int)HttpStatusCode.OK)
+                    throw new Exception("There was an exception thrown getting crypto values while creating crypto portfolio.");
+
+                foreach (var value in prices.Data)
                 {
-                    var profile = cryptoPortfolio.Cryptocurrencies[coinInfo.Name];
-                    profile.CoinList.Add(coinInfo);
-                    profile.CoinCount += 1;
-                    cryptoPortfolio.Cryptocurrencies[coinInfo.Name] = profile;
+                    var coinProfile = cryptoPortfolio.Cryptocurrencies[value.Name];
+
+                    coinProfile.CoinName = value.Name;
+
+                    coinProfile.FullName = value.FullName;
+
+                    coinProfile.CurrentPrice = value.Price;
+
+                    double avgPrice = 0;
+
+                    foreach (var entry in coinProfile.CoinList)
+                    {
+                        entry.CurrentPrice = value.Price;
+
+                        entry.CurrentValue = entry.Amount * entry.CurrentPrice;
+
+                        coinProfile.CurrentValue += entry.CurrentValue;
+
+                        entry.Profit = entry.CurrentValue - entry.TotalCost;
+
+                        coinProfile.TotalProfit += entry.Profit;
+
+                        coinProfile.TotalCost += entry.TotalCost;
+
+                        coinProfile.TotalAmount += entry.Amount;
+
+                        avgPrice += entry.PurchasePrice;
+                    }
+
+                    coinProfile.TotalCost = Math.Round(coinProfile.TotalCost, 2);
+                    coinProfile.TotalProfit = Math.Round(coinProfile.TotalProfit, 2);
+                    coinProfile.CurrentValue = Math.Round(coinProfile.CurrentValue, 2);
+                    coinProfile.CurrentPrice = Math.Round(coinProfile.CurrentPrice, 5);
+                    coinProfile.TotalAmount = Math.Round(coinProfile.TotalAmount, 3);
+
+                    coinProfile.AvgPrice = Math.Round(avgPrice / coinProfile.CoinCount, 3);
                 }
+
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
+                fnResult.Data = cryptoPortfolio;
+                return fnResult;
             }
-
-            var ids = queryString.Remove(queryString.Length - 1);
-
-            var prices = await GetCryptoValuesAsync(ids);
-
-            foreach (var value in prices)
+            catch (Exception e)
             {
-                var coinProfile = cryptoPortfolio.Cryptocurrencies[value.Name];
-
-                coinProfile.CoinName = value.Name;
-
-                coinProfile.FullName = value.FullName;
-
-                coinProfile.CurrentPrice = value.Price;
-
-                double avgPrice = 0;
-
-                foreach (var entry in coinProfile.CoinList)
-                {
-                    entry.CurrentPrice = value.Price;
-
-                    entry.CurrentValue = entry.Amount * entry.CurrentPrice;
-
-                    coinProfile.CurrentValue += entry.CurrentValue;
-
-                    entry.Profit = entry.CurrentValue - entry.TotalCost;
-
-                    coinProfile.TotalProfit += entry.Profit;
-
-                    coinProfile.TotalCost += entry.TotalCost;
-
-                    coinProfile.TotalAmount += entry.Amount;
-
-                    avgPrice += entry.PurchasePrice;
-                }
-
-                coinProfile.TotalCost = Math.Round(coinProfile.TotalCost, 2);
-                coinProfile.TotalProfit = Math.Round(coinProfile.TotalProfit, 2);
-                coinProfile.CurrentValue = Math.Round(coinProfile.CurrentValue, 2);
-                coinProfile.CurrentPrice = Math.Round(coinProfile.CurrentPrice, 5);
-                coinProfile.TotalAmount = Math.Round(coinProfile.TotalAmount, 3);
-
-                coinProfile.AvgPrice = Math.Round(avgPrice / coinProfile.CoinCount, 3);
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
+                fnResult.Message = e.Message;
+                return fnResult;
             }
-
-            return cryptoPortfolio;
         }
 
         public async Task<Response<CryptoSummaryData>> GetCryptoSummaryDataAsync(string id)
@@ -191,7 +213,10 @@ namespace Services.Repository.CryptoRepository
 
                 var response = await HttpRequest.SendGetCall(apiUrl, headers);
 
-                var chartResponse = JsonConvert.DeserializeObject<CryptoSummaryResponse>(response);
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var chartResponse = JsonConvert.DeserializeObject<CryptoSummaryResponse>(response.Data);
 
                 fnResult.Data = new CryptoSummaryData
                 {
@@ -215,38 +240,56 @@ namespace Services.Repository.CryptoRepository
             }
         }
 
-        public async Task<IEnumerable<CryptoValue>> GetCryptoValuesAsync(string ids)
+        public async Task<Response<IEnumerable<CryptoValue>>> GetCryptoValuesAsync(string ids)
         {
-            var cryptoTickers = ids.Split(",");
-
-            var apiUrl = $"https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol={ids}&convert=AUD";
-
-            var headers = new Dictionary<string, string>
+            var fnResult = new Response<IEnumerable<CryptoValue>>
             {
-                { "X-CMC_PRO_API_KEY", "a9c6f35a-153a-4123-8709-7782164e2e2b" }
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
-
-            var response = await HttpRequest.SendGetCall(apiUrl, headers);
-
-            var requestBody = JObject.Parse(response);
-
-            var cryptoValueList = new List<CryptoValue>();
-
-            foreach (var ticker in cryptoTickers)
+            try
             {
-                if (requestBody.SelectToken($"data.{ticker}.quote.AUD.price") != null)
-                {
-                    var cryptoTicker = new CryptoValue
-                    {
-                        Name = ticker,
-                        FullName = (string)requestBody.SelectToken($"data.{ticker}.name"),
-                        Price = (double)requestBody.SelectToken($"data.{ticker}.quote.AUD.price")
-                    };
-                    cryptoValueList.Add(cryptoTicker);
-                }
-            }
+                var cryptoTickers = ids.Split(",");
 
-            return cryptoValueList;
+                var apiUrl = $"https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol={ids}&convert=AUD";
+
+                var headers = new Dictionary<string, string>
+                {
+                    { "X-CMC_PRO_API_KEY", "a9c6f35a-153a-4123-8709-7782164e2e2b" }
+                };
+
+                var response = await HttpRequest.SendGetCall(apiUrl, headers);
+
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var requestBody = JObject.Parse(response.Data);
+
+                var cryptoValueList = new List<CryptoValue>();
+
+                foreach (var ticker in cryptoTickers)
+                {
+                    if (requestBody.SelectToken($"data.{ticker}.quote.AUD.price") != null)
+                    {
+                        var cryptoTicker = new CryptoValue
+                        {
+                            Name = ticker,
+                            FullName = (string)requestBody.SelectToken($"data.{ticker}.name"),
+                            Price = (double)requestBody.SelectToken($"data.{ticker}.quote.AUD.price")
+                        };
+                        cryptoValueList.Add(cryptoTicker);
+                    }
+                }
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
+                fnResult.Data = cryptoValueList;
+
+                return fnResult;
+            }
+            catch (Exception e)
+            {
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
+                fnResult.Message = e.Message;
+                return fnResult;
+            }
         }
 
         public async Task<Response> RemoveCryptoFromDbAsync(CryptocurrencyDTO crypto)

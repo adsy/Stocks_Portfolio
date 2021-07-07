@@ -8,7 +8,7 @@ namespace Services.Interfaces.Services
 {
     public interface IStocksService
     {
-        public Task<IEnumerable<StockValue>> GetStockDataAsync(string id);
+        public Task<Response<IEnumerable<StockValue>>> GetStockDataAsync(string id);
 
         public Task<Response<StockSummaryData>> GetStockSummaryDataAsync(string id);
 

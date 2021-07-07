@@ -20,7 +20,7 @@ namespace Services.Services.GetStockDataService
             _stocksRepository = stocksRepository;
         }
 
-        public async Task<IEnumerable<StockValue>> GetStockDataAsync(string id)
+        public async Task<Response<IEnumerable<StockValue>>> GetStockDataAsync(string id)
         {
             var result = await _stocksRepository.GetStockDataAsync(id);
 

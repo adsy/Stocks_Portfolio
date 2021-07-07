@@ -34,7 +34,7 @@ namespace StockAPI.Controllers
                     Ids = ids
                 });
 
-                if (result != null) return Ok(result);
+                if (result.StatusCode == (int)HttpStatusCode.OK) return Ok(result);
 
                 return BadRequest("One of the symbols you entered was incorrect");
             }
@@ -120,9 +120,10 @@ namespace StockAPI.Controllers
             {
                 var result = await _mediator.Send(new GetCryptoPortfolioAsyncQuery());
 
-                if (result != null) return Ok(result);
+                if (result.StatusCode == (int)HttpStatusCode.OK)
+                    return Ok(result);
 
-                return BadRequest();
+                return StatusCode(result.StatusCode, result.Message);
             }
             catch (Exception e)
             {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Services;
 using Services.Crypto.Querys;
 using Services.Interfaces.Services;
 using Services.Models;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace StockAPI.Handlers.CryptoHandler
 {
-    public class GetCryptoValuesAsyncHandler : IRequestHandler<GetCryptoValuesAsyncQuery, IEnumerable<CryptoValue>>
+    public class GetCryptoValuesAsyncHandler : IRequestHandler<GetCryptoValuesAsyncQuery, Response<IEnumerable<CryptoValue>>>
     {
         private readonly ICryptoService _cryptoService;
 
@@ -19,7 +20,7 @@ namespace StockAPI.Handlers.CryptoHandler
             _cryptoService = cryptoService;
         }
 
-        public Task<IEnumerable<CryptoValue>> Handle(GetCryptoValuesAsyncQuery request, CancellationToken cancellationToken)
+        public Task<Response<IEnumerable<CryptoValue>>> Handle(GetCryptoValuesAsyncQuery request, CancellationToken cancellationToken)
         {
             var result = _cryptoService.GetCryptoValuesAsync(request.Ids);
 

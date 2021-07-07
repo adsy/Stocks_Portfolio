@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,13 @@ namespace Services.Models
 {
     public static class HttpRequest
     {
-        public static async Task<string> SendGetCall(string Uri, Dictionary<string, string> headers = null)
+        public static async Task<Response<string>> SendGetCall(string Uri, Dictionary<string, string> headers = null)
         {
+            var fnResult = new Response<string>
+            {
+                StatusCode = (int)HttpStatusCode.OK
+            };
+
             var client = new HttpClient();
             var request = new HttpRequestMessage();
 
@@ -29,12 +35,20 @@ namespace Services.Models
                     request.Headers.Add(header.Key, header.Value);
                 }
             }
-
-            using (var response = await client.SendAsync(request))
+            try
             {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                return body;
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    fnResult.Data = await response.Content.ReadAsStringAsync();
+                    return fnResult;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                fnResult.StatusCode = (int)ex.StatusCode;
+                fnResult.Message = ex.Message;
+                return fnResult;
             }
         }
     }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Services.Crypto.Querys
 {
-    public class GetCryptoPortfolioAsyncQuery : IRequest<CryptoPortfolio>
+    public class GetCryptoPortfolioAsyncQuery : IRequest<Response<CryptoPortfolio>>
     {
     }
 }

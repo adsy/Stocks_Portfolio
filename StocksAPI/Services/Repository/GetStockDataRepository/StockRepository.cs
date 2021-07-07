@@ -28,49 +28,68 @@ namespace Services.Repository.GetStockDataRepository
 
         #region ApiCalls
 
-        public async Task<IEnumerable<StockValue>> GetStockDataAsync(string ids)
+        public async Task<Response<IEnumerable<StockValue>>> GetStockDataAsync(string ids)
         {
-            var stockTickers = ids.Split(",");
-
-            var headers = new Dictionary<string, string>
+            var fnResult = new Response<IEnumerable<StockValue>>
             {
-                { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
 
-            var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=AU&symbols={ids}", headers);
-
-            var stockProfiles = new List<StockValue>();
-
-            var requestBody = JObject.Parse(response);
-            var count = 0;
-
-            foreach (var stock in stockTickers)
+            try
             {
-                if (stock != "")
+                var stockTickers = ids.Split(",");
+
+                var headers = new Dictionary<string, string>
                 {
-                    if (requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice") != null)
+                    { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
+                    { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
+                };
+
+                var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=AU&symbols={ids}", headers);
+
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var stockProfiles = new List<StockValue>();
+
+                var requestBody = JObject.Parse(response.Data);
+
+                var count = 0;
+
+                foreach (var stock in stockTickers)
+                {
+                    if (stock != "")
                     {
-                        var stockProfile = new StockValue
+                        if (requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice") != null)
                         {
-                            CurrentPrice = (double)requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice"),
-                            Name = stock
-                        };
+                            var stockProfile = new StockValue
+                            {
+                                CurrentPrice = (double)requestBody.SelectToken($"quoteResponse.result[{count}].regularMarketPrice"),
+                                Name = stock
+                            };
 
-                        stockProfiles.Add(stockProfile);
+                            stockProfiles.Add(stockProfile);
+                        }
+                        count++;
                     }
-                    count++;
                 }
+                fnResult.Data = stockProfiles;
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
+                return fnResult;
             }
-
-            return stockProfiles;
+            catch (Exception e)
+            {
+                fnResult.StatusCode = (int)HttpStatusCode.InternalServerError;
+                fnResult.Message = e.Message;
+                return fnResult;
+            }
         }
 
         public async Task<Response<StockSummaryData>> GetStockSummaryDataAsync(string id)
         {
             var fnResult = new Response<StockSummaryData>
             {
-                StatusCode = (int)HttpStatusCode.OK
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
             try
             {
@@ -82,7 +101,10 @@ namespace Services.Repository.GetStockDataRepository
 
                 var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-profile?symbol={id}&region=AU", headers);
 
-                var requestBody = JObject.Parse(response);
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var requestBody = JObject.Parse(response.Data);
 
                 double exchangeRate = 1;
 
@@ -92,11 +114,14 @@ namespace Services.Repository.GetStockDataRepository
 
                     var exRateRepsonse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
 
-                    var exRateBody = JObject.Parse(exRateRepsonse);
-
-                    if (!(exRateBody.SelectToken("result").ToString() == "error"))
+                    if (exRateRepsonse.StatusCode == (int)HttpStatusCode.OK)
                     {
-                        exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+                        var exRateBody = JObject.Parse(exRateRepsonse.Data);
+
+                        if (!(exRateBody.SelectToken("result").ToString() == "error"))
+                        {
+                            exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+                        }
                     }
                 }
 
@@ -113,6 +138,7 @@ namespace Services.Repository.GetStockDataRepository
                 };
 
                 fnResult.Data = stockSummary;
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
 
                 return fnResult;
             }
@@ -129,7 +155,7 @@ namespace Services.Repository.GetStockDataRepository
         {
             var fnResult = new Response<List<StockNews>>
             {
-                StatusCode = (int)HttpStatusCode.OK
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
 
             try
@@ -142,7 +168,10 @@ namespace Services.Repository.GetStockDataRepository
 
                 var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/get-news?category={id}&region=AU", headers);
 
-                var responseBody = JObject.Parse(response);
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var responseBody = JObject.Parse(response.Data);
 
                 var newsList = new List<StockNews>();
 
@@ -165,6 +194,7 @@ namespace Services.Repository.GetStockDataRepository
                     });
                 }
 
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
                 fnResult.Data = newsList;
 
                 return fnResult;
@@ -181,7 +211,7 @@ namespace Services.Repository.GetStockDataRepository
         {
             var fnResult = new Response<StockChartData>
             {
-                StatusCode = (int)HttpStatusCode.OK
+                StatusCode = (int)HttpStatusCode.BadRequest
             };
 
             try
@@ -196,7 +226,10 @@ namespace Services.Repository.GetStockDataRepository
 
                 var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-chart?interval=5m&symbol={id}&range=1d&region=US", headers);
 
-                var requestBody = JObject.Parse(response);
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var requestBody = JObject.Parse(response.Data);
 
                 var timestampList = requestBody.SelectToken($"chart.result[0].timestamp").Values<long>().ToList();
                 var priceJToken = requestBody.SelectToken($"chart.result[0].indicators.quote[0].close");
@@ -229,6 +262,8 @@ namespace Services.Repository.GetStockDataRepository
                         time = start.ToString("g")
                     });
                 }
+
+                fnResult.StatusCode = (int)HttpStatusCode.OK;
                 fnResult.Data = stockChartData;
 
                 return fnResult;
@@ -252,7 +287,10 @@ namespace Services.Repository.GetStockDataRepository
             {
                 var response = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
 
-                var requestBody = JObject.Parse(response);
+                if (response.StatusCode != (int)HttpStatusCode.OK)
+                    return fnResult;
+
+                var requestBody = JObject.Parse(response.Data);
 
                 var exchangeRate = 1.33;
 
@@ -298,7 +336,10 @@ namespace Services.Repository.GetStockDataRepository
 
                 var prices = await GetStockDataAsync(ids);
 
-                foreach (var value in prices)
+                if (prices.StatusCode != (int)HttpStatusCode.OK)
+                    throw new Exception("There was an exception thrown getting stock values while creating stock portfolio.");
+
+                foreach (var value in prices.Data)
                 {
                     var stockProfile = stockPortfolio.Stocks[value.Name];
 

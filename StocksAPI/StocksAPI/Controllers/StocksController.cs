@@ -32,7 +32,10 @@ namespace StockAPI.Controllers
                 Id = id
             });
 
-            return Ok(result);
+            if (result.StatusCode == (int)HttpStatusCode.OK)
+                return Ok(result);
+
+            return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpGet]

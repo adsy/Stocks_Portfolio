@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Services.Crypto.Querys
 {
-    public class GetCryptoValuesAsyncQuery : IRequest<IEnumerable<CryptoValue>>
+    public class GetCryptoValuesAsyncQuery : IRequest<Response<IEnumerable<CryptoValue>>>
     {
         public string Ids { get; set; }
     }
