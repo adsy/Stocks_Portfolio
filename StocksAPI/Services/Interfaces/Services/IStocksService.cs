@@ -8,22 +8,22 @@ namespace Services.Interfaces.Services
 {
     public interface IStocksService
     {
-        public Task<Response<IEnumerable<StockValue>>> GetStockDataAsync(string id);
+        Task<Response<IEnumerable<StockValue>>> GetStockDataAsync(string id);
 
-        public Task<Response<StockSummaryData>> GetStockSummaryDataAsync(string id);
+        Task<Response<StockSummaryData>> GetStockSummaryDataAsync(string id);
 
-        public Task<Response<List<StockNews>>> GetStockNewsAsync(string id);
+        Task<Response<List<StockNews>>> GetStockNewsAsync(string id);
 
-        public Task<Response<StockChartData>> GetStockChartDataAsync(string id);
+        Task<Response<StockChartData>> GetStockChartDataAsync(string id);
 
-        public Task<Response<StockPortfolio>> GetPortfolioAsync();
+        Task<Response<StockPortfolio>> GetPortfolioAsync();
 
-        public Task<StockDTO> AddStockAsync(StockDTO stock);
+        Task<StockDTO> AddStockAsync(StockDTO stock);
 
-        public Task<StockDTO> SellStockAsync(SellStockDTO stock);
+        Task<StockDTO> SellStockAsync(SellStockDTO stock);
 
-        public Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker);
+        Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker);
 
-        public Task<IEnumerable<PortfolioTrackerDTO>> GetPortfolioValueListAsync();
+        Task<IEnumerable<PortfolioTrackerDTO>> GetPortfolioValueListAsync();
     }
 }
