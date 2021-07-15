@@ -49,7 +49,7 @@ const CryptoPurchaseList = ({ cryptoList }) => {
                 <h6> {crypto.amount}</h6>
               </div>
               <div className="hide-when-small" style={{ width: "20%" }}>
-                <h6> ${crypto.currentValue}</h6>
+                <h6> ${crypto.currentValue.toFixed(4)}</h6>
               </div>
               <div className="hide-when-small" style={{ width: "20%" }}>
                 <h6> ${crypto.purchasePrice}</h6>

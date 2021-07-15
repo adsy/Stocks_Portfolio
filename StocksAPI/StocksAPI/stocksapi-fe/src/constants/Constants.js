@@ -11,6 +11,8 @@
   static addCrypto = "https://localhost:44345/api/Crypto/AddCrypto";
   static sellStock = "https://localhost:44345/api/Stocks/SellStock";
   static sellCrypto = "https://localhost:44345/api/Crypto/SellCrypto";
+  static getCryptoSummaryData =
+    "https://localhost:44345/api/Crypto/GetSummary/{id}";
   static login = "https://localhost:44345/api/Account/Login";
   static portfolioValueList =
     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/GetPortfolioValueList";

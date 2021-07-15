@@ -2,38 +2,36 @@ import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router";
 import { useLocation } from "react-router-dom";
 import { Constants } from "../../constants/Constants";
-import StockPurchaseList from "../StockInfo/PurchaseList/StockPurchaseList";
 import StockChart from "../Chart/StockChart";
 import CryptoPurchaseList from "./PurchaseInfo/CryptoPurchaseList";
+import CryptoFinancialsContainer from "./CryptoFinancialsContainer/CryptoFinancialsContainer";
 
 const CryptoInfo = () => {
   const [cryptoTimeData, setCryptoTimeData] = useState([]);
+  const [cryptoSummaryData, setCryptoSummaryData] = useState({});
   const [loading, setLoading] = useState(true);
   let cryptoData = useLocation();
-
-  console.log(cryptoData.state.crypto.fullName.toLowerCase());
 
   const chartURL = Constants.getCryptoChartData.replace(
     "{id}",
     cryptoData.state.crypto.fullName.toLowerCase()
   );
-  const GetChartData = () => {
-    axios
-      .get(chartURL)
-      .then((res) => res.data)
-      .then((data) => {
-        setCryptoTimeData(data.priceChartData);
-        setLoading(false);
-      });
-  };
+  const summaryURL = Constants.getCryptoSummaryData.replace(
+    "{id}",
+    cryptoData.state.crypto.fullName.toLowerCase()
+  );
 
-  console.log(cryptoData);
+  useEffect(async () => {
+    const [summaryResponse, chartResponse] = await Promise.all([
+      axios.get(summaryURL),
+      axios.get(chartURL),
+    ]);
 
-  useEffect(() => {
-    GetChartData();
+    setCryptoSummaryData(summaryResponse.data);
+    setCryptoTimeData(chartResponse.data.priceChartData);
+    setLoading(false);
   }, []);
 
   if (loading) return <h1 className="loading-center row">🚀</h1>;
@@ -84,11 +82,10 @@ const CryptoInfo = () => {
                 width: "80%",
               }}
             >
-              {/* <FinancialsContainer
-                  stock={stock}
-                  stockSummaryData={stockSummaryData}
-                  stockData={stockData.state.stock}
-                /> */}
+              <CryptoFinancialsContainer
+                cryptoSummaryData={cryptoSummaryData}
+                cryptoData={cryptoData.state.crypto}
+              />
             </div>
           </div>
         </div>

@@ -8,11 +8,11 @@ namespace Services.Models.Crypto
 {
     public class CryptoSummaryData
     {
-        public string High24H { get; set; }
-        public string Low24H { get; set; }
-        public string PriceChangePercentage24H { get; set; }
-        public string MarketCapChange24H { get; set; }
-        public string MarketCapChangePercentage24H { get; set; }
-        public string MarketCapRank { get; set; }
+        public double High24H { get; set; }
+        public double Low24H { get; set; }
+        public double PriceChangePercentage24H { get; set; }
+        public double MarketCapChange24H { get; set; }
+        public double MarketCapChangePercentage24H { get; set; }
+        public double MarketCapRank { get; set; }
     }
 }

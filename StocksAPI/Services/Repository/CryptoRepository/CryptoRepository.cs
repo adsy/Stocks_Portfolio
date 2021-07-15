@@ -209,7 +209,7 @@ namespace Services.Repository.CryptoRepository
                         { "x-rapidapi-host", "coingecko.p.rapidapi.com" }
                     };
 
-                var apiUrl = $"https://coingecko.p.rapidapi.com/coins/{id}?localization=true&tickers=true&market_data=true&community_data=true&developer_data=true&sparkline=false";
+                var apiUrl = $"https://coingecko.p.rapidapi.com/coins/{id}?localization=false&tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=false";
 
                 var response = await HttpRequest.SendGetCall(apiUrl, headers);
 
@@ -220,12 +220,12 @@ namespace Services.Repository.CryptoRepository
 
                 fnResult.Data = new CryptoSummaryData
                 {
-                    High24H = chartResponse.Market_Data.High_24h["aud"],
-                    Low24H = chartResponse.Market_Data.Low_24h["aud"],
-                    MarketCapChange24H = chartResponse.Market_Data.Market_Cap_Change_24h,
-                    MarketCapChangePercentage24H = chartResponse.Market_Data.Market_Cap_Change_Percentage_24h,
-                    MarketCapRank = chartResponse.Market_Cap_Rank,
-                    PriceChangePercentage24H = chartResponse.Market_Data.Price_Change_Percentage_24h,
+                    High24H = double.Parse(chartResponse.Market_Data.High_24h["aud"]),
+                    Low24H = double.Parse(chartResponse.Market_Data.Low_24h["aud"]),
+                    MarketCapChange24H = double.Parse(chartResponse.Market_Data.Market_Cap_Change_24h),
+                    MarketCapChangePercentage24H = double.Parse(chartResponse.Market_Data.Market_Cap_Change_Percentage_24h),
+                    MarketCapRank = double.Parse(chartResponse.Market_Cap_Rank),
+                    PriceChangePercentage24H = double.Parse(chartResponse.Market_Data.Price_Change_Percentage_24h)
                 };
 
                 fnResult.StatusCode = (int)HttpStatusCode.OK;
