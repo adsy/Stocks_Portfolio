@@ -285,20 +285,20 @@ namespace Services.Repository.GetStockDataRepository
 
             try
             {
-                var response = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
+                var exRateResponse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
 
-                if (response.StatusCode != (int)HttpStatusCode.OK)
-                    return fnResult;
+                var exchangeRate = 1.33; // placeholder for when quota has been reached
 
-                var requestBody = JObject.Parse(response.Data);
-
-                var exchangeRate = 1.33;
-
-                var test = requestBody.SelectToken("result").ToString();
-
-                if (!(requestBody.SelectToken("result").ToString() == "error"))
+                if (exRateResponse.StatusCode == (int)HttpStatusCode.OK)
                 {
-                    exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
+                    var requestBody = JObject.Parse(exRateResponse.Data);
+
+                    var test = requestBody.SelectToken("result").ToString();
+
+                    if (!(requestBody.SelectToken("result").ToString() == "error"))
+                    {
+                        exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
+                    }
                 }
 
                 var stocks = await _unitOfWork.Stocks.GetAll();
@@ -474,7 +474,9 @@ namespace Services.Repository.GetStockDataRepository
 
         public async Task<IEnumerable<PortfolioTrackerDTO>> GetPortfolioValueListAsync()
         {
-            var result = await _unitOfWork.PortfolioTrackers.GetAll(q => q.TimeStamp > DateTime.Now.AddDays(-1));
+            var result = ((List<PortfolioTrackerDTO>)await _unitOfWork.PortfolioTrackers.GetAll())
+                .OrderByDescending(q => q.TimeStamp)
+                .Take(200);
 
             var newList = new List<PortfolioTrackerDTO>();
 
