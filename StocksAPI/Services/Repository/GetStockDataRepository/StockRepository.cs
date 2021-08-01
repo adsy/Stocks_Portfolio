@@ -474,9 +474,10 @@ namespace Services.Repository.GetStockDataRepository
 
         public async Task<IEnumerable<PortfolioTrackerDTO>> GetPortfolioValueListAsync()
         {
-            var result = ((List<PortfolioTrackerDTO>)await _unitOfWork.PortfolioTrackers.GetAll())
+            var result = ((List<PortfolioTracker>)await _unitOfWork.PortfolioTrackers.GetAll())
                 .OrderByDescending(q => q.TimeStamp)
-                .Take(200);
+                .Take(200)
+                .Reverse();
 
             var newList = new List<PortfolioTrackerDTO>();
 

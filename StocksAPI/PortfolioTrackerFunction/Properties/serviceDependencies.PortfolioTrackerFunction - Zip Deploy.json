@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "storage1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/portfoliotrackerfunction",
+      "type": "storage.azure",
+      "connectionId": "portfolioTrackerStorage",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}

@@ -23,7 +23,7 @@ namespace PortfolioTrackerFunction
         }
 
         [FunctionName("PortfolioValueCheckerUSAfterMidnight")]
-        public async void Run([TimerTrigger("0 */5 1-5 * * 1-5")] TimerInfo myTimer, ILogger log)
+        public async void Run([TimerTrigger("0 */5 1-5 * * *")] TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             await _stockApiService.AddPortfolioValueToDB();

@@ -14,6 +14,9 @@ namespace PortfolioTrackerFunction
         {
             builder.Services.AddSingleton<IStocksApiService, StocksApiService>();
             builder.Services.AddSingleton<IStocksApiRepository, StocksApiRepository>();
+            builder.Services.AddSingleton<IExchangeRateService, ExchangeRateService>();
+            builder.Services.AddSingleton<IExchangeRateRepository, ExchangeRateRepository>();
+            builder.Services.AddSingleton<IStorageRepository, StorageRepository>();
         }
     }
 }
