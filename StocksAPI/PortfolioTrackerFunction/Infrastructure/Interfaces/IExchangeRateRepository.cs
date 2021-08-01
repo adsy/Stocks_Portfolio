@@ -10,5 +10,7 @@ namespace PortfolioTrackerFunction.Infrastructure.Interfaces
     public interface IExchangeRateRepository
     {
         Task<ServiceProcessResult<ExchangeRate>> GetExchangeRateFromTable(IBinder binder);
+
+        Task UpdateExchangeRateInTable(IBinder binder);
     }
 }

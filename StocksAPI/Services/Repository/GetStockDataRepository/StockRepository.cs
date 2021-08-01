@@ -285,20 +285,14 @@ namespace Services.Repository.GetStockDataRepository
 
             try
             {
-                var exRateResponse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
+                var exRateResponse = await HttpRequest.SendGetCall($"https://portfoliotrackerfunction.azurewebsites.net/api/exchangerate");
 
-                var exchangeRate = 1.33; // placeholder for when quota has been reached
+                // placeholder for when ExRateStorage Cache is not working
+                var exchangeRate = 1.33;
 
                 if (exRateResponse.StatusCode == (int)HttpStatusCode.OK)
                 {
-                    var requestBody = JObject.Parse(exRateResponse.Data);
-
-                    var test = requestBody.SelectToken("result").ToString();
-
-                    if (!(requestBody.SelectToken("result").ToString() == "error"))
-                    {
-                        exchangeRate = (double)requestBody.SelectToken($"conversion_rates.AUD");
-                    }
+                    exchangeRate = double.Parse(exRateResponse.Data);
                 }
 
                 var stocks = await _unitOfWork.Stocks.GetAll();

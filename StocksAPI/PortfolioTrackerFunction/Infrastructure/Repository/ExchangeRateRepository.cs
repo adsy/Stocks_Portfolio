@@ -5,6 +5,8 @@ using PortfolioTrackerFunction.Infrastructure.Models;
 using System.Net;
 using System.Threading.Tasks;
 using System;
+using Newtonsoft.Json.Linq;
+using PortfolioTrackerFunction.Models;
 
 namespace PortfolioTrackerFunction.Infrastructure.Repository
 {
@@ -44,6 +46,34 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
                 fnResult.ServiceResultCode = (int)HttpStatusCode.InternalServerError;
                 fnResult.ServiceResultMessage = ex.Message;
                 return fnResult;
+            }
+        }
+
+        public async Task UpdateExchangeRateInTable(IBinder binder)
+        {
+            var exRateObj = new ExchangeRate
+            {
+                PartitionKey = "exchange-rate",
+                RowKey = "rate"
+            };
+
+            var exRateRepsonse = await HttpRequest.SendGetCall($"https://portfoliotrackerfunction.azurewebsites.net/api/exchangerate");
+
+            if (exRateRepsonse.StatusCode == (int)HttpStatusCode.OK)
+            {
+                var exRateBody = JObject.Parse(exRateRepsonse.Data);
+
+                if (!(exRateBody.SelectToken("result").ToString() == "error"))
+                {
+                    var exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
+
+                    exRateObj.rate = exchangeRate;
+
+                    // check for existing item in table and remove it
+                    await _storageRepository.RemoveEntityFromTable(binder, "exchange-rate", "rate", "exchangeRate");
+
+                    await _storageRepository.AddEntityToTable(binder, exRateObj, "exchangeRate");
+                }
             }
         }
     }

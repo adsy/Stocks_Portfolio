@@ -24,5 +24,10 @@ namespace PortfolioTrackerFunction.Infrastructure.Services
 
             return result;
         }
+
+        public async Task UpdateExchangeRate(IBinder binder)
+        {
+            await _exchangeRateRepository.UpdateExchangeRateInTable(binder);
+        }
     }
 }

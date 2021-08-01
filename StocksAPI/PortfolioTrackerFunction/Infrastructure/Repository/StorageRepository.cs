@@ -38,7 +38,12 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
         {
             var table = await FetchTable(binder, tableName);
 
-            var deleteOperation = TableOperation.Delete(new DynamicTableEntity(partitionKey, rowKey));
+            var deleteOperation = TableOperation.Delete(new DynamicTableEntity
+            {
+                PartitionKey = partitionKey,
+                RowKey = rowKey,
+                ETag = "*"
+            });
 
             var result = await table.ExecuteAsync(deleteOperation);
         }
@@ -47,7 +52,7 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
         {
             var table = await FetchTable(binder, tableName);
 
-            var fetchOperation = TableOperation.Retrieve(partitionKey, rowKey);
+            var fetchOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
 
             var result = await table.ExecuteAsync(fetchOperation);
 

@@ -23,7 +23,7 @@ namespace PortfolioTrackerFunction
 
         [FunctionName("ExchangeRateRetrieval")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "exchangerate")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "exchangerate")] HttpRequest req,
             ILogger log, IBinder binder)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -32,7 +32,7 @@ namespace PortfolioTrackerFunction
 
             if (result.ServiceResultCode == (int)HttpStatusCode.OK)
             {
-                return new OkObjectResult(result.Data);
+                return new OkObjectResult(result.Data.rate);
             }
 
             return new StatusCodeResult(result.ServiceResultCode);
