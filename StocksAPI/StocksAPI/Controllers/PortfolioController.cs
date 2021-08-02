@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Portfolio.Query;
 using Services.Stocks.Queries;
@@ -19,7 +20,8 @@ namespace StockAPI.Controllers
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-
+        
+        [Authorize]
         [HttpGet]
         [Route("GetPortfolio")]
         public async Task<IActionResult> GetPortfolio()

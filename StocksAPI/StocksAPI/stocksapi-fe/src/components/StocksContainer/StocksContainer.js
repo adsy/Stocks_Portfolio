@@ -5,10 +5,6 @@ import { Link } from "react-router-dom";
 import SellStockModal from "../SellStock/SellStockModal";
 
 const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
-  useEffect(() => {
-    console.log(CurrentStockPortfolio);
-  }, []);
-
   return (
     <div>
       {CurrentStockPortfolio.map((stock, index) => (

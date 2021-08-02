@@ -64,8 +64,6 @@ class Home extends Component {
         cleanedStocks.push(newItem);
       }
 
-      console.log(cryptoArray);
-
       this.setState({
         portfolioData: portfolioProfit,
         stockPortfolio: cleanedStocks,

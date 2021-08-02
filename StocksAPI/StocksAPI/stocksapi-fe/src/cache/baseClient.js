@@ -1,8 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { cache } from "./cacheHandler";
 
+var myHeaders = new Headers();
+myHeaders.append("Authorization", `${localStorage.getItem("token")}`);
+
 export const client = axios.create({
-  baseURL: "https://localhost:44345/api",
+  baseURL: "https://stockapi20210415184956.azurewebsites.net/api",
+  headers: myHeaders,
 });
 
 const whiteList = ["Portfolio/GetPortfolio"];
