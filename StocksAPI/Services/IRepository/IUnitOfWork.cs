@@ -12,6 +12,7 @@ namespace Services.IRepository
         IGenericRepository<Stock> Stocks { get; }
         IGenericRepository<PortfolioTracker> PortfolioTrackers { get; }
         IGenericRepository<Cryptocurrency> Cryptocurrencies { get; }
+        IGenericRepository<ApiUser> AspNetUsers { get; }
 
         Task Save();
     }

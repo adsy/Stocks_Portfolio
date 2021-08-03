@@ -21,13 +21,15 @@ namespace StockAPI.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthManager _authManager;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<ApiUser> userManager, ILogger<AccountController> logger, IMapper mapper, IAuthManager authManager)
+        public AccountController(UserManager<ApiUser> userManager, ILogger<AccountController> logger, IMapper mapper, IAuthManager authManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _logger = logger;
             _mapper = mapper;
             _authManager = authManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost]
@@ -51,7 +53,13 @@ namespace StockAPI.Controllers
                     return Unauthorized();
                 }
 
-                return Accepted(new { Token = await _authManager.CreateToken() });
+                var refreshTokens = await _tokenService.GenerateRefreshToken(userDTO);
+
+                return Accepted(new
+                {
+                    Token = await _authManager.CreateToken(),
+                    RefreshToken = refreshTokens
+                });
             }
             catch (Exception e)
             {

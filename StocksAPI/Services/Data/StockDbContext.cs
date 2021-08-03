@@ -21,6 +21,7 @@ namespace Services.Data
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<PortfolioTracker> PortfolioTrackers { get; set; }
         public DbSet<Cryptocurrency> Cryptocurrencies { get; set; }
+        public DbSet<ApiUser> AspNetUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

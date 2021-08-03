@@ -90,6 +90,7 @@ namespace StockAPI
             services.AddTransient(typeof(IStocksRepository), typeof(StockRepository));
             services.AddTransient(typeof(IStocksService), typeof(StockService));
             services.AddTransient(typeof(ICryptoService), typeof(CryptoService));
+            services.AddTransient(typeof(ITokenService), typeof(TokenService));
             services.AddTransient(typeof(ICryptoRepository), typeof(CryptoRepository));
             services.AddTransient(typeof(IPortfolioService), typeof(PortfolioService));
             services.AddTransient(typeof(IPortfolioRepository), typeof(PortfolioRepository));
