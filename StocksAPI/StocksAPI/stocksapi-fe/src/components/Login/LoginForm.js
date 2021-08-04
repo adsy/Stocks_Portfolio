@@ -19,24 +19,29 @@ class LoginForm extends Component {
   }
 
   async Login() {
-    axios({
-      method: "post",
-      url: `${Constants.login}`,
-      data: {
+    fetch(`${Constants.login}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         email: `${this.state.email}`,
         password: `${this.state.password}`,
-      },
-      headers: { "Access-Control-Allow-Origin": "*" },
+      }),
     })
+      .then((response) => response.json())
       .then((response) => {
         localStorage.removeItem("token");
 
-        const token = response.data.token;
-        const refreshToken = response.data.refreshToken;
+        const token = response.token;
+        const refreshToken = response.refreshToken;
 
         localStorage.setItem("token", token);
         localStorage.setItem("refreshToken", refreshToken);
-
+      })
+      .then(() => {
         this.props.history.push("/dashboard");
       })
       .catch((error) => {

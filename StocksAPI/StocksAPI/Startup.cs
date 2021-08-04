@@ -31,6 +31,8 @@ using Services.Services.CryptoService;
 using Services.Repository.CryptoRepository;
 using Services.Repository.PortfolioRepository;
 using Services.Services.PortfolioService;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Net.Http.Headers;
 
 namespace StockAPI
 {
@@ -65,15 +67,27 @@ namespace StockAPI
 
             services.ConfigureJWT(Configuration);
 
-            services.AddCors(cors =>
-            {
-                cors.AddDefaultPolicy(builder =>
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-                });
-            });
+            services.AddCors(options =>
+              options.AddPolicy("Dev", builder =>
+              {
+                  // Allow multiple methods
+                  builder.WithMethods("GET", "POST", "PATCH", "DELETE", "OPTIONS")
+                    .WithHeaders(
+                      HeaderNames.Accept,
+                      HeaderNames.ContentType,
+                      HeaderNames.Authorization)
+                    .AllowCredentials()
+                    .SetIsOriginAllowed(origin =>
+                    {
+                        if (string.IsNullOrWhiteSpace(origin)) return false;
+                        // Only add this to allow testing with localhost, remove this line in production!
+                        if (origin.ToLower().StartsWith("http://localhost")) return true;
+                        // Insert your production domain here.
+                        if (origin.ToLower().StartsWith("https://dev.mydomain.com")) return true;
+                        return false;
+                    });
+              })
+            );
 
             // Adds autoMapper to list of services - use the MapperInitialiser class setup in Configuration file
             services.AddAutoMapper(typeof(MapperInitialiser));
@@ -139,7 +153,7 @@ namespace StockAPI
 
             app.UseAuthentication();
 
-            app.UseCors();
+            app.UseCors("Dev");
 
             app.UseAuthorization();
 

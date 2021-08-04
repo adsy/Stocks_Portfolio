@@ -8,7 +8,7 @@ import axios from "axios";
 import { Constants } from "../constants/Constants";
 import Chart from "./Chart/PortfolioChart";
 import CryptoContainer from "./CryptoContainer/CryptoContainer";
-import { client } from "../cache/baseClient";
+import { createClient } from "../cache/baseClient";
 
 class Home extends Component {
   constructor(props) {
@@ -28,6 +28,10 @@ class Home extends Component {
       this.setState({ loading: true });
 
       let response;
+
+      let client = createClient({
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      });
 
       await client
         .get("/Portfolio/GetPortfolio")
@@ -76,7 +80,7 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    this.UpdateFromStockApi();
+    await this.UpdateFromStockApi();
   }
 
   async logout() {

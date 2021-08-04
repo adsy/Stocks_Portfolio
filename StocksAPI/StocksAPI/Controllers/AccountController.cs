@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Services.Data;
 using Services.Models;
 using Services.Services;
+using Microsoft.AspNetCore.Cors;
 
 namespace StockAPI.Controllers
 {
@@ -55,16 +56,17 @@ namespace StockAPI.Controllers
 
                 var refreshTokens = await _tokenService.GenerateRefreshToken(userDTO);
 
+                setTokenCookie(refreshTokens);
                 return Accepted(new
                 {
                     Token = await _authManager.CreateToken(),
-                    RefreshToken = refreshTokens
+                    refreshToken = refreshTokens
                 });
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Something went wrong in the login function");
-                return Problem($"Something went wrong while {userDTO.Email} tried to login", statusCode: 500);
+                return Problem($"Something went wrong while {userDTO.Email} tried to login - {e.Message} \n\n {e} ", statusCode: 500);
             }
         }
 
@@ -103,6 +105,19 @@ namespace StockAPI.Controllers
                 _logger.LogError(ex, $"Something Went Wrong in the {nameof(Register)}");
                 return Problem($"Something Went Wrong in the {nameof(Register)}", statusCode: 500);
             }
+        }
+
+        private void setTokenCookie(string token)
+        {
+            // append cookie with refresh token to the http response
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7),
+                SameSite = SameSiteMode.None,
+                Secure = true
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
     }
 }

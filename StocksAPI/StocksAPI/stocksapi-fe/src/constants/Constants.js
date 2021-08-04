@@ -48,5 +48,6 @@
 //     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/GetPortfolioValueList";
 //   static portfolioValueList =
 //     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/GetPortfolioValueList";
-//   static refreshToken = "";
+//   static refreshToken =
+//     "https://stockapi20210415184956.azurewebsites.net/api/Token/refresh";
 // }

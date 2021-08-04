@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Data;
 using Services.Models;
@@ -32,6 +33,8 @@ namespace StockAPI.Controllers
                 return BadRequest("Invalid client request");
             }
 
+            var cookies = Request.Cookies;
+
             string accessToken = tokenApiModel.AccessToken;
             string refreshToken = tokenApiModel.RefreshToken;
 
@@ -50,7 +53,9 @@ namespace StockAPI.Controllers
             user.RefreshToken = newRefreshToken;
             _dbContext.SaveChanges();
 
-            return new ObjectResult(new
+            setTokenCookie(newRefreshToken);
+
+            return Ok(new
             {
                 accessToken = newAccessToken,
                 refreshToken = newRefreshToken
@@ -67,6 +72,17 @@ namespace StockAPI.Controllers
             user.RefreshToken = null;
             _dbContext.SaveChanges();
             return NoContent();
+        }
+
+        private void setTokenCookie(string token)
+        {
+            // append cookie with refresh token to the http response
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
     }
 }

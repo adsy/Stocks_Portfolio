@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 import { Constants } from "../constants/Constants";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 const AuthenticatedRoute = ({ component: Component, ...rest }) => {
   const [authenticating, setAuthenticating] = useState(true);
@@ -15,46 +16,42 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => {
     });
 
     if (decodedToken == null) {
-      return false;
-    }
+      setAuthenticating(false);
+      setTokenResult(false);
+    } else {
+      let dateNow = new Date();
 
-    let dateNow = new Date();
-
-    if (decodedToken.payload.exp < dateNow.getTime() / 1000) {
-      // check refreshToken
-      axios({
-        method: "post",
-        url: `${Constants.refreshToken}`,
-        data: {
-          accessToken: localStorage.getItem("token"),
-          refreshToken: localStorage.getItem("refreshToken"),
-        },
-        headers: { "Access-Control-Allow-Origin": "*" },
-      })
-        .then((response) => {
-          console.log(response);
-          if (response.status == 200) {
-            console.log("changing token");
-            const token = response.data.accessToken;
-            const refreshToken = response.data.refreshToken;
-
-            localStorage.setItem("token", token);
-            localStorage.setItem("refreshToken", refreshToken);
-            setTokenResult(true);
-            setAuthenticating(false);
-          } else {
+      if (decodedToken.payload.exp < dateNow.getTime() / 1000) {
+        // check refreshToken
+        axios.defaults.withCredentials = true;
+        axios({
+          method: "post",
+          url: `${Constants.refreshToken}`,
+          data: {
+            accessToken: localStorage.getItem("token"),
+            refreshToken: localStorage.getItem("refreshToken"),
+          },
+        })
+          .then((response) => {
+            if (response.status == 200) {
+              const token = response.data.accessToken;
+              localStorage.setItem("token", token);
+              setTokenResult(true);
+              setAuthenticating(false);
+            } else {
+              setTokenResult(false);
+              setAuthenticating(false);
+            }
+          })
+          .catch((e) => {
+            console.log("error caught", e);
             setTokenResult(false);
             setAuthenticating(false);
-          }
-        })
-        .catch((e) => {
-          console.log("error caught", e);
-          setTokenResult(false);
-          setAuthenticating(false);
-        });
-    } else {
-      setTokenResult(true);
-      setAuthenticating(false);
+          });
+      } else {
+        setTokenResult(true);
+        setAuthenticating(false);
+      }
     }
   };
 
@@ -63,12 +60,7 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => {
   }, []);
 
   if (authenticating) {
-    return (
-      <div className="div">
-        <h5 className="login-loading-center row">🚀</h5>
-        <br />
-      </div>
-    );
+    return <div>test</div>;
   } else {
     return (
       <Route
