@@ -22,6 +22,7 @@ namespace Services.Data
         public DbSet<PortfolioTracker> PortfolioTrackers { get; set; }
         public DbSet<Cryptocurrency> Cryptocurrencies { get; set; }
         public DbSet<ApiUser> AspNetUsers { get; set; }
+        public DbSet<SoldInstrument> SoldInstruments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

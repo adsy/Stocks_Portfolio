@@ -170,7 +170,7 @@ namespace Services.Repository.CryptoRepository
 
                         coinProfile.TotalAmount += entry.Amount;
 
-                        avgPrice += entry.PurchasePrice;
+                        avgPrice += entry.TotalCost;
                     }
 
                     coinProfile.TotalCost = Math.Round(coinProfile.TotalCost, 2);
@@ -179,7 +179,7 @@ namespace Services.Repository.CryptoRepository
                     coinProfile.CurrentPrice = Math.Round(coinProfile.CurrentPrice, 5);
                     coinProfile.TotalAmount = Math.Round(coinProfile.TotalAmount, 3);
 
-                    coinProfile.AvgPrice = Math.Round(avgPrice / coinProfile.CoinCount, 3);
+                    coinProfile.AvgPrice = Math.Round(avgPrice / coinProfile.TotalAmount, 3);
                 }
 
                 fnResult.StatusCode = (int)HttpStatusCode.OK;

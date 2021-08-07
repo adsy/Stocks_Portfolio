@@ -10,6 +10,11 @@ namespace Services
         {
         }
 
+        public Response(int statusCode)
+        {
+            StatusCode = statusCode;
+        }
+
         public Response(string msg, int statusCode)
         {
             Message = msg;
@@ -31,6 +36,14 @@ namespace Services
 
     public class Response<T> : Response
     {
+        public Response()
+        {
+        }
+
+        public Response(int statusCode) : base(statusCode)
+        {
+        }
+
         public T Data { get; set; }
     }
 }

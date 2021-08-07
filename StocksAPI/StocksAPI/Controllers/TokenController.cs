@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Data;
+using Services.Interfaces;
 using Services.Models;
-using Services.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,7 +35,7 @@ namespace StockAPI.Controllers
             var cookies = Request.Cookies;
 
             string accessToken = tokenApiModel.AccessToken;
-            string refreshToken = tokenApiModel.RefreshToken;
+            string refreshToken = cookies.First(o => o.Key == "refreshToken").Value;
 
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
             var username = principal.Identity.Name; //this is mapped to the Name claim by default
@@ -57,8 +56,7 @@ namespace StockAPI.Controllers
 
             return Ok(new
             {
-                accessToken = newAccessToken,
-                refreshToken = newRefreshToken
+                accessToken = newAccessToken
             });
         }
 
@@ -80,7 +78,9 @@ namespace StockAPI.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7)
+                Expires = DateTime.UtcNow.AddDays(7),
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
         }

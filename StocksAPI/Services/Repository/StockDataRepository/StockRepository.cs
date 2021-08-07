@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net;
+using Services.Models.SoldInstruments;
 
 namespace Services.Repository.GetStockDataRepository
 {
@@ -19,11 +20,13 @@ namespace Services.Repository.GetStockDataRepository
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ISoldInstrumentsRepository _soldInstrumentsRepository;
 
-        public StockRepository(IUnitOfWork unitOfWork, IMapper mapper)
+        public StockRepository(IUnitOfWork unitOfWork, IMapper mapper, ISoldInstrumentsRepository soldInstrumentsRepository)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _soldInstrumentsRepository = soldInstrumentsRepository ?? throw new ArgumentNullException(nameof(soldInstrumentsRepository));
         }
 
         #region ApiCalls
@@ -407,48 +410,76 @@ namespace Services.Repository.GetStockDataRepository
             return stock;
         }
 
-        public async Task<StockDTO> SellStockAsync(SellStockDTO stock)
+        public async Task<StockDTO> SellStockAsync(SellStockDTO stockBeingSold)
         {
-            var stockObj = await _unitOfWork.Stocks.GetAll(q => q.Name == stock.Name);
-            var currentStockTotal = 0.0;
-
-            foreach (var foundStock in stockObj)
+            try
             {
-                currentStockTotal += foundStock.Amount;
-            }
+                var stockObj = await _unitOfWork.Stocks.GetAll(q => q.Name == stockBeingSold.Name);
+                var currentStockTotal = 0.0;
 
-            if (stock.Amount > currentStockTotal)
-                return null;
-
-            var returnStock = new StockDTO();
-
-            if (stock.Amount < stockObj.First().Amount)
-            {
-                stockObj.First().Amount = stockObj.First().Amount - stock.Amount;
-                _unitOfWork.Stocks.Update(stockObj.First());
-                await _unitOfWork.Save();
-            }
-            else
-            {
-                foreach (var currentStock in stockObj)
+                foreach (var foundStock in stockObj)
                 {
-                    if (stock.Amount >= currentStock.Amount)
-                    {
-                        stock.Amount = stock.Amount - currentStock.Amount;
-                        await _unitOfWork.Stocks.Delete(currentStock.Id);
-                    }
-                    else
-                    {
-                        currentStock.Amount = currentStock.Amount - stock.Amount;
-                        _unitOfWork.Stocks.Update(currentStock);
-                        returnStock = _mapper.Map<StockDTO>(currentStock);
-                    }
+                    currentStockTotal += foundStock.Amount;
                 }
 
-                await _unitOfWork.Save();
-            }
+                if (stockBeingSold.Amount > currentStockTotal)
+                    return null;
 
-            return returnStock;
+                var returnStock = new StockDTO();
+
+                var firstStockEntry = stockObj.First();
+
+                if (stockBeingSold.Amount < firstStockEntry.Amount)
+                {
+                    firstStockEntry.Amount = firstStockEntry.Amount - stockBeingSold.Amount;
+
+                    _unitOfWork.Stocks.Update(firstStockEntry);
+
+                    await _unitOfWork.Save();
+
+                    await InsertToSoldInstrumentTable(firstStockEntry, stockBeingSold);
+                }
+                else
+                {
+                    foreach (var currentStock in stockObj)
+                    {
+                        if (stockBeingSold.Amount >= currentStock.Amount)
+                        {
+                            var saleAmount = new SellStockDTO(stockBeingSold);
+                            saleAmount.Amount = currentStock.Amount;
+
+                            stockBeingSold.Amount = stockBeingSold.Amount - currentStock.Amount;
+                            await _unitOfWork.Stocks.Delete(currentStock.Id);
+                            await InsertToSoldInstrumentTable(currentStock, saleAmount);
+                        }
+                        else
+                        {
+                            await InsertToSoldInstrumentTable(currentStock, stockBeingSold);
+                            currentStock.Amount = currentStock.Amount - stockBeingSold.Amount;
+
+                            if (currentStock.Amount == 0)
+                            {
+                                await _unitOfWork.Stocks.Delete(currentStock.Id);
+                            }
+                            else
+                            {
+                                _unitOfWork.Stocks.Update(currentStock);
+                            }
+
+                            returnStock = _mapper.Map<StockDTO>(currentStock);
+                        }
+                    }
+
+                    await _unitOfWork.Save();
+                }
+
+                return returnStock;
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+                throw ex;
+            }
         }
 
         public async Task<PortfolioTrackerDTO> AddPortfolioValueAsync(PortfolioTrackerDTO portfolioTracker)
@@ -488,5 +519,58 @@ namespace Services.Repository.GetStockDataRepository
         }
 
         #endregion DatabaseCalls
+
+        private async Task InsertToSoldInstrumentTable(Stock stockDbOBj, SellStockDTO stockSaleInfo)
+        {
+            // if else statement for US vs AUS stock for profit conversion
+            var exRateResponse = await HttpRequest.SendGetCall($"https://portfoliotrackerfunction.azurewebsites.net/api/exchangerate");
+
+            // placeholder for when ExRateStorage Cache is not working
+            var exchangeRate = 1.33;
+
+            if (exRateResponse.StatusCode == (int)HttpStatusCode.OK)
+            {
+                exchangeRate = double.Parse(exRateResponse.Data);
+            }
+
+            if (stockDbOBj.Country == "US")
+            {
+                // create SoldInstrumentDTO with stockObj data and send to SoldInstrumentService
+                var soldInstrumentDTO = new SoldInstrumentDTO
+                {
+                    Amount = stockSaleInfo.Amount,
+                    Name = stockSaleInfo.Name,
+                    PurchasePrice = stockDbOBj.PurchasePrice,
+                    PuchaseDate = stockDbOBj.PurchaseDate,
+                    SalePrice = stockSaleInfo.SellPrice,
+                    SaleDate = DateTime.Now,
+                    DiscountApplied = stockDbOBj.PurchaseDate.AddMonths(12) <= DateTime.Now ? true : false,
+                    Profit = ((stockSaleInfo.SellPrice * exchangeRate) * stockSaleInfo.Amount) - ((stockDbOBj.PurchasePrice * exchangeRate) * stockSaleInfo.Amount)
+                };
+
+                soldInstrumentDTO.CGTPayable = soldInstrumentDTO.DiscountApplied ? (soldInstrumentDTO.Profit * .5) : soldInstrumentDTO.Profit;
+
+                await _soldInstrumentsRepository.AddSoldInstrumentToDBTable(soldInstrumentDTO);
+            }
+            else
+            {
+                // create SoldInstrumentDTO with stockObj data and send to SoldInstrumentService
+                var soldInstrumentDTO = new SoldInstrumentDTO
+                {
+                    Amount = stockSaleInfo.Amount,
+                    Name = stockSaleInfo.Name,
+                    PurchasePrice = stockDbOBj.PurchasePrice,
+                    PuchaseDate = stockDbOBj.PurchaseDate,
+                    SalePrice = stockSaleInfo.SellPrice,
+                    SaleDate = DateTime.Now,
+                    DiscountApplied = stockDbOBj.PurchaseDate.AddMonths(12) <= DateTime.Now ? true : false,
+                    Profit = stockSaleInfo.SellPrice * stockSaleInfo.Amount - stockDbOBj.PurchasePrice * stockSaleInfo.Amount
+                };
+
+                soldInstrumentDTO.CGTPayable = !soldInstrumentDTO.DiscountApplied ? (soldInstrumentDTO.Profit * .5) : soldInstrumentDTO.Profit;
+
+                await _soldInstrumentsRepository.AddSoldInstrumentToDBTable(soldInstrumentDTO);
+            }
+        }
     }
 }

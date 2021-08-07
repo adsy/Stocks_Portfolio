@@ -6,6 +6,7 @@ using AutoMapper;
 using Services.Data;
 using Services.Models;
 using Services.Models.Crypto;
+using Services.Models.SoldInstruments;
 using Services.Models.Stocks;
 
 namespace Services.Configurations
@@ -21,6 +22,7 @@ namespace Services.Configurations
             CreateMap<PortfolioTracker, PortfolioTrackerDTO>().ReverseMap();
             CreateMap<Cryptocurrency, CryptocurrencyDTO>().ReverseMap();
             CreateMap<Cryptocurrency, CoinInfo>().ReverseMap();
+            CreateMap<SoldInstrument, SoldInstrumentDTO>().ReverseMap();
         }
     }
 }

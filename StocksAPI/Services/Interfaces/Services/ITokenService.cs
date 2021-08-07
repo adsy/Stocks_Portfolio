@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Services.Services
+namespace Services.Interfaces
 {
     public interface ITokenService
     {

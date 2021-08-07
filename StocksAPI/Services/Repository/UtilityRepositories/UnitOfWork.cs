@@ -14,6 +14,7 @@ namespace Services.Repository
         private IGenericRepository<PortfolioTracker> _portfolioTrackers;
         private IGenericRepository<Cryptocurrency> _cryptocurrencies;
         private IGenericRepository<ApiUser> _aspNetUsers;
+        private IGenericRepository<SoldInstrument> _soldInstruments;
 
         public UnitOfWork(StockDbContext dbContext)
         {
@@ -24,6 +25,7 @@ namespace Services.Repository
         public IGenericRepository<PortfolioTracker> PortfolioTrackers => _portfolioTrackers ?? new GenericRepository<PortfolioTracker>(_dbContext);
         public IGenericRepository<Cryptocurrency> Cryptocurrencies => _cryptocurrencies ?? new GenericRepository<Cryptocurrency>(_dbContext);
         public IGenericRepository<ApiUser> AspNetUsers => _aspNetUsers ?? new GenericRepository<ApiUser>(_dbContext);
+        public IGenericRepository<SoldInstrument> SoldInstruments => _soldInstruments ?? new GenericRepository<SoldInstrument>(_dbContext);
 
         public void Dispose()
         {

@@ -20,6 +20,7 @@ const CryptoContainer = ({ CurrentCryptoPortfolio, Update }) => {
                 pathname: `crypto/${crypto.coinName}`,
                 state: { crypto: crypto },
               }}
+              style={{ textDecorationColor: "orange" }}
             >
               <Row
                 style={{

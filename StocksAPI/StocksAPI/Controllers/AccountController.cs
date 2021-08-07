@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Services.Data;
 using Services.Models;
-using Services.Services;
-using Microsoft.AspNetCore.Cors;
+using Services.Interfaces;
 
 namespace StockAPI.Controllers
 {
@@ -57,10 +54,10 @@ namespace StockAPI.Controllers
                 var refreshTokens = await _tokenService.GenerateRefreshToken(userDTO);
 
                 setTokenCookie(refreshTokens);
+
                 return Accepted(new
                 {
-                    Token = await _authManager.CreateToken(),
-                    refreshToken = refreshTokens
+                    Token = await _authManager.CreateToken()
                 });
             }
             catch (Exception e)

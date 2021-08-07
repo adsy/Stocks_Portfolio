@@ -13,9 +13,9 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using Services.Data;
 using Services.Models;
-using Services.Services;
+using Services.Interfaces;
 
-namespace Services.Services
+namespace Services.Services.UtilityServices
 {
     public class AuthManager : IAuthManager
     {

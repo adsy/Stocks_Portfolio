@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuAppBar() {
+export default function AppHeader() {
   const classes = useStyles();
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -60,7 +60,13 @@ export default function MenuAppBar() {
             }}
           >
             <div>
-              <h1 className="page-title">Dashboard</h1>
+              <Link
+                to="/dashboard"
+                style={{ color: "black", textDecorationColor: "orange" }}
+                className="page-title"
+              >
+                Dashboard
+              </Link>
             </div>
             <div style={{ marginTop: "7px" }}>
               <IconButton

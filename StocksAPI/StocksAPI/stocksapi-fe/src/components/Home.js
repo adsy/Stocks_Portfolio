@@ -140,18 +140,26 @@ class Home extends Component {
             </div>
           </div>
           <div class="col-lg-7">
-            <div className="cool-shadow stock-summary instrument-container">
-              <StocksContainer
-                CurrentStockPortfolio={this.state.stockPortfolio}
-                PortfolioData={this.state.portfolioData}
-                Update={this.UpdateFromStockApi}
-              />
-            </div>
-            <div className="cool-shadow stock-summary instrument-container">
-              <CryptoContainer
-                CurrentCryptoPortfolio={this.state.cryptoPortfolio}
-                Update={this.UpdateFromStockApi}
-              />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div className="cool-shadow stock-summary instrument-container">
+                <StocksContainer
+                  CurrentStockPortfolio={this.state.stockPortfolio}
+                  PortfolioData={this.state.portfolioData}
+                  Update={this.UpdateFromStockApi}
+                />
+              </div>
+              <div className="cool-shadow stock-summary instrument-container">
+                <CryptoContainer
+                  CurrentCryptoPortfolio={this.state.cryptoPortfolio}
+                  Update={this.UpdateFromStockApi}
+                />
+              </div>
             </div>
           </div>
         </div>

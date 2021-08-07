@@ -5,7 +5,7 @@ const CryptoFinancialsContainer = ({ cryptoSummaryData, cryptoData }) => {
   console.log(cryptoSummaryData);
   console.log(cryptoData);
   return (
-    <div className="container-css">
+    <div className="container-css" style={{ height: "100%" }}>
       <div className="col-lg-12">
         <h3 className="portfolio-summary-resize" style={{ marginTop: "-5px" }}>
           Financial Summary

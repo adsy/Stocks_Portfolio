@@ -16,6 +16,17 @@ namespace Services.Models
 
     public class SellStockDTO
     {
+        public SellStockDTO()
+        {
+
+        }
+
+        public SellStockDTO(SellStockDTO stock)
+        {
+            Name = stock.Name;
+            SellPrice = stock.SellPrice;
+            Amount = stock.Amount;
+        }
         public string Name { get; set; }
         public double SellPrice { get; set; }
         public double Amount { get; set; }

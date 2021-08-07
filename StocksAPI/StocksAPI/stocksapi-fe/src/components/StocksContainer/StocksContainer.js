@@ -19,6 +19,7 @@ const StocksContainer = ({ CurrentStockPortfolio, PortfolioData, Update }) => {
                 pathname: `stock/${stock.stockName}`,
                 state: { stock: stock },
               }}
+              style={{ textDecorationColor: "orange" }}
             >
               <Row
                 style={{

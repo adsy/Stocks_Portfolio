@@ -36,10 +36,8 @@ class LoginForm extends Component {
         localStorage.removeItem("token");
 
         const token = response.token;
-        const refreshToken = response.refreshToken;
 
         localStorage.setItem("token", token);
-        localStorage.setItem("refreshToken", refreshToken);
       })
       .then(() => {
         this.props.history.push("/dashboard");

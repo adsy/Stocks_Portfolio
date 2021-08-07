@@ -5,22 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AspNetCoreRateLimit;
 using Services.Configurations;
 using Services.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Services.IRepository;
 using Services.Repository;
-using Services.Services;
 using Services.Interfaces.Repository;
 using Services.Repository.GetStockDataRepository;
 using Services.Interfaces.Services;
@@ -33,6 +25,10 @@ using Services.Repository.PortfolioRepository;
 using Services.Services.PortfolioService;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Net.Http.Headers;
+using Services.Interfaces;
+using Services.Services.UtilityServices;
+using Services.Services.SoldInstrumentsService;
+using Services.Repository.SoldInstrumentsRepository;
 
 namespace StockAPI
 {
@@ -83,7 +79,7 @@ namespace StockAPI
                         // Only add this to allow testing with localhost, remove this line in production!
                         if (origin.ToLower().StartsWith("http://localhost")) return true;
                         // Insert your production domain here.
-                        if (origin.ToLower().StartsWith("https://dev.mydomain.com")) return true;
+                        if (origin.ToLower().StartsWith("https://stockapi20210415184956.azurewebsites.net")) return true;
                         return false;
                     });
               })
@@ -92,22 +88,18 @@ namespace StockAPI
             // Adds autoMapper to list of services - use the MapperInitialiser class setup in Configuration file
             services.AddAutoMapper(typeof(MapperInitialiser));
 
-            // AddScoped - new instance is created for period / lifetime of certain set of requests
-            // AddSingleton - one instance of the service is provided across application
-            // AddTransient - everytime its needed, a new instance is created
-
-            //services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //services.AddScoped<IAuthManager, AuthManager>();
-
             services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddTransient(typeof(IAuthManager), typeof(AuthManager));
             services.AddTransient(typeof(IStocksRepository), typeof(StockRepository));
             services.AddTransient(typeof(IStocksService), typeof(StockService));
             services.AddTransient(typeof(ICryptoService), typeof(CryptoService));
             services.AddTransient(typeof(ITokenService), typeof(TokenService));
+            services.AddTransient(typeof(ISoldInstrumentsService), typeof(SoldInstrumentsService));
+
             services.AddTransient(typeof(ICryptoRepository), typeof(CryptoRepository));
             services.AddTransient(typeof(IPortfolioService), typeof(PortfolioService));
             services.AddTransient(typeof(IPortfolioRepository), typeof(PortfolioRepository));
+            services.AddTransient(typeof(ISoldInstrumentsRepository), typeof(SoldInstrumentsRepository));
 
             services.AddMediatR(typeof(Startup));
 

@@ -29,7 +29,6 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => {
           url: `${Constants.refreshToken}`,
           data: {
             accessToken: localStorage.getItem("token"),
-            refreshToken: localStorage.getItem("refreshToken"),
           },
         })
           .then((response) => {

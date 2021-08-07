@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services.Data;
 
 namespace StockAPI.Migrations
 {
     [DbContext(typeof(StockDbContext))]
-    partial class StockDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210806022318_SoldInstrumentsTable")]
+    partial class SoldInstrumentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,15 +50,15 @@ namespace StockAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ae0520d3-8631-448f-bc2d-262550f5c9b4",
-                            ConcurrencyStamp = "e2eb2ac4-5587-4b2f-b7ff-d41f2b7a31b1",
+                            Id = "c77cd5fb-bb12-42f5-8bdb-edb3933d8acf",
+                            ConcurrencyStamp = "3f131f4c-ff09-4d77-b640-66ef5d5c415e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "c58a587f-6823-4c8a-87b3-f76458c4c355",
-                            ConcurrencyStamp = "f62b7b86-3628-4731-96a2-c159953a8801",
+                            Id = "0da80e0f-cc58-4bb6-a6dd-5d6233341759",
+                            ConcurrencyStamp = "93a1237e-b054-4db0-a384-ee78463803e7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -292,17 +294,17 @@ namespace StockAPI.Migrations
                         {
                             Id = 1,
                             PortfolioTotal = 2000.0,
-                            TimeStamp = new DateTime(2021, 8, 6, 12, 14, 26, 726, DateTimeKind.Local).AddTicks(2614)
+                            TimeStamp = new DateTime(2021, 8, 6, 11, 23, 17, 513, DateTimeKind.Local).AddTicks(4474)
                         },
                         new
                         {
                             Id = 2,
                             PortfolioTotal = 2000.0,
-                            TimeStamp = new DateTime(2021, 8, 6, 13, 14, 26, 726, DateTimeKind.Local).AddTicks(5537)
+                            TimeStamp = new DateTime(2021, 8, 6, 12, 23, 17, 513, DateTimeKind.Local).AddTicks(7464)
                         });
                 });
 
-            modelBuilder.Entity("Services.Data.SoldInstrument", b =>
+            modelBuilder.Entity("Services.Data.SoldInstruments", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -324,14 +326,8 @@ namespace StockAPI.Migrations
                     b.Property<double>("Profit")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("PuchaseDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("PurchasePrice")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("SaleDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<double>("SalePrice")
                         .HasColumnType("float");
