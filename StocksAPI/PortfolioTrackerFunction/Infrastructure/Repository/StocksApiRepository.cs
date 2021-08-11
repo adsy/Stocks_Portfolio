@@ -55,7 +55,7 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
 
             try
             {
-                HttpResponseMessage response = await _client.GetAsync("https://stockapi20210415184956.azurewebsites.net/api/Portfolio/GetPortfolio");
+                HttpResponseMessage response = await _client.GetAsync("https://stockapi20210415184956.azurewebsites.net/api/Portfolio/GetPortfolioAzureFunction");
 
                 response.EnsureSuccessStatusCode();
 

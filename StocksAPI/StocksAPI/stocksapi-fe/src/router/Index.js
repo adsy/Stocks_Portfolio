@@ -8,6 +8,7 @@ import StockInfo from "../components/StockInfo/StockInfo";
 import CryptoInfo from "../components/CryptoInfo/CryptoInfo";
 import AppHeader from "../components/Header/AppHeader";
 import axios from "axios";
+import CgtTracker from "../components/CgtTracker/CgtTracker";
 
 // Instead of BrowserRouter, we use the regular router,
 // but we pass in a customer history to it.
@@ -22,6 +23,7 @@ const AppRouter = () => (
         <AuthenticatedRoute path="/dashboard" component={Home} />
         <AuthenticatedRoute path="/stock/:stock" component={StockInfo} />
         <AuthenticatedRoute path="/crypto/:crypto" component={CryptoInfo} />
+        <AuthenticatedRoute path="/cgt-tracker" component={CgtTracker} />
       </Switch>
     </div>
   </Router>

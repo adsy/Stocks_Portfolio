@@ -57,11 +57,11 @@ namespace PortfolioTrackerFunction.Infrastructure.Repository
                 RowKey = "rate"
             };
 
-            var exRateRepsonse = await HttpRequest.SendGetCall($"https://portfoliotrackerfunction.azurewebsites.net/api/exchangerate");
+            var exRateResponse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
 
-            if (exRateRepsonse.StatusCode == (int)HttpStatusCode.OK)
+            if (exRateResponse.StatusCode == (int)HttpStatusCode.OK)
             {
-                var exRateBody = JObject.Parse(exRateRepsonse.Data);
+                var exRateBody = JObject.Parse(exRateResponse.Data);
 
                 if (!(exRateBody.SelectToken("result").ToString() == "error"))
                 {

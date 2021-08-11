@@ -4,7 +4,7 @@ import { cache } from "./cacheHandler";
 export const createClient = (headers) => {
   axios.defaults.withCredentials = true;
   const client = axios.create({
-    baseURL: "https://localhost:44345/api",
+    baseURL: "https://stockapi20210415184956.azurewebsites.net/api",
     headers: headers,
   });
   client.interceptors.request.use((request) => requestHandler(request));

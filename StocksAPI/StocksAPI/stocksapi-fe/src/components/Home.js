@@ -90,17 +90,17 @@ class Home extends Component {
   render() {
     if (this.state.loading) {
       return (
-        <div className="App">
+        <div className="center-text">
           <div>
             <h1 className="loading-center row">🚀</h1>
-            <h5 style={{ marginTop: "10px" }}>...Getting Portfolio Data...</h5>
+            <h4 style={{ marginTop: "10px" }}>...Getting Portfolio Data...</h4>
           </div>
         </div>
       );
     }
 
     return (
-      <div className="App">
+      <div>
         <AppHeader />
         <div
           style={{
@@ -139,7 +139,7 @@ class Home extends Component {
               <Chart />
             </div>
           </div>
-          <div class="col-lg-7">
+          <div class="col-lg-7 center-text">
             <div
               style={{
                 display: "flex",

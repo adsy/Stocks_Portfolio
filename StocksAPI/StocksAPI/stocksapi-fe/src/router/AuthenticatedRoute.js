@@ -59,7 +59,13 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => {
   }, []);
 
   if (authenticating) {
-    return <div>test</div>;
+    return (
+      <div className="App">
+        <div>
+          <h4 style={{ marginTop: "10px" }}>...Loading...</h4>
+        </div>
+      </div>
+    );
   } else {
     return (
       <Route

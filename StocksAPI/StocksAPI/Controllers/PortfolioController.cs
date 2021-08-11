@@ -30,5 +30,15 @@ namespace StockAPI.Controllers
 
             return Ok(result);
         }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpGet]
+        [Route("GetPortfolioAzureFunction")]
+        public async Task<IActionResult> GetPortfolioAzureFunction()
+        {
+            var result = await _mediator.Send(new GetPortfolioQuery());
+
+            return Ok(result);
+        }
     }
 }

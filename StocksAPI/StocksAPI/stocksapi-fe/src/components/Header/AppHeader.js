@@ -55,17 +55,38 @@ export default function AppHeader() {
             style={{
               display: "flex",
               justifyContent: "space-between",
-              verticalAlign: "center",
               width: "100vw",
+              alignItems: "center",
             }}
           >
-            <div>
+            <div className="">
               <Link
                 to="/dashboard"
                 style={{ color: "black", textDecorationColor: "orange" }}
-                className="page-title"
               >
-                Dashboard
+                <span className="header-text-css page-title">Dashboard</span>
+              </Link>{" "}
+              |
+              <Link
+                to="/cgt-tracker"
+                style={{
+                  color: "black",
+                  textDecorationColor: "orange",
+                }}
+                className="nav-option"
+              >
+                Portfolio Summary
+              </Link>
+              |
+              <Link
+                to="/cgt-tracker"
+                style={{
+                  color: "black",
+                  textDecorationColor: "orange",
+                }}
+                className="nav-option"
+              >
+                CGT Tracker
               </Link>
             </div>
             <div style={{ marginTop: "7px" }}>

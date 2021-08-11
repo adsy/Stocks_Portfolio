@@ -3,13 +3,16 @@
 }
 
 body {
-  background-image: url(./StockChart-white.svg);
+  background-image: url(./background.svg);
 
   /* Full height */
-  background-size: 100%;
+  background-size: 82%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
 }
 
-.App {
+.center-text {
   text-align: center;
 }
 
@@ -34,8 +37,15 @@ body {
   height: 10vh;
 }
 
+.nav-option {
+  font-size: 26px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 25px;
+}
+
 .page-title {
-  font-size: 44px;
+  font-size: 36px;
   margin-top: 5px;
 }
 
@@ -54,6 +64,24 @@ body {
 
 .red-text {
   color: red;
+}
+// Codepen spesific styling - only to center the elements in the pen preview and viewport
+.header-container {
+  width: 100%;
+}
+// End Codepen spesific styling
+
+.header-text-css {
+  color: mix(rgb(0, 0, 0), orange, 100%);
+  font-weight: 500;
+  text-shadow: -0.0075em 0.0075em 0 mix(#fff, orange, 94%),
+    0.005em 0.005em 0 mix(#fff, #ffffff, 60%),
+    0.01em 0.01em 0 mix(#fff, orange, 62%),
+    0.015em 0.015em mix(orange, #ffffff, 64%),
+    0.02em 0.02em 0 mix(#fff, #000000, 66%),
+    0.025em 0.025em 0 mix(#fff, #000000, 68%),
+    0.03em 0.03em 0 mix(#fff, orange, 70%),
+    0.035em 0.035em 0 mix(#fff, orange, 72%);
 }
 
 .container-css {
@@ -207,6 +235,69 @@ h3 {
   background: #1c2988;
 }
 
+.text-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h5 {
+  font-size: 48px !important;
+  font-weight: 1000;
+  color: #000;
+  display: block;
+  padding: 0.5em;
+}
+
+h5:nth-child(2) {
+  position: absolute;
+  background-color: #000;
+  color: #fff;
+  clip-path: inset(
+    -1% -1% 50% -1%
+  ); // Added the negative values to prevent icky "bleed" in Chrome
+}
+
+// Codepen spesific styling - only to center the elements in the pen preview and viewport
+.header-container {
+  margin-top: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+// End Codepen spesific styling
+
+.cgt-summary {
+  margin-top: 25px;
+  height: 200px;
+  margin-bottom: 20px;
+  border: 5px solid black;
+  background-color: white;
+  border-radius: 2px 16px;
+  justify-content: center;
+  display: flex;
+}
+
+.cgt-chart {
+  height: 50vh;
+  background-color: grey;
+  margin-bottom: 20px;
+}
+
+.cgt-sales-list {
+  background-color: grey;
+  margin-top: 30px;
+  height: 80vh;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -217,10 +308,14 @@ h3 {
   }
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 850px) {
   .page-title {
-    font-size: 42px;
+    font-size: 32px;
     margin-left: 10px;
+    margin-top: 5px;
+  }
+  .nav-option {
+    font-size: 22px;
     margin-top: 5px;
   }
 
@@ -230,7 +325,18 @@ h3 {
   }
 }
 
-@media only screen and (max-width: 575px) {
+@media only screen and (max-width: 750px) {
+  .page-title {
+    font-size: 26px;
+    margin-left: 10px;
+    margin-top: 5px;
+  }
+
+  .nav-option {
+    font-size: 16px;
+    margin-top: 5px;
+  }
+
   .portfolio-summary {
     margin-bottom: 30px;
     width: 95% !important;
@@ -243,5 +349,18 @@ h3 {
 
   .hide-when-small {
     display: none;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .page-title {
+    font-size: 20px;
+    margin-left: 10px;
+    margin-top: 5px;
+  }
+
+  .nav-option {
+    font-size: 12px;
+    margin-top: 5px;
   }
 }

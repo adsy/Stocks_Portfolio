@@ -7,6 +7,12 @@ const LoginPage = () => {
 
   return (
     <div className="centered-box" style={{ height: "100vh" }}>
+      <div class="header-container">
+        <div class="text-box">
+          <h5 className="topline">Sir this is a Wendy's..</h5>
+          <h5 className="topline-2">Sir this is a Wendy's..</h5>
+        </div>
+      </div>
       <div
         className="centered-box"
         style={{
