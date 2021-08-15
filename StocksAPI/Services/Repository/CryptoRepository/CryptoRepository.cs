@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Domain.Config;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Services.Data;
@@ -11,20 +13,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Services.Repository.CryptoRepository
 {
     public class CryptoRepository : ICryptoRepository
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly CoinGeckoApiSettings _coinGeckoApiSettings;
+        private readonly CoinMarketCapApiSettings _coinMarketcapApiSettings;
+        private readonly HttpClient _coinGeckoClient;
+        private readonly HttpClient _coinMarketCapClient;
 
-        public CryptoRepository(IUnitOfWork unitOfWork, IMapper mapper)
+        public CryptoRepository(IUnitOfWork unitOfWork, IMapper mapper, IHttpClientFactory httpClientFactory, IOptions<CoinGeckoApiSettings> coinGeckoApiSettings, IOptions<CoinMarketCapApiSettings> coinMarketcapApiSettings)
         {
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+
+            _coinGeckoApiSettings = coinGeckoApiSettings.Value ?? throw new ArgumentNullException(nameof(coinGeckoApiSettings));
+            _coinMarketcapApiSettings = coinMarketcapApiSettings.Value ?? throw new ArgumentNullException(nameof(coinMarketcapApiSettings));
+
+            _coinGeckoClient = _httpClientFactory.CreateClient(_coinGeckoApiSettings.ClientName);
+            _coinGeckoClient.DefaultRequestHeaders.Add(_coinGeckoApiSettings.GetHostHeader, _coinGeckoApiSettings.GetHostHeaderValue);
+            _coinGeckoClient.DefaultRequestHeaders.Add(_coinGeckoApiSettings.GetKeyHeader, _coinGeckoApiSettings.GetKeyHeaderValue);
+
+            _coinMarketCapClient = _httpClientFactory.CreateClient(_coinMarketcapApiSettings.ClientName);
+            _coinMarketCapClient.DefaultRequestHeaders.Add(_coinMarketcapApiSettings.GetKeyHeaderKey, _coinMarketcapApiSettings.GetKeyHeaderValue);
         }
 
         public async Task<Response> AddCryptoToDbAsync(CryptocurrencyDTO crypto)
@@ -53,20 +71,16 @@ namespace Services.Repository.CryptoRepository
 
             try
             {
-                var headers = new Dictionary<string, string>
-                    {
-                        { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                        { "x-rapidapi-host", "coingecko.p.rapidapi.com" }
-                    };
+                var uri = _coinGeckoApiSettings.BaseClient + string.Format(_coinGeckoApiSettings.GetCoinChartDataUri, id);
 
-                var apiUrl = $"https://coingecko.p.rapidapi.com/coins/{id}/market_chart?vs_currency=aud&days=1";
+                var response = await _coinGeckoClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 
-                var response = await HttpRequest.SendGetCall(apiUrl, headers);
-
-                if (response.StatusCode != (int)HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                     return fnResult;
 
-                var chartResponse = JsonConvert.DeserializeObject<CryptoChartResponse>(response.Data);
+                var content = await response.Content.ReadAsStringAsync();
+
+                var chartResponse = JsonConvert.DeserializeObject<CryptoChartResponse>(content);
 
                 var chartData = chartResponse.Prices.Select(q => new ChartData
                 {
@@ -203,20 +217,16 @@ namespace Services.Repository.CryptoRepository
 
             try
             {
-                var headers = new Dictionary<string, string>
-                    {
-                        { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                        { "x-rapidapi-host", "coingecko.p.rapidapi.com" }
-                    };
+                var uri = _coinGeckoApiSettings.BaseClient + string.Format(_coinGeckoApiSettings.GetCoinSummaryDataUri, id);
 
-                var apiUrl = $"https://coingecko.p.rapidapi.com/coins/{id}?localization=false&tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=false";
+                var response = await _coinGeckoClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 
-                var response = await HttpRequest.SendGetCall(apiUrl, headers);
-
-                if (response.StatusCode != (int)HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                     return fnResult;
 
-                var chartResponse = JsonConvert.DeserializeObject<CryptoSummaryResponse>(response.Data);
+                var content = await response.Content.ReadAsStringAsync();
+
+                var chartResponse = JsonConvert.DeserializeObject<CryptoSummaryResponse>(content);
 
                 fnResult.Data = new CryptoSummaryData
                 {
@@ -250,19 +260,16 @@ namespace Services.Repository.CryptoRepository
             {
                 var cryptoTickers = ids.Split(",");
 
-                var apiUrl = $"https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol={ids}&convert=AUD";
+                var uri = _coinMarketcapApiSettings.BaseClient + string.Format(_coinMarketcapApiSettings.GetCoinQuoteDataUri);
 
-                var headers = new Dictionary<string, string>
-                {
-                    { "X-CMC_PRO_API_KEY", "a9c6f35a-153a-4123-8709-7782164e2e2b" }
-                };
+                var response = await _coinMarketCapClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 
-                var response = await HttpRequest.SendGetCall(apiUrl, headers);
-
-                if (response.StatusCode != (int)HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                     return fnResult;
 
-                var requestBody = JObject.Parse(response.Data);
+                var content = await response.Content.ReadAsStringAsync();
+
+                var requestBody = JObject.Parse(content);
 
                 var cryptoValueList = new List<CryptoValue>();
 

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Services.Data;
 using Services.Interfaces.Repository;
@@ -13,6 +12,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net;
 using Services.Models.SoldInstruments;
+using Domain.Config;
+using Microsoft.Extensions.Options;
 
 namespace Services.Repository.GetStockDataRepository
 {
@@ -21,12 +22,24 @@ namespace Services.Repository.GetStockDataRepository
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISoldInstrumentsRepository _soldInstrumentsRepository;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly YahooFinanceApiSettings _yahooFinanceApiSettings;
+        private readonly ExchangeRateStorageApiSettings _exchangeRateApiSettings;
+        private readonly HttpClient client;
 
-        public StockRepository(IUnitOfWork unitOfWork, IMapper mapper, ISoldInstrumentsRepository soldInstrumentsRepository)
+        public StockRepository(IUnitOfWork unitOfWork, IMapper mapper, ISoldInstrumentsRepository soldInstrumentsRepository, IHttpClientFactory httpClientFactory, IOptions<YahooFinanceApiSettings> yahooFinanceApiSettings, IOptions<ExchangeRateStorageApiSettings> exchangeRateApiSettings)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _soldInstrumentsRepository = soldInstrumentsRepository ?? throw new ArgumentNullException(nameof(soldInstrumentsRepository));
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+
+            _yahooFinanceApiSettings = yahooFinanceApiSettings.Value ?? throw new ArgumentNullException(nameof(yahooFinanceApiSettings));
+            _exchangeRateApiSettings = exchangeRateApiSettings.Value ?? throw new ArgumentNullException(nameof(exchangeRateApiSettings));
+
+            client = _httpClientFactory.CreateClient(_yahooFinanceApiSettings.ClientName);
+            client.DefaultRequestHeaders.Add(_yahooFinanceApiSettings.GetApiHostHeader, _yahooFinanceApiSettings.GetApiHostHeaderValue);
+            client.DefaultRequestHeaders.Add(_yahooFinanceApiSettings.GetApiKeyHeader, _yahooFinanceApiSettings.GetApiKeyHeaderValue);
         }
 
         #region ApiCalls
@@ -42,20 +55,18 @@ namespace Services.Repository.GetStockDataRepository
             {
                 var stockTickers = ids.Split(",");
 
-                var headers = new Dictionary<string, string>
-                {
-                    { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                    { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
-                };
+                var uri = _yahooFinanceApiSettings.BaseClient + string.Format(_yahooFinanceApiSettings.GetQuotesUri, ids);
 
-                var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=AU&symbols={ids}", headers);
+                var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 
-                if (response.StatusCode != (int)HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                     return fnResult;
+
+                var content = await response.Content.ReadAsStringAsync();
 
                 var stockProfiles = new List<StockValue>();
 
-                var requestBody = JObject.Parse(response.Data);
+                var requestBody = JObject.Parse(content);
 
                 var count = 0;
 
@@ -113,18 +124,13 @@ namespace Services.Repository.GetStockDataRepository
 
                 if (!id.Contains(".AX"))
                 {
-                    exchangeRate = 1.33; // api calls are limited
+                    exchangeRate = 1.33;
 
-                    var exRateRepsonse = await HttpRequest.SendGetCall($"https://v6.exchangerate-api.com/v6/23871810682eac22320017d5/latest/USD");
+                    var exRateResponse = await HttpRequest.SendGetCall($"https://portfoliotrackerfunction.azurewebsites.net/api/exchangerate");
 
-                    if (exRateRepsonse.StatusCode == (int)HttpStatusCode.OK)
+                    if (exRateResponse.StatusCode == (int)HttpStatusCode.OK)
                     {
-                        var exRateBody = JObject.Parse(exRateRepsonse.Data);
-
-                        if (!(exRateBody.SelectToken("result").ToString() == "error"))
-                        {
-                            exchangeRate = (double)exRateBody.SelectToken($"conversion_rates.AUD");
-                        }
+                        exchangeRate = double.Parse(exRateResponse.Data);
                     }
                 }
 
@@ -163,18 +169,16 @@ namespace Services.Repository.GetStockDataRepository
 
             try
             {
-                var headers = new Dictionary<string, string>
-                {
-                    { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                    { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
-                };
+                var uri = _yahooFinanceApiSettings.BaseClient + string.Format(_yahooFinanceApiSettings.GetStockNewUri, id);
 
-                var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/get-news?category={id}&region=AU", headers);
+                var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 
-                if (response.StatusCode != (int)HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                     return fnResult;
 
-                var responseBody = JObject.Parse(response.Data);
+                var content = await response.Content.ReadAsStringAsync();
+
+                var responseBody = JObject.Parse(content);
 
                 var newsList = new List<StockNews>();
 
@@ -219,20 +223,16 @@ namespace Services.Repository.GetStockDataRepository
 
             try
             {
-                var client = new HttpClient();
+                var uri = _yahooFinanceApiSettings.BaseClient + string.Format(_yahooFinanceApiSettings.GetStockChartUri, id);
 
-                var headers = new Dictionary<string, string>
-                {
-                    { "x-rapidapi-key", "6cfe4c0de0mshe1d53492d5f62e3p169b6ajsn15168cece55a" },
-                    { "x-rapidapi-host", "apidojo-yahoo-finance-v1.p.rapidapi.com" }
-                };
+                var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 
-                var response = await HttpRequest.SendGetCall($"https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-chart?interval=5m&symbol={id}&range=1d&region=US", headers);
-
-                if (response.StatusCode != (int)HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                     return fnResult;
 
-                var requestBody = JObject.Parse(response.Data);
+                var content = await response.Content.ReadAsStringAsync();
+
+                var requestBody = JObject.Parse(content);
 
                 var timestampList = requestBody.SelectToken($"chart.result[0].timestamp").Values<long>().ToList();
                 var priceJToken = requestBody.SelectToken($"chart.result[0].indicators.quote[0].close");
@@ -288,14 +288,17 @@ namespace Services.Repository.GetStockDataRepository
 
             try
             {
-                var exRateResponse = await HttpRequest.SendGetCall($"https://portfoliotrackerfunction.azurewebsites.net/api/exchangerate");
+                var client = _httpClientFactory.CreateClient(_exchangeRateApiSettings.ClientName);
+
+                var exRateResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, _exchangeRateApiSettings.BaseClient + _exchangeRateApiSettings.GetExchangeRateUri));
 
                 // placeholder for when ExRateStorage Cache is not working
                 var exchangeRate = 1.33;
 
-                if (exRateResponse.StatusCode == (int)HttpStatusCode.OK)
+                if (exRateResponse.StatusCode == HttpStatusCode.OK)
                 {
-                    exchangeRate = double.Parse(exRateResponse.Data);
+                    var content = await exRateResponse.Content.ReadAsStringAsync();
+                    exchangeRate = double.Parse(content);
                 }
 
                 var stocks = await _unitOfWork.Stocks.GetAll();
@@ -522,15 +525,17 @@ namespace Services.Repository.GetStockDataRepository
 
         private async Task InsertToSoldInstrumentTable(Stock stockDbOBj, SellStockDTO stockSaleInfo)
         {
-            // if else statement for US vs AUS stock for profit conversion
-            var exRateResponse = await HttpRequest.SendGetCall($"https://portfoliotrackerfunction.azurewebsites.net/api/exchangerate");
+            var client = _httpClientFactory.CreateClient(_exchangeRateApiSettings.ClientName);
+
+            var exRateResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, _exchangeRateApiSettings.BaseClient + _exchangeRateApiSettings.GetExchangeRateUri));
 
             // placeholder for when ExRateStorage Cache is not working
             var exchangeRate = 1.33;
 
-            if (exRateResponse.StatusCode == (int)HttpStatusCode.OK)
+            if (exRateResponse.StatusCode == HttpStatusCode.OK)
             {
-                exchangeRate = double.Parse(exRateResponse.Data);
+                var content = await exRateResponse.Content.ReadAsStringAsync();
+                exchangeRate = double.Parse(content);
             }
 
             if (stockDbOBj.Country == "US")

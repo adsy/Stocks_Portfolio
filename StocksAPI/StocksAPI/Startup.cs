@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,18 +16,16 @@ using Services.Interfaces.Repository;
 using Services.Repository.GetStockDataRepository;
 using Services.Interfaces.Services;
 using Services.Services.GetStockDataService;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using System.IO;
 using Services.Services.CryptoService;
 using Services.Repository.CryptoRepository;
 using Services.Repository.PortfolioRepository;
 using Services.Services.PortfolioService;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Net.Http.Headers;
 using Services.Interfaces;
 using Services.Services.UtilityServices;
 using Services.Services.SoldInstrumentsService;
 using Services.Repository.SoldInstrumentsRepository;
+using Domain.Config;
 
 namespace StockAPI
 {
@@ -87,6 +84,12 @@ namespace StockAPI
 
             // Adds autoMapper to list of services - use the MapperInitialiser class setup in Configuration file
             services.AddAutoMapper(typeof(MapperInitialiser));
+
+            services.Configure<YahooFinanceApiSettings>(Configuration.GetSection(YahooFinanceApiSettings.ConfigKey));
+            services.Configure<ExchangeRateStorageApiSettings>(Configuration.GetSection(ExchangeRateStorageApiSettings.ConfigKey));
+
+            services.AddHttpClient<IStocksRepository, StockRepository>();
+            services.AddHttpClient<ICryptoRepository, CryptoRepository>();
 
             services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddTransient(typeof(IAuthManager), typeof(AuthManager));
