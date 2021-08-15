@@ -136,7 +136,7 @@ class LoginForm extends Component {
           </Button>
         ) : (
           <div className="div">
-            <h5 className="login-loading-center row">🚀</h5>
+            <h6 className="login-loading-center row">🚀</h6>
             <br />
           </div>
         )}
