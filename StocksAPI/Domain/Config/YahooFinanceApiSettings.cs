@@ -12,15 +12,15 @@
         public const string ApiKeyHeaderKey = "x-rapidapi-key";
         public const string ApiHostHeaderKey = "x-rapidapi-host";
 
-        public string GetQuotesUri => Endpoints[GetQuotesKey];
-        public string GetStockSummaryUri => Endpoints[GetStockSummaryKey];
-        public string GetStockNewUri => Endpoints[GetStockNewsKey];
-        public string GetStockChartUri => Endpoints[GetStockChartKey];
+        public string GetQuotesUri => GetEndpointUri(GetQuotesKey);
+        public string GetStockSummaryUri => GetEndpointUri(GetStockSummaryKey);
+        public string GetStockNewUri => GetEndpointUri(GetStockNewsKey);
+        public string GetStockChartUri => GetEndpointUri(GetStockChartKey);
 
         public string GetApiKeyHeader => ApiKeyHeaderKey;
         public string GetApiHostHeader => ApiHostHeaderKey;
 
-        public string GetApiKeyHeaderValue => Headers[ApiKeyHeaderKey];
-        public string GetApiHostHeaderValue => Headers[ApiHostHeaderKey];
+        public string GetApiKeyHeaderValue => GetEndpointHeader(ApiKeyHeaderKey);
+        public string GetApiHostHeaderValue => GetEndpointHeader(ApiHostHeaderKey);
     }
 }

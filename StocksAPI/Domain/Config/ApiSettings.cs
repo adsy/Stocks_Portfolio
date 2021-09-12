@@ -11,6 +11,22 @@ namespace Domain.Config
         public string ClientName { get; set; }
         public string BaseClient { get; set; }
         public Dictionary<string, string> Endpoints { get; set; }
-        public Dictionary<string, string> Headers { get; set; }
+        public Dictionary<String, string> Headers { get; set; }
+
+        protected string GetEndpointUri(string uriKey)
+        {
+            if (Endpoints != null && Endpoints.ContainsKey(uriKey))
+                return Endpoints[uriKey];
+            return string.Empty;
+        }
+
+        protected string GetEndpointHeader(string headerKey)
+        {
+            if (Headers != null && Headers.ContainsKey(headerKey))
+            {
+                return Headers[headerKey];
+            }
+            return string.Empty;
+        }
     }
 }

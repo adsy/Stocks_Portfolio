@@ -9,8 +9,9 @@ const NewsContainer = ({ stockNewsData }) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      {stockNewsData.map((stockNews) => (
+      {stockNewsData.map((stockNews, index) => (
         <div
+          key={index}
           className="cool-shadow"
           style={{
             marginBottom: "40px",

@@ -16,12 +16,12 @@ namespace Domain.Config
         public const string CoinGeckoApiKeyHeaderKey = "x-rapidapi-key";
         public const string CoinGeckoApiHostHeaderKey = "x-rapidapi-host";
 
-        public string GetCoinChartDataUri => Endpoints[CoinChartDataUriKey];
-        public string GetCoinSummaryDataUri => Endpoints[CoinSummaryDataUriKey];
+        public string GetCoinChartDataUri => GetEndpointUri(CoinChartDataUriKey);
+        public string GetCoinSummaryDataUri => GetEndpointUri(CoinSummaryDataUriKey);
 
         public string GetHostHeader => CoinGeckoApiHostHeaderKey;
         public string GetKeyHeader => CoinGeckoApiKeyHeaderKey;
-        public string GetHostHeaderValue => Headers[CoinGeckoApiHostHeaderKey];
-        public string GetKeyHeaderValue => Headers[CoinGeckoApiKeyHeaderKey];
+        public string GetHostHeaderValue => GetEndpointHeader(CoinGeckoApiHostHeaderKey);
+        public string GetKeyHeaderValue => GetEndpointHeader(CoinGeckoApiKeyHeaderKey);
     }
 }

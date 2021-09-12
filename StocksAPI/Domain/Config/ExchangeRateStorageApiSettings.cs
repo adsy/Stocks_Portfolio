@@ -6,6 +6,6 @@
 
         public const string GetExchangeRateKey = "GetExchangeRate";
 
-        public string GetExchangeRateUri => Endpoints[GetExchangeRateKey];
+        public string GetExchangeRateUri => GetEndpointHeader(GetExchangeRateKey);
     }
 }

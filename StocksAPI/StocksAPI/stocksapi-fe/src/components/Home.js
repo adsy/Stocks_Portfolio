@@ -53,7 +53,7 @@ class Home extends Component {
       }
 
       stocks = JSON.parse(JSON.stringify(stocks), (key, value) =>
-        typeof value === "number" && key !== "amount" ? value.toFixed(2) : value
+        typeof value === "number" && key !== "amount" ? value.toFixed(3) : value
       );
 
       var cleanedStocks = [];

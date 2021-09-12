@@ -85,8 +85,17 @@ namespace StockAPI
             // Adds autoMapper to list of services - use the MapperInitialiser class setup in Configuration file
             services.AddAutoMapper(typeof(MapperInitialiser));
 
-            services.Configure<YahooFinanceApiSettings>(Configuration.GetSection(YahooFinanceApiSettings.ConfigKey));
-            services.Configure<ExchangeRateStorageApiSettings>(Configuration.GetSection(ExchangeRateStorageApiSettings.ConfigKey));
+            //services.Configure<YahooFinanceApiSettings>();
+
+            var test = Configuration.GetSection(YahooFinanceApiSettings.ConfigKey).GetChildren();
+
+            services.AddOptions<YahooFinanceApiSettings>().Bind(Configuration.GetSection(YahooFinanceApiSettings.ConfigKey));
+            
+            services.AddOptions<ExchangeRateStorageApiSettings>().Bind(Configuration.GetSection(ExchangeRateStorageApiSettings.ConfigKey));
+
+            services.AddOptions<ExchangeRateStorageApiSettings>().Bind(Configuration.GetSection(ExchangeRateStorageApiSettings.ConfigKey));
+
+            services.AddOptions<CoinGeckoApiSettings>().Bind(Configuration.GetSection(CoinGeckoApiSettings.ConfigKey));
 
             services.AddHttpClient<IStocksRepository, StockRepository>();
             services.AddHttpClient<ICryptoRepository, CryptoRepository>();

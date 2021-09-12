@@ -49,7 +49,7 @@ export default function AppHeader() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="" style={{ background: "#ffffff" }}>
+      <AppBar position="static" style={{ background: "#ffffff" }}>
         <Toolbar>
           <div
             style={{
@@ -66,7 +66,7 @@ export default function AppHeader() {
               >
                 <span className="header-text-css page-title">Dashboard</span>
               </Link>{" "}
-              |
+              <span className="app-header-divider">|</span>
               <Link
                 to="/cgt-tracker"
                 style={{
@@ -77,7 +77,7 @@ export default function AppHeader() {
               >
                 Portfolio Summary
               </Link>
-              |
+              <span className="app-header-divider">|</span>
               <Link
                 to="/cgt-tracker"
                 style={{
