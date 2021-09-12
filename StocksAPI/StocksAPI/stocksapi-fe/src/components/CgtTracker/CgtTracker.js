@@ -57,7 +57,7 @@ const CgtTracker = () => {
           </div>
         </div>
 
-        <div className="col-md-6">
+        <div className="col-lg-6">
           <CgtSalesList salesList={cgtData.salesList} />
         </div>
       </div>
