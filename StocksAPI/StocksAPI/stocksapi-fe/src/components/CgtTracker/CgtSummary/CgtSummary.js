@@ -1,4 +1,4 @@
-const CgtSummary = () => {
+const CgtSummary = ({ capitalGains, capitalLosses, cgtPayable }) => {
   return (
     <div className="container-css" style={{ marginLeft: "20px" }}>
       <h3
@@ -8,9 +8,17 @@ const CgtSummary = () => {
         CGT Summary
       </h3>
 
-      <h6 style={{ paddingBottom: "10px" }}>Capital Gains: ${}</h6>
-      <h6 style={{ paddingBottom: "10px" }}>Capital Losses: ${}</h6>
-      <h6 style={{ paddingBottom: "10px" }}>CGT Payable: ${}</h6>
+      <h6 style={{ paddingBottom: "10px" }}>
+        Capital Gains: ${capitalGains.toFixed(2)}
+      </h6>
+      <h6 style={{ paddingBottom: "10px" }}>
+        Capital Losses: ${capitalLosses.toFixed(2)}
+      </h6>
+      <h6 style={{ paddingBottom: "10px" }}>
+        <span className={cgtPayable > 0 ? "green-text" : "red-text"}>
+          CGT Payable: ${cgtPayable.toFixed(2)}
+        </span>
+      </h6>
     </div>
   );
 };

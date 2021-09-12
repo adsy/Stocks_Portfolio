@@ -260,7 +260,7 @@ namespace Services.Repository.CryptoRepository
             {
                 var cryptoTickers = ids.Split(",");
 
-                var uri = _coinMarketcapApiSettings.BaseClient + string.Format(_coinMarketcapApiSettings.GetCoinQuoteDataUri);
+                var uri = _coinMarketcapApiSettings.BaseClient + string.Format(_coinMarketcapApiSettings.GetCoinQuoteDataUri, ids);
 
                 var response = await _coinMarketCapClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
 

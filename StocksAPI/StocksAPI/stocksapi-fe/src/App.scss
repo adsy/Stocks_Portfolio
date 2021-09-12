@@ -298,9 +298,33 @@ h5:nth-child(2) {
 }
 
 .cgt-sales-list {
-  background-color: grey;
+  border: 5px solid black;
+  background-color: white;
+  border-radius: 2px 16px;
+  flex-direction: column;
+  display: flex;
   margin-top: 30px;
   height: 80vh;
+  overflow-y: auto;
+}
+
+.cgt-sold-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 15px;
+  border: 2px solid black;
+  padding: 10px;
+}
+
+.h6-margin-fix {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.full-row {
+  width: 100%;
 }
 
 @keyframes App-logo-spin {

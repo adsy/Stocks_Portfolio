@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Services.Portfolio.Query;
-using Services.Stocks.Queries;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace StockAPI.Controllers
@@ -15,20 +14,30 @@ namespace StockAPI.Controllers
     public class PortfolioController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<PortfolioController> _log;
 
-        public PortfolioController(IMediator mediator)
+        public PortfolioController(IMediator mediator, ILogger<PortfolioController> log)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _log = log ?? throw new ArgumentNullException(nameof(log));
         }
-        
+
         [Authorize]
         [HttpGet]
         [Route("GetPortfolio")]
         public async Task<IActionResult> GetPortfolio()
         {
-            var result = await _mediator.Send(new GetPortfolioQuery());
+            try
+            {
+                var result = await _mediator.Send(new GetPortfolioQuery());
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _log.LogError($"Error throw within GetPortfolioAzureFunction - {e.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -36,9 +45,17 @@ namespace StockAPI.Controllers
         [Route("GetPortfolioAzureFunction")]
         public async Task<IActionResult> GetPortfolioAzureFunction()
         {
-            var result = await _mediator.Send(new GetPortfolioQuery());
+            try
+            {
+                var result = await _mediator.Send(new GetPortfolioQuery());
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _log.LogError($"Error throw within GetPortfolioAzureFunction - {e.Message}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
         }
     }
 }

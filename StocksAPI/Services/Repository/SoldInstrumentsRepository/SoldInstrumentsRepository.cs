@@ -47,7 +47,14 @@ namespace Services.Repository.SoldInstrumentsRepository
 
             cgtOverview.SalesList.ForEach(o =>
                 {
-                    cgtOverview.CGTPayable += o.CGTPayable;
+                    // add to individual tallies
+                    if (o.Profit > 0)
+                        cgtOverview.CapitalGains += o.Profit;
+                    else
+                        cgtOverview.CapitalLosses += o.Profit;
+
+                    // work out total payable/refund
+                    cgtOverview.CGTPayable += o.Profit;
                 });
 
             return new Response<CGTOverview>

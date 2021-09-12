@@ -11,10 +11,10 @@ namespace Domain.Config
         public const string ConfigKey = "ApiSettings:CoinMarketCap";
 
         public const string CoinQuoteDataUriKey = "GetCoinQuoteData";
-        public string GetCoinQuoteDataUri => Endpoints[CoinQuoteDataUriKey];
+        public string GetCoinQuoteDataUri => GetEndpointUri(CoinQuoteDataUriKey);
 
         public string KeyHeaderKey = "X-CMC_PRO_API_KEY";
         public string GetKeyHeaderKey => KeyHeaderKey;
-        public string GetKeyHeaderValue => Headers[KeyHeaderKey];
+        public string GetKeyHeaderValue => GetEndpointHeader(KeyHeaderKey);
     }
 }

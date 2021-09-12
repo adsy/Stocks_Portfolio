@@ -50,4 +50,6 @@ export class Constants {
     "https://stockapi20210415184956.azurewebsites.net/api/Stocks/GetPortfolioValueList";
   static refreshToken =
     "https://stockapi20210415184956.azurewebsites.net/api/Token/refresh";
+  static getCgtData =
+    "https://stockapi20210415184956.azurewebsites.net/api/CGT/GetCgtData";
 }

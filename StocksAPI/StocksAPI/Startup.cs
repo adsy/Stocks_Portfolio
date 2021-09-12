@@ -90,10 +90,10 @@ namespace StockAPI
             var test = Configuration.GetSection(YahooFinanceApiSettings.ConfigKey).GetChildren();
 
             services.AddOptions<YahooFinanceApiSettings>().Bind(Configuration.GetSection(YahooFinanceApiSettings.ConfigKey));
-            
-            services.AddOptions<ExchangeRateStorageApiSettings>().Bind(Configuration.GetSection(ExchangeRateStorageApiSettings.ConfigKey));
 
             services.AddOptions<ExchangeRateStorageApiSettings>().Bind(Configuration.GetSection(ExchangeRateStorageApiSettings.ConfigKey));
+
+            services.AddOptions<CoinMarketCapApiSettings>().Bind(Configuration.GetSection(CoinMarketCapApiSettings.ConfigKey));
 
             services.AddOptions<CoinGeckoApiSettings>().Bind(Configuration.GetSection(CoinGeckoApiSettings.ConfigKey));
 

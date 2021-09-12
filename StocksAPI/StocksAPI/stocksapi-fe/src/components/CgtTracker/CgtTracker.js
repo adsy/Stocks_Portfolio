@@ -1,7 +1,27 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Constants } from "../../constants/Constants";
 import AppHeader from "../Header/AppHeader";
+import CgtPieChart from "./CgtPieChart/CgtPieChart";
+import CgtSalesList from "./CgtSalesList/CgtSalesList";
 import CgtSummary from "./CgtSummary/CgtSummary";
 
 const CgtTracker = () => {
+  const [cgtData, setCgtData] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get(Constants.getCgtData).then((data) => {
+      setCgtData(data.data);
+      setLoading(false);
+      console.log(data.data);
+    });
+  }, []);
+
+  if (loading) {
+    return <div>loading...</div>;
+  }
+
   return (
     <div>
       <AppHeader />
@@ -23,13 +43,22 @@ const CgtTracker = () => {
               display: "flex",
             }}
           >
-            <CgtSummary />
+            <CgtSummary
+              capitalGains={cgtData.capitalGains}
+              capitalLosses={cgtData.capitalLosses}
+              cgtPayable={cgtData.cgtPayable}
+            />
           </div>
-          <div className="cgt-chart">cgt chart</div>
+          <div className="mt-4">
+            <CgtPieChart
+              capitalGains={cgtData.capitalGains}
+              capitalLosses={cgtData.capitalLosses}
+            />
+          </div>
         </div>
 
         <div className="col-md-6">
-          <div className="cgt-sales-list">sales-list</div>
+          <CgtSalesList salesList={cgtData.salesList} />
         </div>
       </div>
     </div>
